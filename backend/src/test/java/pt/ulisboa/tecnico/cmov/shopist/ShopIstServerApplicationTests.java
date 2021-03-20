@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.server;
+package pt.ulisboa.tecnico.cmov.shopist;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
