@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="available_categories">
+        <item>@string/choose_a_category_for_the_list</item>
+        <item>@string/pantry</item>
+        <item>@string/shopping</item>
+    </string-array>
+    <string-array name="location_options">
+        <item>@string/choose_a_location_option</item>
+        <item>@string/use_current_location</item>
+        <item>@string/pick_location</item>
+        <item>@string/none</item>
+    </string-array>
+</resources>

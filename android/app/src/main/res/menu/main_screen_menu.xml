@@ -4,8 +4,9 @@
     <item
         android:id="@+id/action_addList"
         android:icon="@drawable/ic_add"
-        app:showAsAction="ifRoom"
-        android:title="@string/add_list" />
+        android:onClick="createNewList"
+        android:title="@string/add_list"
+        app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
