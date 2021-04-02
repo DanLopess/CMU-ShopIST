@@ -3,14 +3,19 @@ package pt.ulisboa.tecnico.cmov.shopist;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     private String currCategory;
+    private DialogFragment createListDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         TextView titleTextView = findViewById(R.id.textView_title);
+        createListDialog = new CreateListDialogFragment(this);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
@@ -43,7 +49,14 @@ public class MainActivity extends AppCompatActivity {
     // Set Category default to current category
     // Set location default to use current location, other options are none or pick location on map
     public void createNewList(MenuItem item) {
-        DialogFragment createListDialog = new CreateListDialogFragment(this);
         createListDialog.show(getSupportFragmentManager(), "create list");
+    }
+
+    public void addListWithCode(MenuItem item) {
+        //TODO
+    }
+
+    public void addListWithQR(MenuItem item) {
+        //TODO
     }
 }

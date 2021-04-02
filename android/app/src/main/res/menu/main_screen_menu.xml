@@ -3,11 +3,28 @@
 
     <!-- TODO Should extend and show two options in the future, one to create and another to add an existing list -->
     <item
-        android:id="@+id/action_addList"
+        android:id="@+id/action_addListOverflow"
         android:icon="@drawable/ic_add"
-        android:onClick="createNewList"
         android:title="@string/add_list"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" >
+
+        <menu>
+            <item android:id="@+id/action_addList"
+                android:icon="@drawable/ic_create"
+                android:onClick="createNewList"
+                android:title="@string/create_new_list"/>
+
+            <item android:id="@+id/action_addListCode"
+                android:icon="@drawable/ic_add"
+                android:onClick="addListWithCode"
+                android:title="@string/insert_a_code"/>
+
+            <item android:id="@+id/action_addListQR"
+                android:icon="@drawable/ic_qr"
+                android:onClick="addListWithQR"
+                android:title="@string/scan_qr_code"/>
+        </menu>
+    </item>
 
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
