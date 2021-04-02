@@ -57,18 +57,29 @@ public class CreateListDialogFragment extends DialogFragment {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setTitle(R.string.create_list_dialog_title)
                 .setView(dialogView)
                 .setPositiveButton(R.string.create_ok, (dialog, id) -> {
-                    // Reaction to OK button press
+                    // Reaction to Create button press
                     // TODO Get all the data necessary
                     // String listName = getActivity().findViewById(R.id.editText_listName).toString();
                     // Create the list object
                 })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> Objects.requireNonNull(CreateListDialogFragment.this.getDialog()).cancel());
-        // Create the dialog and return it
         return builder.create();
     }
 }
