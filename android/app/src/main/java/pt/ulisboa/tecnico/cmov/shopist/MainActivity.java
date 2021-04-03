@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+
+import pt.ulisboa.tecnico.cmov.shopist.data.AppContextData;
+import pt.ulisboa.tecnico.cmov.shopist.data.Product;
 
 public class MainActivity extends AppCompatActivity {
     private DialogFragment mCreateListDialog;
@@ -25,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     // for testing, will probably stay in application context
     private List<ProductList> pantryLists;
     private List<ProductList> shoppingLists;
+
+    List<Product> products;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,14 @@ public class MainActivity extends AppCompatActivity {
         // Select initial list TODO based on location
         //for now select Pantry list
         bottomNavigationView.setSelectedItemId(R.id.action_pantry_lists);
+    }
 
+    private void loadProducts() {
+        RecyclerView rvProducts = (RecyclerView) findViewById(R.id.recyclerView);
+        AppContextData data = (AppContextData) getApplicationContext();
+        ProductsAdapter adapter = new ProductsAdapter(data.getProducts());
+        rvProducts.setAdapter(adapter);
+        rvProducts.setLayoutManager(new LinearLayoutManager(this));
     }
 
     // TODO call to the dialog
@@ -91,5 +102,10 @@ public class MainActivity extends AppCompatActivity {
         rvLists = findViewById(R.id.recyclerView);
         mPantryAdapter = new ListsAdapter(pantryLists);
         mShoppingAdapter = new ListsAdapter(shoppingLists);
+    }
+
+    public void createNewProduct(MenuItem item) {
+        DialogFragment createListDialog = new CreateProductDialogFragment(this);
+        createListDialog.show(getSupportFragmentManager(), "create list");
     }
 }

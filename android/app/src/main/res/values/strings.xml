@@ -22,4 +22,6 @@
     <string name="insert_a_code">Insert a code</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="list_options">List options</string>
+    <string name="product_name">Product name</string>
+    <string name="create_product">Create product</string>
 </resources>
