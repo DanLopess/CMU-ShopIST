@@ -2,20 +2,29 @@ package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
-    private String currCategory;
-    private DialogFragment createListDialog;
+    private DialogFragment mCreateListDialog;
+    private String mCurrCategory;
+    private RecyclerView rvLists;
+    private ListsAdapter mPantryAdapter;
+    private ListsAdapter mShoppingAdapter;
+
+    // for testing, will probably stay in application context
+    private List<ProductList> pantryLists;
+    private List<ProductList> shoppingLists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,15 +34,26 @@ public class MainActivity extends AppCompatActivity {
         //load local lists
         //if wifi available sync lists
 
+        pantryLists = new ArrayList<>();
+        shoppingLists = new ArrayList<>();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         TextView titleTextView = findViewById(R.id.textView_title);
-        createListDialog = new CreateListDialogFragment(this);
+        mCreateListDialog = new CreateListDialogFragment(this);
+        setUpLists();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
-                    currCategory = item.getTitle().toString(); // To set the default for the list creation
-                    titleTextView.setText(currCategory);
-                    //update shown lists
+                    mCurrCategory = item.getTitle().toString();
+                    titleTextView.setText(mCurrCategory);
+                    if (mCurrCategory.equals("Pantry")) {
+                        rvLists.setAdapter(mPantryAdapter);
+                        rvLists.setLayoutManager(layoutManager);
+                    } else if (mCurrCategory.equals("Shopping")) {
+                        rvLists.setAdapter(mShoppingAdapter);
+                        rvLists.setLayoutManager(layoutManager);
+                    }
                     return false;
                 }
         );
@@ -49,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     // Set Category default to current category
     // Set location default to use current location, other options are none or pick location on map
     public void createNewList(MenuItem item) {
-        createListDialog.show(getSupportFragmentManager(), "create list");
+        mCreateListDialog.show(getSupportFragmentManager(), "create list");
     }
 
     public void addListWithCode(MenuItem item) {
@@ -58,5 +78,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void addListWithQR(MenuItem item) {
         //TODO
+    }
+
+    private void setUpLists() {
+        // populate lists for testing
+        pantryLists.add(new ProductList("Test1", "Pantry"));
+        pantryLists.add(new ProductList("Test2", "Pantry"));
+        pantryLists.add(new ProductList("Test3", "Pantry"));
+        shoppingLists.add(new ProductList("Test4", "Shopping"));
+        shoppingLists.add(new ProductList("Test5", "Shopping"));
+
+        rvLists = findViewById(R.id.recyclerView);
+        mPantryAdapter = new ListsAdapter(pantryLists);
+        mShoppingAdapter = new ListsAdapter(shoppingLists);
     }
 }

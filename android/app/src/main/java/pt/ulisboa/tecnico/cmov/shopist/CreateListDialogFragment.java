@@ -20,11 +20,11 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Objects;
 
 public class CreateListDialogFragment extends DialogFragment {
-    private final Context context;
-    private View dialogView;
+    private final Context mContext;
+    private View mDialogView;
 
     public CreateListDialogFragment(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     @NonNull
@@ -32,16 +32,16 @@ public class CreateListDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        dialogView = inflater.inflate(R.layout.dialog_create_list, null);
+        mDialogView = inflater.inflate(R.layout.dialog_create_list, null);
 
-        Spinner spinnerCategory = dialogView.findViewById(R.id.spinner_category);
-        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(context,
+        Spinner spinnerCategory = mDialogView.findViewById(R.id.spinner_category);
+        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(mContext,
                 R.array.available_categories, android.R.layout.simple_spinner_item);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(categoryAdapter);
 
-        Spinner spinnerLocation = dialogView.findViewById(R.id.spinner_location);
-        ArrayAdapter<CharSequence> locationAdapter = ArrayAdapter.createFromResource(context,
+        Spinner spinnerLocation = mDialogView.findViewById(R.id.spinner_location);
+        ArrayAdapter<CharSequence> locationAdapter = ArrayAdapter.createFromResource(mContext,
                 R.array.location_options, android.R.layout.simple_spinner_item);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLocation.setAdapter(locationAdapter);
@@ -49,7 +49,7 @@ public class CreateListDialogFragment extends DialogFragment {
         spinnerLocation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Button btn = dialogView.findViewById(R.id.button_pickLocation);
+                Button btn = mDialogView.findViewById(R.id.button_pickLocation);
                 if (position == 2 && btn.getVisibility() != View.VISIBLE)
                     btn.setVisibility(View.VISIBLE);
                 else if (btn.getVisibility() != View.GONE)
@@ -64,7 +64,7 @@ public class CreateListDialogFragment extends DialogFragment {
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setTitle(R.string.create_list_dialog_title)
-                .setView(dialogView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.create_ok, null)
                 .setNegativeButton(R.string.cancel, (dialog, id) -> Objects
                         .requireNonNull(CreateListDialogFragment.this.getDialog()).cancel());
@@ -77,14 +77,14 @@ public class CreateListDialogFragment extends DialogFragment {
         AlertDialog dialog = (AlertDialog)getDialog();
 
         if(dialog != null) {
-            EditText inputTitle = dialogView.findViewById(R.id.editText_listName);
-            Spinner spinnerCat = dialogView.findViewById(R.id.spinner_category);
+            EditText inputTitle = mDialogView.findViewById(R.id.editText_listName);
+            Spinner spinnerCat = mDialogView.findViewById(R.id.spinner_category);
             Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
 
             positiveButton.setOnClickListener( v -> {
                 if (inputTitle.getText().toString().trim().isEmpty() ||
                         spinnerCat.getSelectedItemPosition() == 0) {
-                    Toast.makeText(context, R.string.create_list_error, Toast.LENGTH_LONG)
+                    Toast.makeText(mContext, R.string.create_list_error, Toast.LENGTH_LONG)
                             .show();
                 } else {
                     dialog.dismiss();
