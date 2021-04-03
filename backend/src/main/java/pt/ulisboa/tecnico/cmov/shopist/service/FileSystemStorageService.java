@@ -1,3 +1,4 @@
+/*
 package pt.ulisboa.tecnico.cmov.shopist.service;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -101,3 +102,4 @@ public class FileSystemStorageService {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 }
+*/

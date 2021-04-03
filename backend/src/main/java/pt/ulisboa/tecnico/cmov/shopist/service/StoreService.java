@@ -10,6 +10,8 @@ import pt.ulisboa.tecnico.cmov.shopist.pojo.Store;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.isEmpty;
+
 @Slf4j
 @Service
 public class StoreService {
@@ -19,14 +21,16 @@ public class StoreService {
         this.stores = new HashSet<>();
     }
 
-    public void createStore(Store s) throws StoreExistsException, InvalidDataException {
+    public Store createStore(Store s) throws StoreExistsException, InvalidDataException {
         validateStoreData(s);
         if (!stores.add(s)) {
             throw new StoreExistsException("Store already exists in server.");
         }
+        s.setUuid(UUID.randomUUID());
+        return s;
     }
 
-    public void updateStore(Store s) throws StoreNotFoundException, InvalidDataException {
+    public Store updateStore(Store s) throws StoreNotFoundException, InvalidDataException {
         validateStoreData(s);
         Optional<Store> storeToUpdate = stores.stream().filter(s::equals).findAny();
         if (storeToUpdate.isEmpty()) {
@@ -34,6 +38,7 @@ public class StoreService {
         } else {
             stores.remove(storeToUpdate.get());
             stores.add(s);
+            return s;
         }
     }
 
@@ -53,8 +58,10 @@ public class StoreService {
     }
 
     private void validateStoreData(Store s) throws InvalidDataException {
-        if (s.getName().isEmpty() || s.getCoordinates().isEmpty()) {
-            throw new InvalidDataException("Store does not have all the required information");
+        if (isEmpty(s.getName()) || isEmpty(s.getCoordinates())) {
+            throw new InvalidDataException("Store has invalid information");
         }
     }
+
+    // TODO GET ALL STORES BY COORDINATE PROXIMITY
 }

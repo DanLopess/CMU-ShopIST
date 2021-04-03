@@ -1,11 +1,14 @@
 package pt.ulisboa.tecnico.cmov.shopist.pojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 public class Store {
     private String name;
     private String coordinates;
@@ -14,7 +17,6 @@ public class Store {
     public Store(String name, String coordinates) {
         this.name = name;
         this.coordinates = coordinates;
-        this.uuid = UUID.randomUUID();
     }
 
     @Override
