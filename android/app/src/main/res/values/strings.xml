@@ -17,4 +17,6 @@
     <string name="create_list_dialog_title">Create new list</string>
     <string name="choose_a_category_for_the_list">Choose a category for the list</string>
     <string name="choose_a_location_option">Choose a location option</string>
+    <string name="product_name">Product name</string>
+    <string name="create_product">Create product</string>
 </resources>

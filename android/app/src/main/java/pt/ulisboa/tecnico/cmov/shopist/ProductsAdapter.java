@@ -1,10 +1,13 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -56,6 +59,11 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         // Set item views based on your views and data model
         TextView textView = holder.name;
         textView.setText(product.getName());
+
+        ImageView imageView = holder.image;
+        if(product.getImage() != null) {
+            imageView.setImageBitmap(product.getImage());
+        }
     }
 
     @Override
@@ -65,10 +73,11 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
+        public ImageView image;
 
         public ViewHolder(View view) {
             super(view);
-
+            image = view.findViewById(R.id.itemImage);
             name = (TextView) view.findViewById(R.id.itemName);
         }
     }

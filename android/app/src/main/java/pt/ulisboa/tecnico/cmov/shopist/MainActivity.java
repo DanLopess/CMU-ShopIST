@@ -14,6 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.shopist.data.AppContextData;
 import pt.ulisboa.tecnico.cmov.shopist.data.Product;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
                 item -> {
                     currCategory = item.getTitle().toString(); // To set the default for the list creation
                     titleTextView.setText(currCategory);
-                    loadProducts();
                     return false;
                 }
         );
@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadProducts() {
         RecyclerView rvProducts = (RecyclerView) findViewById(R.id.recyclerView);
-        products = Product.createProductList();
-        ProductsAdapter adapter = new ProductsAdapter(products);
+        AppContextData data = (AppContextData) getApplicationContext();
+        ProductsAdapter adapter = new ProductsAdapter(data.getProducts());
         rvProducts.setAdapter(adapter);
         rvProducts.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -62,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
     // Set location default to use current location, other options are none or pick location on map
     public void createNewList(MenuItem item) {
         DialogFragment createListDialog = new CreateListDialogFragment(this);
+        createListDialog.show(getSupportFragmentManager(), "create list");
+    }
+
+    public void createNewProduct(MenuItem item) {
+        DialogFragment createListDialog = new CreateProductDialogFragment(this);
         createListDialog.show(getSupportFragmentManager(), "create list");
     }
 }
