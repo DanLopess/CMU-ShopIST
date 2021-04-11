@@ -4,7 +4,7 @@ The goal of the ShopIST application is to help people manage their groceries, by
 
 ---
 
-## Architecture
+### Architecture
 
 This project is composed of two parts:
 
@@ -12,7 +12,7 @@ This project is composed of two parts:
 - Android app 
 
 
-## Features
+### Features
 
 Our project currently has the following features:
 
