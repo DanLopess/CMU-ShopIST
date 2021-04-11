@@ -24,4 +24,6 @@
     <string name="list_options">List options</string>
     <string name="product_name">Product name</string>
     <string name="create_product">Create product</string>
+    <string name="delete_list">Delete list</string>
+    <string name="sync_with_server">Sync with server</string>
 </resources>

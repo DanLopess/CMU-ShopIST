@@ -1,7 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO Should extend and show two options in the future, one to create and another to add an existing list -->
     <item
         android:id="@+id/action_addListOverflow"
         android:icon="@drawable/ic_add"

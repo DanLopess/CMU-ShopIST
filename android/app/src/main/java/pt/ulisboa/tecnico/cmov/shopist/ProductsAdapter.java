@@ -1,8 +1,6 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -41,12 +37,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         ViewHolder viewHolder = new ViewHolder(ProductView);
 
         LinearLayout layout = ProductView.findViewById(R.id.productItemLinearLayout);
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView textView = v.findViewById(R.id.itemName);
-                Log.d("Click Product", textView.getText().toString());
-            }
+        layout.setOnClickListener(v -> {
+            TextView textView = v.findViewById(R.id.itemName);
+            Log.d("Click Product", textView.getText().toString());
         });
 
         return viewHolder;
@@ -78,7 +71,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHo
         public ViewHolder(View view) {
             super(view);
             image = view.findViewById(R.id.itemImage);
-            name = (TextView) view.findViewById(R.id.itemName);
+            name = view.findViewById(R.id.itemName);
         }
     }
 }
