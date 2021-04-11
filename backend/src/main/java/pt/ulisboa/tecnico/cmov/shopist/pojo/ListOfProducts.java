@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.shopist.pojo;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 public class ListOfProducts {
     private UUID uuid;
     private String name;

@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.shopist.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Description;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
@@ -25,7 +24,6 @@ public class StoreController {
     }
 
     @PostMapping
-    @Description("Create a single store")
     @Operation(summary = "Create a store", description = "Return the created store")
     public Store createStore(@RequestBody Store store) throws InvalidDataException, StoreExistsException {
         return storeService.createStore(store);

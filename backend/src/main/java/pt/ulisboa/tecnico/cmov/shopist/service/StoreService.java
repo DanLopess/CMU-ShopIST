@@ -36,8 +36,9 @@ public class StoreService {
         if (storeToUpdate.isEmpty()) {
             throw new StoreNotFoundException("Specified store was not found");
         } else {
-            stores.remove(storeToUpdate.get());
-            stores.add(s);
+            Store updatedStore = storeToUpdate.get();
+            updatedStore.setName(s.getName());
+            updatedStore.setCoordinates(s.getCoordinates());
             return s;
         }
     }

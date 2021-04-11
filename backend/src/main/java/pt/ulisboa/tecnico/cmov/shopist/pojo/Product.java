@@ -1,12 +1,14 @@
 package pt.ulisboa.tecnico.cmov.shopist.pojo;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 public class Product {
     private int price;
     private UUID uuid;
@@ -15,12 +17,16 @@ public class Product {
     private List<Store> stores; // in which stores this product exists
     private String imagesLocation; // TODO add directory for all images of this product
 
-    public Product(int price, String name, String description) {
-        this.price = price;
-        this.name = name;
-        this.description = description;
-        this.stores = new ArrayList<>();
-        this.imagesLocation = Integer.toString(name.hashCode());
-        this.uuid = UUID.randomUUID();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(uuid, product.uuid) || Objects.equals(name, product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, name);
     }
 }

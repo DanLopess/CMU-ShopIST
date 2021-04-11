@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ulisboa.tecnico.cmov.shopist.service.ProductService;
 
 @RestController
-@RequestMapping(path = "/products")
+@RequestMapping(path = "/product")
 public class ProductController {
     ProductService productService;
 

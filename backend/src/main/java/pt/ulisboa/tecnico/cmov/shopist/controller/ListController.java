@@ -1,16 +1,20 @@
 package pt.ulisboa.tecnico.cmov.shopist.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
+import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
+import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListExistsException;
+import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListNotFoundException;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.ListOfProducts;
 import pt.ulisboa.tecnico.cmov.shopist.service.ListService;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
-@RequestMapping(path = "/lists")
+@RequestMapping(path = "/list")
 public class ListController {
     ListService listService;
 
@@ -19,8 +23,26 @@ public class ListController {
         this.listService = listService;
     }
 
-    @GetMapping
-    public List<ListOfProducts> getAllLists() {
-        return listService.getLists();
+    @PostMapping
+    @Operation(summary = "Create a list", description = "Return the created list UUID")
+    public UUID createList(@RequestBody ListOfProducts list) throws InvalidDataException, ListExistsException {
+        return listService.createList(list);
+    }
+
+    @PutMapping
+    @Operation(summary = "Update a list", description = "Returns the updated list")
+    public ListOfProducts updateList(@RequestBody ListOfProducts list) throws InvalidDataException, ListNotFoundException {
+        return listService.updateList(list);
+    }
+
+    @GetMapping("/{uuid}")
+    @Operation(summary = "Find list by UUID", description = "Returns a list")
+    public ListOfProducts getListByUuid(@PathVariable("uuid") String uuid) {
+        if (uuid != null) {
+            String storeUUID = HtmlUtils.htmlEscape(uuid);
+            Optional<ListOfProducts> list = listService.getListByUUID(storeUUID);
+            return list.orElse(null);
+        }
+        return null;
     }
 }
