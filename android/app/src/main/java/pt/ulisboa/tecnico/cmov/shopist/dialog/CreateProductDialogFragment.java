@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist;
+package pt.ulisboa.tecnico.cmov.shopist.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,10 +23,11 @@ import androidx.fragment.app.DialogFragment;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Objects;
 
-import pt.ulisboa.tecnico.cmov.shopist.data.AppContextData;
-import pt.ulisboa.tecnico.cmov.shopist.data.Product;
-
+import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
 
 public class CreateProductDialogFragment extends DialogFragment {
 
@@ -96,7 +97,7 @@ public class CreateProductDialogFragment extends DialogFragment {
     private void onSelectFromGalleryResult(Intent data) {
        try {
            final Uri imageUri = data.getData();
-           final InputStream imageStream = getContext().getContentResolver().openInputStream(imageUri);
+           final InputStream imageStream = Objects.requireNonNull(getContext()).getContentResolver().openInputStream(imageUri);
            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
            imageView = dialogView.findViewById(R.id.create_product_image);
            imageView.setImageBitmap(selectedImage);

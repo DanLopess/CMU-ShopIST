@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist;
+package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -14,35 +14,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.shopist.data.Product;
+import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductWithInfo;
 
-public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder>{
+public class ShoppingProductsAdapter extends RecyclerView.Adapter<ShoppingProductsAdapter.ViewHolder>{
 
-    private List<Product> mProducts;
+    private List<ProductWithInfo> mProducts;
 
-    public ProductsAdapter(List<Product> products) {
+    public ShoppingProductsAdapter(List<ProductWithInfo> products) {
         mProducts = products;
     }
 
     @NonNull
     @Override
-    public ProductsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ShoppingProductsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
+        // TODO check layout
         View ProductView = inflater.inflate(R.layout.product_item, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(ProductView);
-
-        LinearLayout layout = ProductView.findViewById(R.id.productItemLinearLayout);
-        layout.setOnClickListener(v -> {
-            TextView textView = v.findViewById(R.id.itemName);
-            Log.d("Click Product", textView.getText().toString());
-        });
-
-        return viewHolder;
+        return new ViewHolder(ProductView);
     }
 
     @Override

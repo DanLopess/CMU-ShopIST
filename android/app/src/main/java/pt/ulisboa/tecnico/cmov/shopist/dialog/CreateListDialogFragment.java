@@ -1,8 +1,9 @@
-package pt.ulisboa.tecnico.cmov.shopist;
+package pt.ulisboa.tecnico.cmov.shopist.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,8 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Objects;
 
-import pt.ulisboa.tecnico.cmov.shopist.data.AppContextData;
+import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
 
 public class CreateListDialogFragment extends DialogFragment {
     private final Context mContext;
@@ -90,7 +92,7 @@ public class CreateListDialogFragment extends DialogFragment {
             positiveButton.setOnClickListener( v -> {
                 String listTitle = inputTitle.getText().toString();
                 String listDesc = inputDesc.getText().toString();
-                String listLoc = spinnerLoc.getSelectedItem().toString();
+                Location listLoc = (Location) spinnerLoc.getSelectedItem();
 
                 if (listTitle.trim().isEmpty() ||
                         spinnerCat.getSelectedItemPosition() == 0) {

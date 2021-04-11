@@ -11,7 +11,11 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import pt.ulisboa.tecnico.cmov.shopist.data.AppContextData;
+import pt.ulisboa.tecnico.cmov.shopist.adapter.ListsAdapter;
+import pt.ulisboa.tecnico.cmov.shopist.adapter.PantryProductsAdapter;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateListDialogFragment;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
     private DialogFragment mCreateListDialog;
@@ -48,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         rvLists.setAdapter(mShoppingAdapter);
                         rvLists.setLayoutManager(layoutManager);
                     }
-                    return false;
+                    return true;
                 }
         );
 
@@ -60,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadProducts() {
         RecyclerView rvProducts = (RecyclerView) findViewById(R.id.recyclerView);
-        ProductsAdapter adapter = new ProductsAdapter(mContextData.getProducts());
+        PantryProductsAdapter adapter = new PantryProductsAdapter(mContextData.getProducts());
         rvProducts.setAdapter(adapter);
         rvProducts.setLayoutManager(new LinearLayoutManager(this));
     }

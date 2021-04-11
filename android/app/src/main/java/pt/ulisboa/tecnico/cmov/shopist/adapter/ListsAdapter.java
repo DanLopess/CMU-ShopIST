@@ -1,10 +1,9 @@
-package pt.ulisboa.tecnico.cmov.shopist;
+package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.shopist.data.ProductList;
+import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
+import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductList;
 
 public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder>{
 
@@ -41,15 +42,15 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProductList list = mLists.get(position);
-        String category = list.getCategory(); // used to launch activity
+        ProductList.Category category = list.getCategory(); // used to launch activity
         Context context = holder.itemView.getContext();
 
         // Set up listeners
         View.OnClickListener itemViewGroupListener = v -> {
             Intent intent = null;
-            if (category.equals("Pantry"))
+            if (category.equals(ProductList.Category.PANTRY))
                 intent = new Intent(context, PantryActivity.class);
-            else if (category.equals("Shopping")) {}
+            else if (category.equals(ProductList.Category.SHOPPING)) {}
             //TODO intent = new Intent(holder.itemView.getContext(), ShoppingActivity.class);
             if (intent != null) {
                 intent.putExtra("List", list);
@@ -58,6 +59,7 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder>{
         };
         PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {switch (item.getItemId()) {
             case R.id.list_options_delete:
+                //TODO Dialog to confirm
                 mLists.remove(position);
                 this.notifyDataSetChanged();
                 return true;
