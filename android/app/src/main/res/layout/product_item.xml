@@ -2,49 +2,88 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/productItemLinearLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingTop="8dp"
         android:paddingRight="16dp"
         android:paddingBottom="8dp"
-        android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:clickable="true"
-        android:focusable="true">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/itemImage"
-            android:layout_width="100dp"
-            android:layout_height="60dp"
+            android:id="@+id/item_image"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
             app:srcCompat="@drawable/ic_baseline_fastfood_24" />
 
-        <TextView
-            android:id="@+id/itemName"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_marginStart="20dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="ListItem"
-            android:textSize="30sp"></TextView>
-        
-        <ImageButton
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_more_vert_24"
+            android:layout_marginStart="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/product_item_name"
+                android:layout_width="200dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textSize="18sp"
+                tools:text="ListItem" />
+
+            <!-- TODO Define name -->
+            <TextView
+                android:id="@+id/product_quant_wanted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                tools:text="Support Text" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/product_down_button"
+            android:layout_width="5dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            tools:srcCompat="@drawable/baseline_arrow_drop_down_24" />
+
+        <EditText
+            android:id="@+id/product_quant"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal" />
+
+        <ImageButton
+            android:id="@+id/product_up_button"
+            android:layout_width="5dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            tools:srcCompat="@drawable/baseline_arrow_drop_up_24" />
+
+        <ImageButton
+            android:id="@+id/product_more_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:background="@null"
-            android:text="Right"
-            android:layout_marginStart="20dp">
-        </ImageButton>
+            android:src="@drawable/ic_baseline_more_vert_24" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,15 @@
     <string name="create_list_dialog_title">Create new list</string>
     <string name="choose_a_category_for_the_list">Choose a category for the list</string>
     <string name="choose_a_location_option">Choose a location option</string>
+    <string name="create_list_error">Your list must have a name and belong to a category</string>
+    <string name="create_new_list">Create new list</string>
+    <string name="insert_a_code">Insert a code</string>
+    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="list_options">List options</string>
     <string name="product_name">Product name</string>
     <string name="create_product">Create product</string>
+    <string name="delete_list">Delete list</string>
+    <string name="sync_with_server">Sync with server</string>
+    <string name="insert_image">Insert image</string>
+    <string name="total_wanted">Total wanted: </string>
 </resources>

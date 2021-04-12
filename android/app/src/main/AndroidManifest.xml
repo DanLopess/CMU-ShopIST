@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="pt.ulisboa.tecnico.cmov.shopist.data.AppContextData"
+        android:name=".pojo.AppContextData"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
@@ -14,6 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShopIST">
+        <activity
+            android:name=".PantryActivity"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

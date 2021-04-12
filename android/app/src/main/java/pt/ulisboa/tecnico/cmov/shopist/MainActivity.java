@@ -13,6 +13,12 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import pt.ulisboa.tecnico.cmov.shopist.adapter.ListsAdapter;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateListDialogFragment;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.Store;
+
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -22,15 +28,15 @@ import java.util.List;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import pt.ulisboa.tecnico.cmov.shopist.data.AppContextData;
-import pt.ulisboa.tecnico.cmov.shopist.data.Product;
-import pt.ulisboa.tecnico.cmov.shopist.data.Store;
 import pt.ulisboa.tecnico.cmov.shopist.services.BackendService;
 
 public class MainActivity extends AppCompatActivity {
-    private String currCategory;
-
-    List<Product> products;
+    private DialogFragment mCreateListDialog;
+    private String mCurrCategory;
+    private RecyclerView rvLists;
+    private ListsAdapter mPantryAdapter;
+    private ListsAdapter mShoppingAdapter;
+    private AppContextData mContextData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,42 +46,61 @@ public class MainActivity extends AppCompatActivity {
         //load local lists
         //if wifi available sync lists
 
+        mContextData = (AppContextData) getApplicationContext();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         TextView titleTextView = findViewById(R.id.textView_title);
-
+        mCreateListDialog = new CreateListDialogFragment(this);
+        setUpLists();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
-                    currCategory = item.getTitle().toString(); // To set the default for the list creation
-                    titleTextView.setText(currCategory);
-                    return false;
+                    mCurrCategory = item.getTitle().toString();
+                    titleTextView.setText(mCurrCategory);
+                    if (mCurrCategory.equals("Pantry")) {
+                        rvLists.setAdapter(mPantryAdapter);
+                        rvLists.setLayoutManager(layoutManager);
+                    } else if (mCurrCategory.equals("Shopping")) {
+                        rvLists.setAdapter(mShoppingAdapter);
+                        rvLists.setLayoutManager(layoutManager);
+                    }
+                    return true;
                 }
         );
 
         // Select initial list TODO based on location
+        // If we can get the current location and associate it with  only one list, open that list by default
         //for now select Pantry list
         bottomNavigationView.setSelectedItemId(R.id.action_pantry_lists);
     }
 
-    private void loadProducts() {
+    /*private void loadProducts() {
         RecyclerView rvProducts = (RecyclerView) findViewById(R.id.recyclerView);
-        AppContextData data = (AppContextData) getApplicationContext();
-        ProductsAdapter adapter = new ProductsAdapter(data.getProducts());
+        PantryProductsAdapter adapter = new PantryProductsAdapter(mContextData.getProducts());
         rvProducts.setAdapter(adapter);
         rvProducts.setLayoutManager(new LinearLayoutManager(this));
-    }
+    }*/
 
-    // TODO call to the dialog
-    // In order to have a pre-selected value displayed, you can call setText(CharSequence text, boolean filter) on the AutoCompleteTextView with the filter set to false.
-    // Set Category default to current category
-    // Set location default to use current location, other options are none or pick location on map
     public void createNewList(MenuItem item) {
-        DialogFragment createListDialog = new CreateListDialogFragment(this);
-        createListDialog.show(getSupportFragmentManager(), "create list");
+        mCreateListDialog.show(getSupportFragmentManager(), "create list");
     }
 
-    public void createNewProduct(MenuItem item) {
+    public void addListWithCode(MenuItem item) {
+        //TODO
+    }
+
+    public void addListWithQR(MenuItem item) {
+        //TODO
+    }
+
+    private void setUpLists() {
+        rvLists = findViewById(R.id.recyclerView);
+        mPantryAdapter = new ListsAdapter(mContextData.getPantryLists());
+        mShoppingAdapter = new ListsAdapter(mContextData.getShoppingLists());
+    }
+
+    /*public void createNewProduct(MenuItem item) {
         DialogFragment createListDialog = new CreateProductDialogFragment(this);
         createListDialog.show(getSupportFragmentManager(), "create list");
-    }
+    }*/
 }
