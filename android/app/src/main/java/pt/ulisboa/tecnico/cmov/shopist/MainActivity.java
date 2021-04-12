@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateListDialogFragment;
@@ -30,7 +29,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.services.BackendService;
-
 
 public class MainActivity extends AppCompatActivity {
     private DialogFragment mCreateListDialog;
