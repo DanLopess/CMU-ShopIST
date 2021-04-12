@@ -1,12 +1,11 @@
 package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,14 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductWithInfo;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.PantryProduct;
 
 public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAdapter.ViewHolder>{
 
-    private List<ProductWithInfo> mProducts;
+    private List<PantryProduct> mProducts;
 
-    public PantryProductsAdapter(List<ProductWithInfo> products) {
+    public PantryProductsAdapter(List<PantryProduct> products) {
         mProducts = products;
     }
 
@@ -33,7 +31,6 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        //TODO check layout
         View ProductView = inflater.inflate(R.layout.product_item, parent, false);
 
         // Return a new holder instance
@@ -42,16 +39,23 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product product = mProducts.get(position);
+        PantryProduct product = mProducts.get(position);
 
         // Set item views based on your views and data model
-        TextView textView = holder.name;
-        textView.setText(product.getName());
+        TextView tvItemName = holder.name;
+        tvItemName.setText(product.getProduct().getName());
 
-        ImageView imageView = holder.image;
+        TextView tvWanted = holder.quantityWanted;
+        String wantedText = R.string.total_wanted + product.getQuantityWanted().toString();
+        tvWanted.setText(wantedText);
+
+        EditText editText = holder.quantityAvailable;
+        editText.setText(product.getQuantityAvailable());
+
+        /*ImageView imageView = holder.image;
         if(product.getImage() != null) {
             imageView.setImageBitmap(product.getImage());
-        }
+        }*/
     }
 
     @Override
@@ -61,12 +65,16 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
-        public ImageView image;
+        public TextView quantityWanted;
+        // public ImageView image;
+        public EditText quantityAvailable;
 
         public ViewHolder(View view) {
             super(view);
-            image = view.findViewById(R.id.itemImage);
-            name = view.findViewById(R.id.itemName);
+            // image = view.findViewById(R.id.item_image);
+            name = view.findViewById(R.id.product_item_name);
+            quantityWanted = view.findViewById(R.id.product_quant_wanted);
+            quantityAvailable = view.findViewById(R.id.product_quant);
         }
     }
 }

@@ -26,4 +26,6 @@
     <string name="create_product">Create product</string>
     <string name="delete_list">Delete list</string>
     <string name="sync_with_server">Sync with server</string>
+    <string name="insert_image">Insert image</string>
+    <string name="total_wanted">Total wanted: </string>
 </resources>

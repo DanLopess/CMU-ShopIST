@@ -92,7 +92,7 @@ public class CreateListDialogFragment extends DialogFragment {
             positiveButton.setOnClickListener( v -> {
                 String listTitle = inputTitle.getText().toString();
                 String listDesc = inputDesc.getText().toString();
-                Location listLoc = (Location) spinnerLoc.getSelectedItem();
+                Location listLoc = getLocationOption(spinnerLoc);
 
                 if (listTitle.trim().isEmpty() ||
                         spinnerCat.getSelectedItemPosition() == 0) {
@@ -111,6 +111,17 @@ public class CreateListDialogFragment extends DialogFragment {
                     dialog.dismiss();
                 }
             });
+        }
+    }
+
+    private Location getLocationOption(Spinner spinnerLoc) {
+        int option = spinnerLoc.getSelectedItemPosition();
+        if (option == 0 || option == 3)
+            return null;
+        else if (option == 1)
+            return null; // return curr location
+        else { // TODO pick location, open map and pick location
+            return null;
         }
     }
 }

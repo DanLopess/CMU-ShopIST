@@ -12,5 +12,5 @@ public class Store {
     private UUID uuid;
     private String name;
     private Location location;
-    private List<ProductWithInfo> products;
+    private List<StoreProduct> products;
 }

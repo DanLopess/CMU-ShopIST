@@ -7,9 +7,8 @@ import lombok.Setter;
 
 @Data
 @AllArgsConstructor
-public class ProductWithInfo {
+public class PantryProduct {
     private Product product;
-    private Integer price;
     @Setter(AccessLevel.NONE)
     private Integer quantityWanted;
     @Setter(AccessLevel.NONE)

@@ -1,12 +1,10 @@
 package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,13 +14,13 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductWithInfo;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.StoreProduct;
 
 public class ShoppingProductsAdapter extends RecyclerView.Adapter<ShoppingProductsAdapter.ViewHolder>{
 
-    private List<ProductWithInfo> mProducts;
+    private List<StoreProduct> mProducts;
 
-    public ShoppingProductsAdapter(List<ProductWithInfo> products) {
+    public ShoppingProductsAdapter(List<StoreProduct> products) {
         mProducts = products;
     }
 
@@ -42,16 +40,16 @@ public class ShoppingProductsAdapter extends RecyclerView.Adapter<ShoppingProduc
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product product = mProducts.get(position);
+        StoreProduct product = mProducts.get(position);
 
         // Set item views based on your views and data model
         TextView textView = holder.name;
-        textView.setText(product.getName());
+        //textView.setText(product.getName());
 
         ImageView imageView = holder.image;
-        if(product.getImage() != null) {
+        /*if(product.getImage() != null) {
             imageView.setImageBitmap(product.getImage());
-        }
+        }*/
     }
 
     @Override
@@ -65,8 +63,8 @@ public class ShoppingProductsAdapter extends RecyclerView.Adapter<ShoppingProduc
 
         public ViewHolder(View view) {
             super(view);
-            image = view.findViewById(R.id.itemImage);
-            name = view.findViewById(R.id.itemName);
+            image = view.findViewById(R.id.item_image);
+            name = view.findViewById(R.id.product_item_name);
         }
     }
 }

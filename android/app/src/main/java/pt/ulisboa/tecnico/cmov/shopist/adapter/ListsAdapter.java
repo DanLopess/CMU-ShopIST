@@ -42,7 +42,7 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProductList list = mLists.get(position);
-        ProductList.Category category = list.getCategory(); // used to launch activity
+        ProductList.Category category = list.getCategory();
         Context context = holder.itemView.getContext();
 
         // Set up listeners

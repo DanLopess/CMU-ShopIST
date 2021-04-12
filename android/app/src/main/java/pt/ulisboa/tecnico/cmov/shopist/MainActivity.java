@@ -12,10 +12,8 @@ import android.widget.TextView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListsAdapter;
-import pt.ulisboa.tecnico.cmov.shopist.adapter.PantryProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateListDialogFragment;
-import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 
 public class MainActivity extends AppCompatActivity {
     private DialogFragment mCreateListDialog;
@@ -62,15 +60,13 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_pantry_lists);
     }
 
-    private void loadProducts() {
+    /*private void loadProducts() {
         RecyclerView rvProducts = (RecyclerView) findViewById(R.id.recyclerView);
         PantryProductsAdapter adapter = new PantryProductsAdapter(mContextData.getProducts());
         rvProducts.setAdapter(adapter);
         rvProducts.setLayoutManager(new LinearLayoutManager(this));
-    }
+    }*/
 
-    // TODO call to the dialog
-    // Set location default to use current location, other options are none or pick location on map
     public void createNewList(MenuItem item) {
         mCreateListDialog.show(getSupportFragmentManager(), "create list");
     }
@@ -89,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
         mShoppingAdapter = new ListsAdapter(mContextData.getShoppingLists());
     }
 
-    public void createNewProduct(MenuItem item) {
+    /*public void createNewProduct(MenuItem item) {
         DialogFragment createListDialog = new CreateProductDialogFragment(this);
         createListDialog.show(getSupportFragmentManager(), "create list");
-    }
+    }*/
 }

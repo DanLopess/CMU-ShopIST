@@ -25,10 +25,10 @@ public class AppContextData extends Application {
     }
 
     public void addPantryList (String name, String description, Location location) {
-        pantryLists.add(new ProductList(name, description, ProductList.Category.PANTRY, location));
+        pantryLists.add(new PantryProductList(name, description, ProductList.Category.PANTRY, location));
     }
 
     public void addShoppingList (String name, String description, Location location) {
-        shoppingLists.add(new ProductList(name, description, ProductList.Category.SHOPPING, location));
+        shoppingLists.add(new ShoppingProductList(name, description, ProductList.Category.SHOPPING, location));
     }
 }
