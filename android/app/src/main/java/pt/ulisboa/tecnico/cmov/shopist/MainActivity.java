@@ -5,15 +5,32 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateListDialogFragment;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.Store;
+
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.services.BackendService;
+
 
 public class MainActivity extends AppCompatActivity {
     private DialogFragment mCreateListDialog;
@@ -37,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         mCreateListDialog = new CreateListDialogFragment(this);
         setUpLists();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 item -> {
