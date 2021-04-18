@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Setter;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Product;
 
 @Data
 @AllArgsConstructor
