@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -59,9 +61,15 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder>{
         };
         PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {switch (item.getItemId()) {
             case R.id.list_options_delete:
-                //TODO Dialog to confirm
-                mLists.remove(position);
-                this.notifyDataSetChanged();
+                AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
+                builder.setTitle(R.string.delete_list)
+                        .setMessage(R.string.delete_list_confirmation)
+                        .setPositiveButton(R.string.delete, (dialog, which) -> {
+                            mLists.remove(position);
+                            notifyDataSetChanged();
+                        })
+                        .setNegativeButton(R.string.cancel, (dialog, which) -> {dialog.dismiss();});
+                builder.create().show();
                 return true;
             case R.id.list_options_sync:
                 // TODO sync with server
