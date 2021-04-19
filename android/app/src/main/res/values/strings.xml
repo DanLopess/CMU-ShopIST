@@ -34,4 +34,6 @@
     <string name="add_products">Add products</string>
     <string name="confirm">Confirm</string>
     <string name="new_product">New product</string>
+    <string name="product_image">Product Image</string>
+    <string name="create_product_error">The product must have a name</string>
 </resources>

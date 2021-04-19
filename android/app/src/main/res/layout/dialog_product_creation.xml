@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="146dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/product_image"
         android:src="@drawable/ic_baseline_image_24"
         android:visibility="gone"></ImageView>
 
@@ -35,21 +36,13 @@
         android:inputType="text"
         android:maxLines="1" />
 
-    <Spinner
-        android:id="@+id/product_categories"
-        style="@style/Widget.AppCompat.Spinner.DropDown"
+    <EditText
+        android:id="@+id/product_description_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:spinnerMode="dropdown" />
-
-    <Button
-        android:id="@+id/button_create_product"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/create_product"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:ems="10"
+        android:hint="@string/description"
+        android:inputType="textPersonName"
+        android:importantForAutofill="no" />
 
 </LinearLayout>
