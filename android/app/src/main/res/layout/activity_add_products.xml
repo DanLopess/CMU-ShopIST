@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PantryActivity">
+    tools:context=".AddProductsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/select_products_toolbar"
@@ -19,31 +19,55 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/pantry_screen_menu"
-        app:navigationIcon="?attr/homeAsUpIndicator">
+        app:menu="@menu/add_products_screen_menu">
 
         <TextView
             android:id="@+id/add_product_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/add_products"
             android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="15dp"
-            tools:text="Title" />
+            tools:layout_editor_absoluteY="15dp" />
 
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/pantry_prod_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/confirm_product_selection_bt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_products_toolbar" />
+
+    <Button
+        android:id="@+id/cancel_product_seletion_bt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="cancel"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/confirm_product_selection_bt"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/confirm_product_selection_bt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="returnResult"
+        android:text="@string/confirm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/select_products_toolbar"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/cancel_product_seletion_bt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

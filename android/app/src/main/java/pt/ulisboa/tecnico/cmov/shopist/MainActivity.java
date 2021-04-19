@@ -47,31 +47,9 @@ public class MainActivity extends AppCompatActivity {
         //if wifi available sync lists
 
         mContextData = (AppContextData) getApplicationContext();
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        TextView titleTextView = findViewById(R.id.textView_title);
         mCreateListDialog = new CreateListDialogFragment(this);
         setUpLists();
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                item -> {
-                    mCurrCategory = item.getTitle().toString();
-                    titleTextView.setText(mCurrCategory);
-                    if (mCurrCategory.equals("Pantry")) {
-                        rvLists.setAdapter(mPantryAdapter);
-                        rvLists.setLayoutManager(layoutManager);
-                    } else if (mCurrCategory.equals("Shopping")) {
-                        rvLists.setAdapter(mShoppingAdapter);
-                        rvLists.setLayoutManager(layoutManager);
-                    }
-                    return true;
-                }
-        );
-
-        // Select initial list TODO based on location
-        // If we can get the current location and associate it with  only one list, open that list by default
-        //for now select Pantry list
-        bottomNavigationView.setSelectedItemId(R.id.action_pantry_lists);
+        setUpBottomNavigation();
     }
 
     /*private void loadProducts() {
@@ -97,6 +75,32 @@ public class MainActivity extends AppCompatActivity {
         rvLists = findViewById(R.id.recyclerView);
         mPantryAdapter = new ListsAdapter(mContextData.getPantryLists());
         mShoppingAdapter = new ListsAdapter(mContextData.getShoppingLists());
+    }
+
+    private void setUpBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        TextView titleTextView = findViewById(R.id.textView_title);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                item -> {
+                    mCurrCategory = item.getTitle().toString();
+                    titleTextView.setText(mCurrCategory);
+                    if (mCurrCategory.equals("Pantry")) {
+                        rvLists.setAdapter(mPantryAdapter);
+                        rvLists.setLayoutManager(layoutManager);
+                    } else if (mCurrCategory.equals("Shopping")) {
+                        rvLists.setAdapter(mShoppingAdapter);
+                        rvLists.setLayoutManager(layoutManager);
+                    }
+                    return true;
+                }
+        );
+
+        // Select initial list TODO based on location
+        // If we can get the current location and associate it with  only one list, open that list by default
+        //for now select Pantry list
+        bottomNavigationView.setSelectedItemId(R.id.action_pantry_lists);
     }
 
     /*public void createNewProduct(MenuItem item) {
