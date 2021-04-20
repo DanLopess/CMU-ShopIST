@@ -7,11 +7,12 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.daos.ProductDao;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.relations.ProductAndPrincipalImage;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.remoteSource.BackendService;
 
-public class ProductRepository {
+public class ProductRepository implements Cache<ProductAndPrincipalImage> {
 
     private static final ProductRepository instance = new ProductRepository();
 
@@ -60,4 +61,18 @@ public class ProductRepository {
     private Observable<List<ProductAndPrincipalImage>> getProductsAndPrincipalImageFromAPI() { return backendService.getProductsAndPrincipalImage(); }
 
 
+    @Override
+    public void clearCache() {
+        mCache = new ArrayList<>();
+    }
+
+    @Override
+    public void makeCacheDirty() {
+        mCacheIsDirty = true;
+    }
+
+    @Override
+    public void updateCache(List<ProductAndPrincipalImage> cacheObjects) {
+        mCache = cacheObjects;
+    }
 }

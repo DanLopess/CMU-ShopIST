@@ -12,11 +12,11 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
+//import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
 
 public class AddProductsActivity extends AppCompatActivity {
 
-    private List<Product> selectedProducts;
+//    private List<Product> selectedProducts;
     private DialogFragment mCreateProductDialog;
 
     @Override
@@ -24,17 +24,17 @@ public class AddProductsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_products);
 
-        selectedProducts = new ArrayList<>();
+//        selectedProducts = new ArrayList<>();
     }
 
-   public void returnResult(View v) {
-        if (!selectedProducts.isEmpty()) {
-            Intent data = new Intent();
-            data.putExtra("Selected Products", (Parcelable) selectedProducts);
-            setResult(RESULT_OK, data);
-        }
-        finish();
-   }
+//   public void returnResult(View v) {
+//        if (!selectedProducts.isEmpty()) {
+//            Intent data = new Intent();
+//            data.putExtra("Selected Products", (Parcelable) selectedProducts);
+//            setResult(RESULT_OK, data);
+//        }
+//        finish();
+//   }
 
    public void cancel(View v) {
         finish();

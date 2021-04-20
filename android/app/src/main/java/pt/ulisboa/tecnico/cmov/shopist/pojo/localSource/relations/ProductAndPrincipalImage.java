@@ -11,4 +11,5 @@ public class ProductAndPrincipalImage {
 
     @Relation(parentColumn = "productId", entityColumn = "productId")
     public ProductImage productImage;
+
 }

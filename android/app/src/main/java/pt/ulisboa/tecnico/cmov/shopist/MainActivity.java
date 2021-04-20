@@ -2,8 +2,11 @@ package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -11,27 +14,28 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import pt.ulisboa.tecnico.cmov.shopist.adapter.ListsAdapter;
-import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateListDialogFragment;
+import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.CreatePantryDialogFragment;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.ShopIstDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private DialogFragment mCreateListDialog;
     private String mCurrCategory;
     private RecyclerView rvLists;
-    private ListsAdapter mPantryAdapter;
-    private ListsAdapter mShoppingAdapter;
-    private AppContextData mContextData;
+    private ListOfPantriesAdapter mPantryAdapter;
+    private ListOfPantriesAdapter mShoppingAdapter;
+    public ViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
 
         //load local lists
         //if wifi available sync lists
 
-        mContextData = (AppContextData) getApplicationContext();
-        mCreateListDialog = new CreateListDialogFragment(this);
+        mCreateListDialog = new CreatePantryDialogFragment(this);
         setUpLists();
         setUpBottomNavigation();
     }
@@ -55,10 +59,14 @@ public class MainActivity extends AppCompatActivity {
         //TODO
     }
 
+    public ViewModel getViewModel() {
+        return viewModel;
+    }
+
     private void setUpLists() {
         rvLists = findViewById(R.id.recyclerView);
-        mPantryAdapter = new ListsAdapter(mContextData.getPantryLists());
-        mShoppingAdapter = new ListsAdapter(mContextData.getShoppingLists());
+        mPantryAdapter = new ListOfPantriesAdapter(this, viewModel.getPantries());
+        mShoppingAdapter = new ListOfPantriesAdapter(this, viewModel.getPantries());
     }
 
     private void setUpBottomNavigation() {

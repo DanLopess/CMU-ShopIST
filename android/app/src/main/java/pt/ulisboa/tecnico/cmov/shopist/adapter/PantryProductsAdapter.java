@@ -43,7 +43,7 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
 
         // Set item views based on your views and data model
         TextView tvItemName = holder.name;
-        tvItemName.setText(product.getProduct().getName());
+//        tvItemName.setText(product.getProduct().name());
 
         TextView tvWanted = holder.quantityWanted;
         String wantedText = R.string.total_wanted + product.getQuantityWanted().toString();

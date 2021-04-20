@@ -1,19 +1,25 @@
 package pt.ulisboa.tecnico.cmov.shopist.pojo.repository;
 
+import android.app.Application;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import javax.inject.Singleton;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.ShopIstDatabase;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.daos.PantryDao;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.remoteSource.BackendService;
 
-
-public class PantryRepository {
-
-    private static final PantryRepository instance = new PantryRepository();
+@Singleton
+public class PantryRepository implements Cache<Pantry>{
 
     PantryDao pantryDao;
 
@@ -23,30 +29,61 @@ public class PantryRepository {
 
     private boolean mCacheIsDirty = false;
 
-    private PantryRepository() {
-        Observable.interval(30, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(o -> mCacheIsDirty = true);
-    }
-
-    public static PantryRepository getInstance() {
-        return instance;
+    public PantryRepository(Application application) {
+        this.pantryDao = ShopIstDatabase.getInstance(application).pantryDao();
     }
 
     public Observable<List<Pantry>> getPantries() {
         if(mCache != null && !mCacheIsDirty) {
-            return Observable.just(mCache);
+            return Observable.just(mCache).mergeWith(getPantriesFromDb());
         }
-        Observable<List<Pantry>> list = getPantriesFromDb().mergeWith(getPantriesFromApi());
-        list.subscribe(pantries -> {mCache = pantries; mCacheIsDirty = false;});
+        Observable<List<Pantry>> list = getPantriesFromDb();
+        list.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(pantries -> {mCache = pantries; mCacheIsDirty = false;});
         return list;
+    }
+
+    public void addPantry(Pantry pantry) {
+        insertPantryToDb(pantry).subscribe(aBoolean -> mCache.add(pantry), throwable -> Log.d("DB ERROR", throwable.toString()));
+    }
+
+    public void deletePantry(Pantry pantry) {
+        deletePantryFromDb(pantry).subscribe(aBoolean -> mCache.remove(pantry));
     }
 
     private Observable<List<Pantry>> getPantriesFromDb() {
         return pantryDao.getPantries();
     }
-
     private Observable<List<Pantry>> getPantriesFromApi() {
         return backendService.getPantries();
     }
 
+    private Observable<Boolean> insertPantryToDb(@NonNull Pantry pantry) {
+        return Observable.fromCallable(() -> {
+            pantryDao.insert(pantry);
+            return true;
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
 
+    private Observable<Boolean> deletePantryFromDb(@NonNull Pantry pantry) {
+        return Observable.fromCallable(() -> {
+            pantryDao.delete(pantry);
+            return true;
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
+    public void clearCache() {
+        mCache = new ArrayList<>();
+    }
+
+    @Override
+    public void makeCacheDirty() {
+        mCacheIsDirty = true;
+    }
+
+    @Override
+    public void updateCache(List<Pantry> cacheObjects) {
+        mCache = cacheObjects;
+    }
 }

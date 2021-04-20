@@ -55,14 +55,14 @@ public class CreateProductDialogFragment extends DialogFragment {
     private void onClickCreateProduct(View dialogView) {
         EditText editText = dialogView.findViewById(R.id.product_name);
         String name = editText.getText().toString();
-        AppContextData data = (AppContextData) context.getApplicationContext();
+//        AppContextData data = (AppContextData) context.getApplicationContext();
         // TODO fix images
         /*if(imageView != null) {
             data.addProduct(new Product(name, ((BitmapDrawable) imageView.getDrawable()).getBitmap()));
         } else {
             data.addProduct(new Product(name, null));
         }*/
-        data.addProduct(new Product(null, name, null, null));
+//        data.addProduct(new Product(null, name, null, null));
 
     }
 

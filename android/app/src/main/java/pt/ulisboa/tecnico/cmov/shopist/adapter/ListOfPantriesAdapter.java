@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -17,21 +16,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductList;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Pantry;
 
-public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder>{
+public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAdapter.ViewHolder>{
 
-    private final List<ProductList> mLists;
+    private List<Pantry> mLists;
+    private Context mContext;
 
-    public ListsAdapter(List<ProductList> lists) {
-        mLists = lists;
+    public ListOfPantriesAdapter(Context context, Observable<List<Pantry>> lists) {
+        lists.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(items -> {
+           mLists = items;
+           this.notifyDataSetChanged();
+        });
+        mContext = context;
     }
 
     @NonNull
     @Override
-    public ListsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ListOfPantriesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         // Inflate the custom layout
@@ -43,21 +50,21 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ProductList list = mLists.get(position);
-        ProductList.Category category = list.getCategory();
+        Pantry list = mLists.get(position);
+//        ProductList.Category category = list.getCategory();
         Context context = holder.itemView.getContext();
 
         // Set up listeners
         View.OnClickListener itemViewGroupListener = v -> {
             Intent intent = null;
-            if (category.equals(ProductList.Category.PANTRY))
-                intent = new Intent(context, PantryActivity.class);
-            else if (category.equals(ProductList.Category.SHOPPING)) {}
-            //TODO intent = new Intent(holder.itemView.getContext(), ShoppingActivity.class);
-            if (intent != null) {
-                intent.putExtra("List", list);
-                context.startActivity(intent);
-            }
+//            if (category.equals(ProductList.Category.PANTRY))
+//                intent = new Intent(context, PantryActivity.class);
+//            else if (category.equals(ProductList.Category.SHOPPING)) {}
+//            //TODO intent = new Intent(holder.itemView.getContext(), ShoppingActivity.class);
+//            if (intent != null) {
+//                intent.putExtra("List", list);
+//                context.startActivity(intent);
+//            }
         };
         PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {switch (item.getItemId()) {
             case R.id.list_options_delete:
@@ -65,7 +72,7 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.ViewHolder>{
                 builder.setTitle(R.string.delete_list)
                         .setMessage(R.string.delete_list_confirmation)
                         .setPositiveButton(R.string.delete, (dialog, which) -> {
-                            mLists.remove(position);
+                            ((MainActivity) mContext).getViewModel().deletePantry(mLists.get(position));
                             notifyDataSetChanged();
                         })
                         .setNegativeButton(R.string.cancel, (dialog, which) -> {dialog.dismiss();});

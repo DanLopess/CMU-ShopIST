@@ -1,6 +1,9 @@
 package pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.daos;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
@@ -19,4 +22,11 @@ public interface PantryDao {
     @Transaction
     @Query("SELECT * FROM pantries")
     List<PantryWithProducts> getPantriesWithProducts();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(Pantry pantry);
+
+    @Delete
+    void delete(Pantry pantry);
+
 }
