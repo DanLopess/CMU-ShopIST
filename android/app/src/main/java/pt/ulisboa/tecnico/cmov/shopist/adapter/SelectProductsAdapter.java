@@ -1,14 +1,17 @@
 package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.R;
@@ -17,6 +20,7 @@ import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
 public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAdapter.ViewHolder>{
 
     private List<Product> mProducts;
+    private List<Product> mSelectedProducts = new ArrayList<>();
 
     public SelectProductsAdapter(List<Product> products) {
         mProducts = products;
@@ -50,6 +54,18 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
         if(product.getImage() != null) {
             imageView.setImageBitmap(product.getImage());
         }*/
+
+        // Listener to select multiple items from the list
+        holder.layout.setOnClickListener(v -> {
+            if (!v.isSelected()) {
+                v.setSelected(true);
+                mSelectedProducts.add(product);
+            } else {
+                v.setSelected(false);
+                mSelectedProducts.remove(product);
+            }
+            v.setBackgroundColor(v.isSelected() ? Color.LTGRAY : Color.TRANSPARENT);
+        });
     }
 
     @Override
@@ -57,7 +73,14 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
         return mProducts.size();
     }
 
+    public List<Product> getSelectedItems() {
+        if (!mSelectedProducts.isEmpty())
+            return mSelectedProducts;
+        return null;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public LinearLayout layout;
         public TextView name;
         public TextView description;
         // public ImageView image;
@@ -67,6 +90,7 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
             // image = view.findViewById(R.id.item_image);
             name = view.findViewById(R.id.product_item_name);
             description = view.findViewById(R.id.product_description);
+            layout = view.findViewById(R.id.productItemLinearLayout);
         }
     }
 }

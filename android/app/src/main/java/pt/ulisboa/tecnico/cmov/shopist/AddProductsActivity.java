@@ -11,6 +11,7 @@ import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
 
 public class AddProductsActivity extends AppCompatActivity {
 
-//    private List<Product> selectedProducts;
+    private List<Product> selectedProducts;
     private DialogFragment mCreateProductDialog;
     private RecyclerView rvProducts;
     private SelectProductsAdapter adapter;
@@ -36,14 +37,17 @@ public class AddProductsActivity extends AppCompatActivity {
         initialize();
     }
 
-//   public void returnResult(View v) {
-//        if (!selectedProducts.isEmpty()) {
-//            Intent data = new Intent();
-//            data.putExtra("Selected Products", (Parcelable) selectedProducts);
-//            setResult(RESULT_OK, data);
-//        }
-//        finish();
-//   }
+    public void returnResult(View v) {
+        selectedProducts = adapter.getSelectedItems();
+        if (selectedProducts != null) {
+            Intent data = new Intent();
+            data.putExtra("Selected Products", (Serializable) selectedProducts);
+            setResult(RESULT_OK, data);
+        } else {
+            setResult(RESULT_CANCELED);
+        }
+        finish();
+    }
 
     public void cancel(View v) {
         finish();

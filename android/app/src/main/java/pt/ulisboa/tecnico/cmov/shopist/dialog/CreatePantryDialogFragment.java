@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Objects;
 
@@ -107,6 +108,8 @@ public class CreatePantryDialogFragment extends DialogFragment {
                     } else {
 //                        mContextData.addShoppingList(listTitle, listDesc, listLoc);
                     }
+                    RecyclerView rv = getActivity().findViewById(R.id.recyclerView);
+                    rv.getAdapter().notifyDataSetChanged();
                     dialog.dismiss();
                 }
             });
