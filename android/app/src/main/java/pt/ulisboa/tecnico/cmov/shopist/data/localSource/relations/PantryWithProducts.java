@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.relations;
+package pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations;
 
 
 import androidx.room.Embedded;
@@ -9,9 +9,9 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Pantry;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.PantryProductCrossRef;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 
 @Data
 @NoArgsConstructor

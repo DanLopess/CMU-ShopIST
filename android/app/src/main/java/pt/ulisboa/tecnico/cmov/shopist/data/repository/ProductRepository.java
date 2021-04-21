@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.pojo.repository;
+package pt.ulisboa.tecnico.cmov.shopist.data.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,13 +6,12 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.daos.ProductDao;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Pantry;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.relations.ProductAndPrincipalImage;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.remoteSource.BackendService;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.ProductDao;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
+import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 
-public class ProductRepository implements Cache<ProductAndPrincipalImage> {
+public class ProductRepository implements Cache {
 
     private static final ProductRepository instance = new ProductRepository();
 
@@ -69,10 +68,5 @@ public class ProductRepository implements Cache<ProductAndPrincipalImage> {
     @Override
     public void makeCacheDirty() {
         mCacheIsDirty = true;
-    }
-
-    @Override
-    public void updateCache(List<ProductAndPrincipalImage> cacheObjects) {
-        mCache = cacheObjects;
     }
 }

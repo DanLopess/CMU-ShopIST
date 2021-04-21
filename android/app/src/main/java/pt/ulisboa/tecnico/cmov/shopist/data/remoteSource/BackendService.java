@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.pojo.remoteSource;
+package pt.ulisboa.tecnico.cmov.shopist.data.remoteSource;
 
 import android.util.Log;
 
@@ -7,10 +7,10 @@ import java.util.List;
 import io.reactivex.rxjava3.core.Observable;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Store;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Pantry;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.relations.ProductAndPrincipalImage;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;

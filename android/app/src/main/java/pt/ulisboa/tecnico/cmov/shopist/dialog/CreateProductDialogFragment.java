@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Product;
 
 public class CreateProductDialogFragment extends DialogFragment {
 

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,15 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.PantryProduct;
 
 public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAdapter.ViewHolder>{
 
-    private List<PantryProduct> mProducts;
-
-    public PantryProductsAdapter(List<PantryProduct> products) {
-        mProducts = products;
-    }
+//    private List<PantryProduct> mProducts;
+//
+//    public PantryProductsAdapter(List<PantryProduct> products) {
+//        mProducts = products;
+//    }
 
     @NonNull
     @Override
@@ -39,18 +37,18 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PantryProduct product = mProducts.get(position);
+//        PantryProduct product = mProducts.get(position);
 
         // Set item views based on your views and data model
         TextView tvItemName = holder.name;
 //        tvItemName.setText(product.getProduct().name());
 
         TextView tvWanted = holder.quantityWanted;
-        String wantedText = R.string.total_wanted + product.getQuantityWanted().toString();
-        tvWanted.setText(wantedText);
-
-        EditText editText = holder.quantityAvailable;
-        editText.setText(product.getQuantityAvailable());
+//        String wantedText = R.string.total_wanted + product.getQuantityWanted().toString();
+//        tvWanted.setText(wantedText);
+//
+//        EditText editText = holder.quantityAvailable;
+//        editText.setText(product.getQuantityAvailable());
 
         /*ImageView imageView = holder.image;
         if(product.getImage() != null) {
@@ -60,7 +58,9 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
 
     @Override
     public int getItemCount() {
-        return mProducts.size();
+
+//        return mProducts.size();
+        return 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

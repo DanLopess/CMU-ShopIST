@@ -21,9 +21,8 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Objects;
 
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
-import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 
 public class CreatePantryDialogFragment extends DialogFragment {
     private final Context mContext;

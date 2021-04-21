@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.pojo;
+package pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities;
 
 import android.location.Location;
 

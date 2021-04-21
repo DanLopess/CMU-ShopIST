@@ -5,8 +5,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -16,7 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreatePantryDialogFragment;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.ShopIstDatabase;
+import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private DialogFragment mCreateListDialog;

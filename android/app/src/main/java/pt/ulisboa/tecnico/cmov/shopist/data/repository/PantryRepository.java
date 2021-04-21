@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.pojo.repository;
+package pt.ulisboa.tecnico.cmov.shopist.data.repository;
 
 import android.app.Application;
 import android.util.Log;
@@ -13,13 +13,13 @@ import javax.inject.Singleton;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.ShopIstDatabase;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.daos.PantryDao;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Pantry;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.remoteSource.BackendService;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.ShopIstDatabase;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.PantryDao;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 
 @Singleton
-public class PantryRepository implements Cache<Pantry>{
+public class PantryRepository implements Cache {
 
     PantryDao pantryDao;
 
@@ -82,8 +82,4 @@ public class PantryRepository implements Cache<Pantry>{
         mCacheIsDirty = true;
     }
 
-    @Override
-    public void updateCache(List<Pantry> cacheObjects) {
-        mCache = cacheObjects;
-    }
 }

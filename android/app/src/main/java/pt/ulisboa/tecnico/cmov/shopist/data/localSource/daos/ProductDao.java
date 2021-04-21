@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.daos;
+package pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos;
 
 import androidx.room.Dao;
 import androidx.room.Query;
@@ -6,9 +6,9 @@ import androidx.room.Query;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.relations.ProductAndPrincipalImage;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.localSource.relations.ProductWithImages;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductWithImages;
 
 @Dao
 public interface ProductDao {
