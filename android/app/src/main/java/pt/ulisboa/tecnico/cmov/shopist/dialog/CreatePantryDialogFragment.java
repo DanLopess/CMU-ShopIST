@@ -20,22 +20,21 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Objects;
 
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 
-public class CreateListDialogFragment extends DialogFragment {
+public class CreatePantryDialogFragment extends DialogFragment {
     private final Context mContext;
     private View mDialogView;
-    private AppContextData mContextData;
 
-    public CreateListDialogFragment(Context context) {
+    public CreatePantryDialogFragment(Context context) {
         this.mContext = context;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        mContextData = (AppContextData) Objects.requireNonNull(getActivity()).getApplicationContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.dialog_create_list, null);
@@ -73,7 +72,7 @@ public class CreateListDialogFragment extends DialogFragment {
                 .setView(mDialogView)
                 .setPositiveButton(R.string.create_ok, null)
                 .setNegativeButton(R.string.cancel, (dialog, id) -> Objects
-                        .requireNonNull(CreateListDialogFragment.this.getDialog()).cancel());
+                        .requireNonNull(CreatePantryDialogFragment.this.getDialog()).cancel());
         return builder.create();
     }
 
@@ -104,9 +103,9 @@ public class CreateListDialogFragment extends DialogFragment {
                     } if (spinnerLoc.getSelectedItemPosition() == 0) {
                         listLoc = null;
                     } if (spinnerCat.getSelectedItemPosition() == 1) {
-                        mContextData.addPantryList(listTitle, listDesc, listLoc);
+                        ((MainActivity) mContext).getViewModel().addPantry(new Pantry(listTitle));
                     } else {
-                        mContextData.addShoppingList(listTitle, listDesc, listLoc);
+//                        mContextData.addShoppingList(listTitle, listDesc, listLoc);
                     }
                     dialog.dismiss();
                 }

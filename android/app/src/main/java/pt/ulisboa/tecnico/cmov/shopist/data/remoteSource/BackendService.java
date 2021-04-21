@@ -1,18 +1,16 @@
-package pt.ulisboa.tecnico.cmov.shopist.services;
+package pt.ulisboa.tecnico.cmov.shopist.data.remoteSource;
 
-import android.app.Application;
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
+import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Store;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -50,4 +48,15 @@ public class BackendService {
         return backendAPI.postStore(store);
     }
 
+    public Observable<List<Pantry>> getPantries() {
+        return backendAPI.getPantries();
+    }
+
+    public Observable<List<Product>> getProducts() {
+        return Observable.just(null);
+    }
+
+    public Observable<List<ProductAndPrincipalImage>> getProductsAndPrincipalImage() {
+        return Observable.just(null);
+    }
 }

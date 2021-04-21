@@ -8,14 +8,20 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
-import pt.ulisboa.tecnico.cmov.shopist.pojo.PantryProductList;
+import java.util.ArrayList;
+import java.util.List;
+
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class PantryActivity extends AppCompatActivity {
 
     public static final int ADD_PRODUCTS_REQ = 1;
 
-    private PantryProductList mlist;
+    private List<Pantry> pantryList = new ArrayList<>();
+    private ViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +34,10 @@ public class PantryActivity extends AppCompatActivity {
     public void addProducts(MenuItem item) {
         Intent intent = new Intent(this, AddProductsActivity.class);
         startActivityForResult(intent, ADD_PRODUCTS_REQ);
+    }
+
+    public ViewModel getViewModel() {
+        return viewModel;
     }
 
     @Override
@@ -44,9 +54,10 @@ public class PantryActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.select_products_toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        mlist = (PantryProductList) getIntent().getSerializableExtra("List");
+        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+
 
         TextView title = findViewById(R.id.add_product_title);
-        title.setText(mlist.getName());
+        title.setText("PantriesXXX");
     }
 }

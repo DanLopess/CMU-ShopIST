@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.StoreProduct;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProduct;
 
 public class ShoppingProductsAdapter extends RecyclerView.Adapter<ShoppingProductsAdapter.ViewHolder>{
 

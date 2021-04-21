@@ -4,30 +4,17 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Objects;
-
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
 
 public class CreateProductDialogFragment extends DialogFragment {
 
@@ -67,14 +54,14 @@ public class CreateProductDialogFragment extends DialogFragment {
     private void onClickCreateProduct(View dialogView) {
         EditText editText = dialogView.findViewById(R.id.product_name);
         String name = editText.getText().toString();
-        AppContextData data = (AppContextData) context.getApplicationContext();
+//        AppContextData data = (AppContextData) context.getApplicationContext();
         // TODO fix images
         /*if(imageView != null) {
             data.addProduct(new Product(name, ((BitmapDrawable) imageView.getDrawable()).getBitmap()));
         } else {
             data.addProduct(new Product(name, null));
         }*/
-        data.addProduct(new Product(null, name, null, null));
+//        data.addProduct(new Product(null, name, null, null));
 
     }
 
