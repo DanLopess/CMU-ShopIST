@@ -11,7 +11,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryWithProducts;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 
 @Dao
 public interface PantryDao {
@@ -19,14 +19,16 @@ public interface PantryDao {
     @Query("SELECT * FROM pantries")
     Observable<List<Pantry>> getPantries();
 
+    @Query("SELECT * FROM pantries where pantryId == :id")
+    Observable<Pantry> getPantry(Long id);
+
     @Transaction
     @Query("SELECT * FROM pantries")
-    List<PantryWithProducts> getPantriesWithProducts();
+    Observable<List<PantryProduct>> getPantriesProducts();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Pantry pantry);
 
     @Delete
     void delete(Pantry pantry);
-
 }

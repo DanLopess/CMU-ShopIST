@@ -12,15 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
 import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 
 public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAdapter.ViewHolder>{
 
-//    private List<PantryProduct> mProducts;
-//
-//    public PantryProductsAdapter(List<PantryProduct> products) {
-//        mProducts = products;
-//    }
+   private List<PantryProduct> mProducts;
+
+   public PantryProductsAdapter(List<PantryProduct> products) {
+       mProducts = products;
+   }
 
     @NonNull
     @Override
@@ -37,18 +39,18 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        PantryProduct product = mProducts.get(position);
+        PantryProduct product = mProducts.get(position);
 
         // Set item views based on your views and data model
         TextView tvItemName = holder.name;
-//        tvItemName.setText(product.getProduct().name());
+        tvItemName.setText(product.getProduct().productName);
 
         TextView tvWanted = holder.quantityWanted;
-//        String wantedText = R.string.total_wanted + product.getQuantityWanted().toString();
-//        tvWanted.setText(wantedText);
-//
-//        EditText editText = holder.quantityAvailable;
-//        editText.setText(product.getQuantityAvailable());
+        String wantedText = R.string.total_wanted + product.getQttNeeded().toString();
+        tvWanted.setText(wantedText);
+
+        EditText editText = holder.quantityAvailable;
+        editText.setText(product.getQttAvailable());
 
         /*ImageView imageView = holder.image;
         if(product.getImage() != null) {
@@ -58,15 +60,13 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
 
     @Override
     public int getItemCount() {
-
-//        return mProducts.size();
-        return 0;
+        return mProducts.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public TextView quantityWanted;
-        // public ImageView image;
+        // TODO public ImageView image;
         public EditText quantityAvailable;
 
         public ViewHolder(View view) {

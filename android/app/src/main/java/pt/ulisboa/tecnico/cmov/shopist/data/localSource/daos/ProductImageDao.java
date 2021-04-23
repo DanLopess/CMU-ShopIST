@@ -12,5 +12,5 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.ProductImage;
 public interface ProductImageDao {
 
     @Query("SELECT * FROM productsImages WHERE productId == :pid")
-    Observable<List<ProductImage>> getImagesByProduct(String pid);
+    Observable<List<ProductImage>> getImagesByProduct(Long pid);
 }

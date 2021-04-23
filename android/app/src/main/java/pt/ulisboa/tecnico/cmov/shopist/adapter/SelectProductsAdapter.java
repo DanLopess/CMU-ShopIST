@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 
 public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAdapter.ViewHolder>{
 
@@ -45,10 +45,10 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
 
         // Set item views based on your views and data model
         TextView tvItemName = holder.name;
-        tvItemName.setText(product.getName());
+        tvItemName.setText(product.productName);
 
         TextView tvItemDescription = holder.description;
-        tvItemDescription.setText(product.getDescription());
+        tvItemDescription.setText(product.productDescription);
 
         /*ImageView imageView = holder.image;
         if(product.getImage() != null) {

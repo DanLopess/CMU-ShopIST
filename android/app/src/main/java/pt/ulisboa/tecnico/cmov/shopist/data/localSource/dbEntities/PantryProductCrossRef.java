@@ -6,16 +6,14 @@ import androidx.room.Entity;
 import lombok.Data;
 
 @Data
-@Entity(primaryKeys = {"pantryId", "productId"})
+@Entity(tableName="pantry_product", primaryKeys = {"pantryId", "productId"})
 public class PantryProductCrossRef {
     @NonNull
-    private String pantryId;
+    private Long pantryId;
 
     @NonNull
-    private String productId;
+    private Long productId;
 
-    private Integer quantity;
-
-    private Integer needed;
-
+    private Integer qttAvailable;
+    private Integer qttNeeded;
 }

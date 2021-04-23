@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Spinner;
@@ -17,14 +18,16 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Objects;
 
+import pt.ulisboa.tecnico.cmov.shopist.AddPantryProductsActivity;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 
 public class CreateProductDialogFragment extends DialogFragment {
 
     private final Context mContext;
     // private ImageView imageView;
     private View mDialogView;
-    private AppContextData mContextData;
 
     public static final int PICK_IMAGE = 1;
 
@@ -35,7 +38,6 @@ public class CreateProductDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        mContextData = (AppContextData) Objects.requireNonNull(getActivity()).getApplicationContext();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.dialog_product_creation, null);
@@ -56,13 +58,14 @@ public class CreateProductDialogFragment extends DialogFragment {
     private void onClickCreateProduct(View dialogView) {
         EditText editText = dialogView.findViewById(R.id.product_name);
         String name = editText.getText().toString();
-//        AppContextData data = (AppContextData) context.getApplicationContext();
+
         // TODO fix images
         /*if(imageView != null) {
             data.addProduct(new Product(name, ((BitmapDrawable) imageView.getDrawable()).getBitmap()));
         } else {
             data.addProduct(new Product(name, null));
         }*/
+    }
 //        data.addProduct(new Product(null, name, null, null));
 
     @Override
@@ -83,7 +86,7 @@ public class CreateProductDialogFragment extends DialogFragment {
                     Toast.makeText(mContext, R.string.create_product_error, Toast.LENGTH_LONG)
                             .show();
                 } else {
-                    mContextData.addProduct(new Product(prodName, prodDesc));
+                    ((AddPantryProductsActivity) mContext).getViewModel().addProduct(prodName, prodDesc);
                     dialog.dismiss();
                 }
             });

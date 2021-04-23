@@ -2,12 +2,12 @@ package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -15,19 +15,22 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-//import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.adapter.PantryProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.SelectProductsAdapter;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.AppContextData;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
+import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
-public class AddProductsActivity extends AppCompatActivity {
+public class AddPantryProductsActivity extends AppCompatActivity {
 
     private List<Product> selectedProducts;
     private DialogFragment mCreateProductDialog;
     private RecyclerView rvProducts;
     private SelectProductsAdapter adapter;
-    private AppContextData mContextData;
+    private ViewModel viewModel;
+    private Long pantryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +42,7 @@ public class AddProductsActivity extends AppCompatActivity {
 
     public void returnResult(View v) {
         selectedProducts = adapter.getSelectedItems();
-        if (selectedProducts != null) {
-            Intent data = new Intent();
-            data.putExtra("Selected Products", (Serializable) selectedProducts);
-            setResult(RESULT_OK, data);
-        } else {
-            setResult(RESULT_CANCELED);
-        }
+        viewModel.addPantryProducts(pantryId, selectedProducts);
         finish();
     }
 
@@ -58,12 +55,21 @@ public class AddProductsActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        mContextData = (AppContextData) getApplicationContext();
-        selectedProducts = new ArrayList<>();
+        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        pantryId = getIntent().getLongExtra("pantryId", -1);
         mCreateProductDialog = new CreateProductDialogFragment(this);
+
         rvProducts = findViewById(R.id.rv_existing_products);
-        adapter = new SelectProductsAdapter(mContextData.getProducts());
-        rvProducts.setAdapter(adapter);
-        rvProducts.setLayoutManager(new LinearLayoutManager(this));
+
+        viewModel.getProducts().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(list -> {
+            adapter = new SelectProductsAdapter(list);
+            rvProducts.setAdapter(adapter);
+            rvProducts.setLayoutManager(new LinearLayoutManager(this));
+        });
+    }
+
+    public ViewModel getViewModel() {
+        return viewModel;
     }
 }

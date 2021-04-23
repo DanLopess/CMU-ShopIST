@@ -30,14 +30,6 @@
         android:textSize="14sp" />
 
     <Spinner
-        android:id="@+id/spinner_category"
-        style="@style/Widget.AppCompat.Spinner.Underlined"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:spinnerMode="dropdown" />
-
-    <Spinner
         android:id="@+id/spinner_location"
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:layout_width="match_parent"

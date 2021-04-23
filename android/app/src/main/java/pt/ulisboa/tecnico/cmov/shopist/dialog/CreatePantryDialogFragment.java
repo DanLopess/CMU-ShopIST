@@ -23,6 +23,7 @@ import java.util.Objects;
 
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 
 public class CreatePantryDialogFragment extends DialogFragment {
@@ -38,13 +39,7 @@ public class CreatePantryDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.dialog_create_list, null);
-
-        Spinner spinnerCategory = mDialogView.findViewById(R.id.spinner_category);
-        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(mContext,
-                R.array.available_categories, android.R.layout.simple_spinner_item);
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(categoryAdapter);
+        mDialogView = inflater.inflate(R.layout.dialog_create_pantry, null);
 
         Spinner spinnerLocation = mDialogView.findViewById(R.id.spinner_location);
         ArrayAdapter<CharSequence> locationAdapter = ArrayAdapter.createFromResource(mContext,
@@ -85,7 +80,6 @@ public class CreatePantryDialogFragment extends DialogFragment {
         if(dialog != null) {
             EditText inputTitle = mDialogView.findViewById(R.id.editText_listName);
             EditText inputDesc = mDialogView.findViewById(R.id.editText_listDescription);
-            Spinner spinnerCat = mDialogView.findViewById(R.id.spinner_category);
             Spinner spinnerLoc = mDialogView.findViewById(R.id.spinner_location);
             Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
 
@@ -94,8 +88,7 @@ public class CreatePantryDialogFragment extends DialogFragment {
                 String listDesc = inputDesc.getText().toString();
                 Location listLoc = getLocationOption(spinnerLoc);
 
-                if (listTitle.trim().isEmpty() ||
-                        spinnerCat.getSelectedItemPosition() == 0) {
+                if (listTitle.trim().isEmpty()) {
                     Toast.makeText(mContext, R.string.create_list_error, Toast.LENGTH_LONG)
                             .show();
                 } else {
@@ -103,13 +96,10 @@ public class CreatePantryDialogFragment extends DialogFragment {
                         listDesc = null;
                     } if (spinnerLoc.getSelectedItemPosition() == 0) {
                         listLoc = null;
-                    } if (spinnerCat.getSelectedItemPosition() == 1) {
-                        ((MainActivity) mContext).getViewModel().addPantry(new Pantry(listTitle));
-                    } else {
-//                        mContextData.addShoppingList(listTitle, listDesc, listLoc);
                     }
-                    RecyclerView rv = getActivity().findViewById(R.id.recyclerView);
-                    rv.getAdapter().notifyDataSetChanged();
+                    ((MainActivity) mContext).getViewModel().addPantry(listTitle, listDesc, listLoc);
+                    RecyclerView rv = Objects.requireNonNull(getActivity()).findViewById(R.id.recyclerView);
+                    Objects.requireNonNull(rv.getAdapter()).notifyDataSetChanged();
                     dialog.dismiss();
                 }
             });

@@ -5,11 +5,20 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
+import lombok.AllArgsConstructor;
+
 @Entity(tableName = "products", foreignKeys = {@ForeignKey(entity = ProductImage.class, parentColumns = "imageId", childColumns = "imageId")})
 public class Product {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     public Long productId;
-    public String name;
+
+    public String productName;
+    public String productDescription;
     public String imageId;
+
+    public Product(String productName, String productDescription) {
+        this.productName = productName;
+        this.productDescription = productDescription;
+    }
 }

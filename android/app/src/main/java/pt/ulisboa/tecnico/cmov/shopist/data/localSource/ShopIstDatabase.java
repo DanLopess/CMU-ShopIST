@@ -7,13 +7,21 @@ import androidx.room.RoomDatabase;
 
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.PantryDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.ProductImageDao;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.ProductDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.ProductImage;
 
-@androidx.room.Database(entities = {Product.class, ProductImage.class, Pantry.class, PantryProductCrossRef.class}, version = 1)
+@androidx.room.Database(
+        entities = {
+                Product.class,
+                ProductImage.class,
+                Pantry.class,
+                PantryProductCrossRef.class,
+                LocationEntity.class
+        }, version = 1)
 public abstract class ShopIstDatabase extends RoomDatabase {
 
     private static ShopIstDatabase instance = null;
