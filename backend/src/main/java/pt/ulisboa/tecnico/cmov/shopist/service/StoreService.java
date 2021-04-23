@@ -26,7 +26,7 @@ public class StoreService {
         if (!stores.add(s)) {
             throw new StoreExistsException("Store already exists in server.");
         }
-        s.setUuid(UUID.randomUUID());
+        s.setId(UUID.randomUUID().toString());
         return s;
     }
 
@@ -50,7 +50,7 @@ public class StoreService {
 
     public Optional<Store> getStoreByUUID(String uuid) {
         if (uuid == null) return Optional.empty();
-        return stores.stream().filter(store -> uuid.equals(store.getUuid().toString())).findAny();
+        return stores.stream().filter(store -> uuid.equals(store.getId().toString())).findAny();
     }
 
     public Optional<Store> getStoreByCoordinates(String coordinates) {

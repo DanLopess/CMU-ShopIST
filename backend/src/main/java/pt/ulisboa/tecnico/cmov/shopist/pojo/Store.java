@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Store {
     private String name;
     private String coordinates;
-    private UUID uuid;
+    private String id;
 
     public Store(String name, String coordinates) {
         this.name = name;
@@ -23,11 +23,11 @@ public class Store {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Store store = (Store) o;
-        return Objects.equals(coordinates, store.coordinates) || Objects.equals(uuid, store.uuid);
+        return Objects.equals(coordinates, store.coordinates) || Objects.equals(id, store.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(coordinates, uuid);
+        return Objects.hash(coordinates, id);
     }
 }

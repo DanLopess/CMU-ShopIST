@@ -11,7 +11,6 @@ import pt.ulisboa.tecnico.cmov.shopist.pojo.ListOfProducts;
 import pt.ulisboa.tecnico.cmov.shopist.service.ListService;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/list")
@@ -25,7 +24,7 @@ public class ListController {
 
     @PostMapping
     @Operation(summary = "Create a list", description = "Return the created list UUID")
-    public UUID createList(@RequestBody ListOfProducts list) throws InvalidDataException, ListExistsException {
+    public String createList(@RequestBody ListOfProducts list) throws InvalidDataException, ListExistsException {
         return listService.createList(list);
     }
 
