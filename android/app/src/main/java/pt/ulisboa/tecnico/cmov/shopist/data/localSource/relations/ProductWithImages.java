@@ -11,9 +11,6 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.ProductImage;
 public class ProductWithImages {
     @Embedded public Product product;
 
-    @Relation(
-            parentColumn = "productId",
-            entityColumn = "productId"
-    )
+    @Relation(parentColumn = "productId", entityColumn = "productId")
     public List<ProductImage> productImages;
 }

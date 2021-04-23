@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShopIST"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AddProductsActivity"></activity>
+        <activity android:name=".AddPantryProductsActivity"></activity>
         <activity
             android:name=".PantryActivity"
             android:parentActivityName=".MainActivity" />

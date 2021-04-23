@@ -42,6 +42,10 @@ public class PantryRepository implements Cache {
         return list;
     }
 
+    public Observable<Pantry> getPantry(Long id) {
+        return pantryDao.getPantry(id);
+    }
+
     public void addPantry(Pantry pantry) {
         insertPantryToDb(pantry).subscribe(aBoolean -> mCache.add(pantry), throwable -> Log.d("DB ERROR", throwable.toString()));
     }
