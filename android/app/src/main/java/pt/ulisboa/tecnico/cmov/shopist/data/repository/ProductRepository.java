@@ -84,7 +84,7 @@ public class ProductRepository implements Cache {
     public void addPantryProducts(Long pantryId, List<Product> products) {
         for (Product prod : products) {
             PantryProductCrossRef pantryProduct = new PantryProductCrossRef(pantryId, prod.productId);
-            insertPantryProductToDb(pantryProduct);
+            insertPantryProductToDb(pantryProduct).subscribe(aBoolean -> {});
         }
     }
 

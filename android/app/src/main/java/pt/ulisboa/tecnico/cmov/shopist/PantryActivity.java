@@ -34,12 +34,6 @@ public class PantryActivity extends AppCompatActivity {
         initialize();
     }
 
-    @Override
-    protected void onResume() {
-        adapter.notifyDataSetChanged();
-        super.onResume();
-    }
-
     public void addProducts(MenuItem item) {
         Intent intent = new Intent(this, AddPantryProductsActivity.class);
         intent.putExtra("pantryId", myId);

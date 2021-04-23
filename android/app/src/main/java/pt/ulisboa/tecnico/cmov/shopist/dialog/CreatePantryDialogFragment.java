@@ -64,7 +64,7 @@ public class CreatePantryDialogFragment extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setTitle(R.string.create_list_dialog_title)
+        builder.setTitle(R.string.create_pantry_dialog_title)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.create_ok, null)
                 .setNegativeButton(R.string.cancel, (dialog, id) -> Objects

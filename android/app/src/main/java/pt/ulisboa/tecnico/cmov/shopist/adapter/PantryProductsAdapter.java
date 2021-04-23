@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.core.Observable;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 
 public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAdapter.ViewHolder>{
 
    private List<PantryProduct> mProducts;
+   private Context mContext;
 
    public PantryProductsAdapter(List<PantryProduct> products) {
        mProducts = products;
@@ -27,11 +27,11 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
     @NonNull
     @Override
     public PantryProductsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        mContext = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(mContext);
 
         // Inflate the custom layout
-        View ProductView = inflater.inflate(R.layout.product_item, parent, false);
+        View ProductView = inflater.inflate(R.layout.pantry_product_item, parent, false);
 
         // Return a new holder instance
         return new ViewHolder(ProductView);
@@ -46,11 +46,11 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
         tvItemName.setText(product.getProduct().productName);
 
         TextView tvWanted = holder.quantityWanted;
-        String wantedText = R.string.total_wanted + product.getQttNeeded().toString();
+        String wantedText = mContext.getString(R.string.total_wanted) + product.getQttNeeded().toString();
         tvWanted.setText(wantedText);
 
         EditText editText = holder.quantityAvailable;
-        editText.setText(product.getQttAvailable());
+        editText.setText(product.getQttAvailable().toString());
 
         /*ImageView imageView = holder.image;
         if(product.getImage() != null) {

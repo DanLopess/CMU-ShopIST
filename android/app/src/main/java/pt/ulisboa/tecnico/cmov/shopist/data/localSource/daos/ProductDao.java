@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface ProductDao {
     @Query("SELECT * FROM products where productId == :id")
     Observable<List<ProductAndPrincipalImage>> getProductAndImage(Long id);
 
-    @Query("SELECT * FROM pantry_product where pantryId == :id")
+    @Query("SELECT * FROM pantry_product pp JOIN products p where pantryId == :id and pp.productId == p.productId;")
     Observable<List<PantryProduct>> getPantryProducts(Long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

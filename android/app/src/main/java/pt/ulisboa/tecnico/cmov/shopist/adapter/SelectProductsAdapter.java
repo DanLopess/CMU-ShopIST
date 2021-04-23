@@ -74,9 +74,7 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
     }
 
     public List<Product> getSelectedItems() {
-        if (!mSelectedProducts.isEmpty())
-            return mSelectedProducts;
-        return null;
+        return mSelectedProducts;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

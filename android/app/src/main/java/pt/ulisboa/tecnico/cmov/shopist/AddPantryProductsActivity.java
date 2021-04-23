@@ -6,18 +6,14 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import pt.ulisboa.tecnico.cmov.shopist.adapter.PantryProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.SelectProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
@@ -42,7 +38,8 @@ public class AddPantryProductsActivity extends AppCompatActivity {
 
     public void returnResult(View v) {
         selectedProducts = adapter.getSelectedItems();
-        viewModel.addPantryProducts(pantryId, selectedProducts);
+        if (!selectedProducts.isEmpty())
+            viewModel.addPantryProducts(pantryId, selectedProducts);
         finish();
     }
 

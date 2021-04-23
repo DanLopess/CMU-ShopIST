@@ -20,6 +20,7 @@
     <string name="choose_a_location_option">Choose a location option</string>
     <string name="create_list_error">Your list must have a name and belong to a category</string>
     <string name="create_new_list">Create new list</string>
+    <string name="create_pantry_dialog_title">Create a new pantry</string>
     <string name="insert_a_code">Insert a code</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="list_options">List options</string>

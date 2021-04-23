@@ -16,4 +16,11 @@ public class PantryProductCrossRef {
 
     private Integer qttAvailable;
     private Integer qttNeeded;
+
+    public PantryProductCrossRef(Long pantryId, Long productId) {
+        this.pantryId = pantryId;
+        this.productId = productId;
+        this.qttAvailable = 0;
+        this.qttNeeded = 1;
+    }
 }
