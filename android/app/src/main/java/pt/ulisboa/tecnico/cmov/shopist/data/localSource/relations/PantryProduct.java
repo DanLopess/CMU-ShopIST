@@ -22,4 +22,5 @@ public class PantryProduct {
 
     private Integer qttAvailable;
     private Integer qttNeeded;
+    private Integer qttCart;
 }

@@ -15,7 +15,6 @@ public class Product {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     public Long productId;
-
     public String productName;
     public String productDescription;
     public String imageId;

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 import pt.ulisboa.tecnico.cmov.shopist.adapter.PantryProductsAdapter;
@@ -25,6 +26,7 @@ public class PantryActivity extends AppCompatActivity {
     private RecyclerView rvProducts;
     private PantryProductsAdapter adapter;
     private ViewModel viewModel;
+    private ProductAndPrincipalImage productToShowDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

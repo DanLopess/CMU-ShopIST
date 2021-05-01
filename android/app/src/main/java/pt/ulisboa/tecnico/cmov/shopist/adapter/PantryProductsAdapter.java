@@ -1,19 +1,35 @@
 package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.AddPantryProductsActivity;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
+import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.ProductDetailsDialog;
+import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAdapter.ViewHolder>{
 
@@ -56,6 +72,19 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
         if(product.getImage() != null) {
             imageView.setImageBitmap(product.getImage());
         }*/
+
+
+
+        holder.productClickableArea.setOnClickListener(v -> {
+            onClickProduct(mProducts.get(position));
+        });
+    }
+
+    private void onClickProduct(PantryProduct pantryProduct) {
+       ((PantryActivity) mContext).getViewModel().getProductImage(pantryProduct.getProduct().getProductId()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
+           ProductDetailsDialog productDetailsDialog = new ProductDetailsDialog(mContext, pantryProduct, image );
+           productDetailsDialog.show(((PantryActivity) mContext).getSupportFragmentManager(), "product_details");
+       });
     }
 
     @Override
@@ -68,6 +97,7 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
         public TextView quantityWanted;
         // TODO public ImageView image;
         public EditText quantityAvailable;
+        public LinearLayout productClickableArea;
 
         public ViewHolder(View view) {
             super(view);
@@ -75,6 +105,7 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
             name = view.findViewById(R.id.product_item_name);
             quantityWanted = view.findViewById(R.id.product_description);
             quantityAvailable = view.findViewById(R.id.product_quant);
+            productClickableArea = view.findViewById(R.id.product_item_clickable_area);
         }
     }
 }

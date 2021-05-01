@@ -21,7 +21,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.ProductImage;
                 Pantry.class,
                 PantryProductCrossRef.class,
                 LocationEntity.class
-        }, version = 1)
+        }, version = 4)
 public abstract class ShopIstDatabase extends RoomDatabase {
 
     private static ShopIstDatabase instance = null;

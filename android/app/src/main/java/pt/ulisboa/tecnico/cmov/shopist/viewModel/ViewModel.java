@@ -14,8 +14,11 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.ProductImage;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.PantryRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
 
@@ -64,5 +67,27 @@ public class ViewModel extends AndroidViewModel {
 
     public void addPantryProducts(Long pantryId, List<Product> products) {
         productRepository.addPantryProducts(pantryId, products);
+    }
+
+    public Observable<ProductAndPrincipalImage> getProductAndPrincipalImage(long id) {
+//        return productRepository.getProductAndPrincipalImage(id);
+        return Observable.just(new ProductAndPrincipalImage());
+    }
+
+    public Observable<ProductImage> getProductImage(Long productId) {
+        return Observable.just(new ProductImage());
+    }
+
+    public void updatePantryProduct(PantryProduct pantryProduct) {
+        Long pantryId = pantryProduct.getPantry().getPantryId();
+        Long productId = pantryProduct.getProduct().getProductId();
+        PantryProductCrossRef pantryProductCrossRef = new PantryProductCrossRef(
+                pantryId,
+                productId,
+                pantryProduct.getQttAvailable(),
+                pantryProduct.getQttNeeded(),
+                pantryProduct.getQttCart()
+        );
+        productRepository.updatePantryProduct(pantryProductCrossRef);
     }
 }
