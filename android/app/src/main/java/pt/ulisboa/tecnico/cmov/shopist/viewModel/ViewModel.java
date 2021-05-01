@@ -61,6 +61,10 @@ public class ViewModel extends AndroidViewModel {
         return productRepository.getPantryProducts(pantryId);
     }
 
+    public Observable<Integer> getPantrySize(Long pantryId) {
+        return productRepository.getPantrySize(pantryId);
+    }
+
     public void addProduct(String name, String description) {
         productRepository.addProduct(new Product(name, description));
     }
@@ -89,5 +93,9 @@ public class ViewModel extends AndroidViewModel {
                 pantryProduct.getQttCart()
         );
         productRepository.updatePantryProduct(pantryProductCrossRef);
+    }
+
+    public void deletePantryProduct(Long pantryId, Long productId) {
+        productRepository.deletePantryProduct(pantryId, productId);
     }
 }

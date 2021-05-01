@@ -38,11 +38,19 @@
     <string name="new_product">New product</string>
     <string name="product_image">Product Image</string>
     <string name="create_product_error">The product must have a name</string>
+    <string name="items">items</string>
+    <string name="drive_time">minute drive</string>
+    <string name="consume">Consume</string>
+    <string name="pantry_product_options">Pantry product options</string>
+    <string name="available">Available</string>
+    <string name="needed">Needed</string>
+    <string name="cart">Cart</string>
+    <string name="save">Save</string>
+    <string name="product_at">Product at:</string>
+    <string name="delete_product">Delete product</string>
+    <string name="delete_product_confirmation">Are you sure you want to delete this product?</string>
     <string name="name">Name</string>
     <string name="product">Product</string>
     <string name="product_details">Product Details</string>
     <string name="update">Update</string>
-    <string name="available">Available</string>
-    <string name="needed">Needed</string>
-    <string name="cart">Cart</string>
 </resources>

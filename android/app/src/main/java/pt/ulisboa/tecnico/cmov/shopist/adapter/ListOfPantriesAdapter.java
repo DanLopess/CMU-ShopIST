@@ -11,28 +11,34 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAdapter.ViewHolder>{
 
     private List<Pantry> mLists;
     private Context mContext;
+    private ViewModel viewModel;
 
     public ListOfPantriesAdapter(Context context, Observable<List<Pantry>> lists) {
         lists.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(items -> {
            mLists = items;
            this.notifyDataSetChanged();
+           viewModel = ((MainActivity) mContext).getViewModel();
         });
         mContext = context;
     }
@@ -92,6 +98,16 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
         TextView textView = holder.name;
         textView.setText(list.getName());
 
+        TextView distTextView = holder.distTime;
+        // TODO String distText = list.getDriveTime() + " " + mContext.getString(R.string.drive_time);
+        //distTextView.setText(distText);
+
+        TextView itemNrTextView = holder.itemNr;
+        viewModel.getPantrySize(list.pantryId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(size -> {
+            String itemNrText = size + " " + mContext.getString(R.string.items);
+            itemNrTextView.setText(itemNrText);
+        });
+
         // Set listener to start new activity
         holder.itemView.setOnClickListener(itemViewGroupListener);
 
@@ -106,13 +122,16 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
-        // TODO public TextView description;
+        public TextView distTime;
+        public TextView itemNr;
         public ImageButton options;
 
         public ViewHolder(View view) {
             super(view);
 
             name = view.findViewById(R.id.listName_textView);
+            distTime = view.findViewById(R.id.listDistTime_tv);
+            itemNr = view.findViewById(R.id.listItemNr_tv);
             options = view.findViewById(R.id.list_options_bt);
         }
     }

@@ -31,12 +31,18 @@ public interface ProductDao {
     @Query("SELECT * FROM products p JOIN productsImages pi where p.productId == :id and p.imageId == pi.imageId")
     Observable<ProductAndPrincipalImage> getProductAndImage(Long id);
 
-    @Query("SELECT * FROM pantry_product pp JOIN products p where pantryId == :id and pp.productId == p.productId;")
+    @Query("SELECT * FROM pantry_product pp JOIN products p where pantryId == :id and pp.productId == p.productId")
     Observable<List<PantryProduct>> getPantryProducts(Long id);
+
+    @Query("SELECT COUNT(*) FROM pantry_product WHERE pantryId == :id")
+    Observable<Integer> getPantrySize(Long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Product product);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPantryProduct(PantryProductCrossRef pantry_product);
+
+    @Query("DELETE FROM pantry_product WHERE pantryId == :pantryId AND productId == :productId")
+    void deletePantryProduct(Long pantryId, Long productId);
 }

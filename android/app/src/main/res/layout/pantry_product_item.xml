@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/productItemLinearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
@@ -30,8 +30,8 @@
 
             <ImageView
                 android:id="@+id/item_image"
-                android:layout_width="60dp"
-                android:layout_height="50dp"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
                 app:srcCompat="@drawable/ic_baseline_fastfood_24" />
 
             <LinearLayout
@@ -42,7 +42,7 @@
 
                 <TextView
                     android:id="@+id/product_item_name"
-                    android:layout_width="200dp"
+                    android:layout_width="190dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
@@ -62,36 +62,21 @@
 
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/product_down_button"
-            android:layout_width="5dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            tools:srcCompat="@drawable/baseline_arrow_drop_down_24" />
-
-        <EditText
-            android:id="@+id/product_quant"
-            android:layout_width="25dp"
+        <Button
+            android:id="@+id/consume_bt"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:importantForAutofill="no"
-            android:inputType="numberDecimal" />
+            android:text="@string/consume"
+            android:textSize="12sp" />
 
         <ImageButton
-            android:id="@+id/product_up_button"
-            android:layout_width="5dp"
-            android:layout_height="25dp"
-            android:layout_weight="1"
-            tools:srcCompat="@drawable/baseline_arrow_drop_up_24" />
-
-        <ImageButton
-            android:id="@+id/product_more_options"
+            android:id="@+id/pantry_product_options_bt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:background="@null"
+            android:contentDescription="@string/pantry_product_options"
             android:src="@drawable/ic_baseline_more_vert_24" />
     </LinearLayout>
 

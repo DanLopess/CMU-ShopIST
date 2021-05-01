@@ -85,6 +85,10 @@ public class ProductRepository implements Cache {
         return productDao.getPantryProducts(pantryId);
     }
 
+    public Observable<Integer> getPantrySize(Long pantryId) {
+        return productDao.getPantrySize(pantryId);
+    }
+
     public void addPantryProducts(Long pantryId, List<Product> products) {
         for (Product prod : products) {
             PantryProductCrossRef pantryProduct = new PantryProductCrossRef(pantryId, prod.productId);
@@ -92,7 +96,9 @@ public class ProductRepository implements Cache {
         }
     }
 
-
+    public void deletePantryProduct(Long pantryId, Long productId) {
+        productDao.deletePantryProduct(pantryId, productId);
+    }
 
     public void updatePantryProduct(PantryProductCrossRef pantryProduct) {
         insertPantryProductToDb(pantryProduct).subscribe(aBoolean -> {
@@ -115,5 +121,4 @@ public class ProductRepository implements Cache {
     public void makeCacheDirty() {
         mCacheIsDirty = true;
     }
-
 }
