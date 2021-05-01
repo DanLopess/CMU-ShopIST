@@ -44,6 +44,10 @@ public class ProductRepository implements Cache {
         // .mergeWith(getProductsFromAPI());
     }
 
+    public Observable<ProductAndPrincipalImage> getProductAndPrincipalImage(Long id) {
+        return productDao.getProductAndImage(id);
+    }
+
     // public Observable<List<ProductAndPrincipalImage>> getProductsAndImage() {
     //     if(mCache != null && !mCacheIsDirty) {
     //         return Observable.just(mCache);
@@ -86,6 +90,13 @@ public class ProductRepository implements Cache {
             PantryProductCrossRef pantryProduct = new PantryProductCrossRef(pantryId, prod.productId);
             insertPantryProductToDb(pantryProduct).subscribe(aBoolean -> {});
         }
+    }
+
+
+
+    public void updatePantryProduct(PantryProductCrossRef pantryProduct) {
+        insertPantryProductToDb(pantryProduct).subscribe(aBoolean -> {
+        });
     }
 
     private Observable<Boolean> insertPantryProductToDb(@NonNull PantryProductCrossRef pantryProd) {

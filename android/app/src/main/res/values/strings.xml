@@ -25,6 +25,7 @@
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="list_options">List options</string>
     <string name="product_name">Product name</string>
+    <string name="product_desc">Product Description</string>
     <string name="create_product">Create product</string>
     <string name="delete_list">Delete list</string>
     <string name="sync_with_server">Sync with server</string>
@@ -37,4 +38,11 @@
     <string name="new_product">New product</string>
     <string name="product_image">Product Image</string>
     <string name="create_product_error">The product must have a name</string>
+    <string name="name">Name</string>
+    <string name="product">Product</string>
+    <string name="product_details">Product Details</string>
+    <string name="update">Update</string>
+    <string name="available">Available</string>
+    <string name="needed">Needed</string>
+    <string name="cart">Cart</string>
 </resources>
