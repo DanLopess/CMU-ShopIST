@@ -9,22 +9,24 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@Entity(tableName="pantry_product", primaryKeys = {"pantryId", "productId"})
-public class PantryProductCrossRef {
+@Entity(tableName="store_product", primaryKeys = {"storeId", "productId"})
+public class StoreProductCrossRef {
     @NonNull
-    private Long pantryId;
+    private Long storeId;
 
     @NonNull
     private Long productId;
 
-    private Integer qttAvailable;
+    private Double price;
     private Integer qttNeeded;
+    private Integer qttCart;
 
     @Ignore
-    public PantryProductCrossRef(Long pantryId, Long productId) {
-        this.pantryId = pantryId;
+    public StoreProductCrossRef(Long storeId, Long productId) {
+        this.storeId = storeId;
         this.productId = productId;
-        this.qttAvailable = 0;
+        this.price = 0.0;
         this.qttNeeded = 1;
+        this.qttCart = 0;
     }
 }

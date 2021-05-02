@@ -20,18 +20,18 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
-import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
-public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAdapter.ViewHolder>{
+public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapter.ViewHolder>{
 
-    private List<Pantry> mLists;
+    private List<Store> mLists;
     private Context mContext;
     private ViewModel viewModel;
 
-    public ListOfPantriesAdapter(Context context, Observable<List<Pantry>> lists) {
+    public ListOfStoresAdapter(Context context, Observable<List<Store>> lists) {
         lists.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(items -> {
            mLists = items;
            this.notifyDataSetChanged();
@@ -42,10 +42,11 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
     @NonNull
     @Override
-    public ListOfPantriesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ListOfStoresAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         // Inflate the custom layout
+        //TODO maybe change??
         View listView = inflater.inflate(R.layout.list_of_lists_item, parent, false);
 
         // Return a new holder instance
@@ -54,13 +55,14 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Pantry list = mLists.get(position);
+        Store list = mLists.get(position);
         Context context = holder.itemView.getContext();
 
         // Set up listeners
         View.OnClickListener itemViewGroupListener = v -> {
-            Intent intent = new Intent(context, PantryActivity.class);
-            intent.putExtra("PantryId", list.getPantryId());
+            //TODO Activity
+            Intent intent = new Intent(context, StoreActivity.class);
+            intent.putExtra("StoreId", list.getStoreId());
             context.startActivity(intent);
         };
 
@@ -70,7 +72,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
                 builder.setTitle(R.string.delete_list)
                         .setMessage(R.string.delete_list_confirmation)
                         .setPositiveButton(R.string.delete, (dialog, which) -> {
-                            ((MainActivity) mContext).getViewModel().deletePantry(mLists.get(position));
+                            ((MainActivity) mContext).getViewModel().deleteStore(list);
                             notifyDataSetChanged();
                         })
                         .setNegativeButton(R.string.cancel, (dialog, which) -> {dialog.dismiss();});
@@ -100,7 +102,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
         //distTextView.setText(distText);
 
         TextView itemNrTextView = holder.itemNr;
-        viewModel.getPantrySize(list.pantryId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(size -> {
+        viewModel.getPantrySize(list.storeId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(size -> {
             String itemNrText = size + " " + mContext.getString(R.string.items);
             itemNrTextView.setText(itemNrText);
         });

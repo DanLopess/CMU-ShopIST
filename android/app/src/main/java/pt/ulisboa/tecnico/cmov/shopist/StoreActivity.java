@@ -1,25 +1,24 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.TextView;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.adapter.PantryProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
-import pt.ulisboa.tecnico.cmov.shopist.adapter.PantryProductsAdapter;
-
-public class PantryActivity extends AppCompatActivity {
+public class StoreActivity extends AppCompatActivity {
 
     private Long myId;
     private Pantry pantry;
@@ -61,17 +60,17 @@ public class PantryActivity extends AppCompatActivity {
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
         viewModel.getPantry(myId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(pantry -> {
-                    this.pantry = pantry;
-                    title.setText(this.pantry.name);
-                });
+            this.pantry = pantry;
+            title.setText(this.pantry.name);
+        });
 
         rvProducts = findViewById(R.id.pantry_prod_list);
 
         viewModel.getPantryProducts(myId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(list -> {
-                    adapter = new PantryProductsAdapter(list);
-                    rvProducts.setAdapter(adapter);
-                    rvProducts.setLayoutManager(new LinearLayoutManager(this));
-                });
+            adapter = new PantryProductsAdapter(list);
+            rvProducts.setAdapter(adapter);
+            rvProducts.setLayoutManager(new LinearLayoutManager(this));
+        });
     }
 }
