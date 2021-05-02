@@ -20,6 +20,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
+import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 
@@ -51,21 +52,15 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Pantry list = mLists.get(position);
-//        ProductList.Category category = list.getCategory();
         Context context = holder.itemView.getContext();
 
         // Set up listeners
         View.OnClickListener itemViewGroupListener = v -> {
-            Intent intent = null;
-//            if (category.equals(ProductList.Category.PANTRY))
-//                intent = new Intent(context, PantryActivity.class);
-//            else if (category.equals(ProductList.Category.SHOPPING)) {}
-//            //TODO intent = new Intent(holder.itemView.getContext(), ShoppingActivity.class);
-//            if (intent != null) {
-//                intent.putExtra("List", list);
-//                context.startActivity(intent);
-//            }
+            Intent intent = new Intent(context, PantryActivity.class);
+            intent.putExtra("PantryId", list.getPantryId());
+            context.startActivity(intent);
         };
+
         PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {switch (item.getItemId()) {
             case R.id.list_options_delete:
                 AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
@@ -84,6 +79,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
             default:
                 return false;
         }};
+
         View.OnClickListener itemOptionsListener = v -> {
             PopupMenu listOptionsMenu = new PopupMenu(v.getContext(), v);
             MenuInflater inflater1 = listOptionsMenu.getMenuInflater();
@@ -110,6 +106,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
+        // TODO public TextView description;
         public ImageButton options;
 
         public ViewHolder(View view) {

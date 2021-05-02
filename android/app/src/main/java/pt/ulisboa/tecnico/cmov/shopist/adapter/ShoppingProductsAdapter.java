@@ -31,7 +31,7 @@ public class ShoppingProductsAdapter extends RecyclerView.Adapter<ShoppingProduc
 
         // Inflate the custom layout
         // TODO check layout
-        View ProductView = inflater.inflate(R.layout.product_item, parent, false);
+        View ProductView = inflater.inflate(R.layout.pantry_product_item, parent, false);
 
         // Return a new holder instance
         return new ViewHolder(ProductView);

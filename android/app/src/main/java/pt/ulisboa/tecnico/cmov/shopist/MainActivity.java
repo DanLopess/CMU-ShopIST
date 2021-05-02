@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -37,13 +40,6 @@ public class MainActivity extends AppCompatActivity {
         setUpLists();
         setUpBottomNavigation();
     }
-
-    /*private void loadProducts() {
-        RecyclerView rvProducts = (RecyclerView) findViewById(R.id.recyclerView);
-        PantryProductsAdapter adapter = new PantryProductsAdapter(mContextData.getProducts());
-        rvProducts.setAdapter(adapter);
-        rvProducts.setLayoutManager(new LinearLayoutManager(this));
-    }*/
 
     public void createNewList(MenuItem item) {
         mCreateListDialog.show(getSupportFragmentManager(), "create list");
@@ -92,9 +88,4 @@ public class MainActivity extends AppCompatActivity {
         //for now select Pantry list
         bottomNavigationView.setSelectedItemId(R.id.action_pantry_lists);
     }
-
-    /*public void createNewProduct(MenuItem item) {
-        DialogFragment createListDialog = new CreateProductDialogFragment(this);
-        createListDialog.show(getSupportFragmentManager(), "create list");
-    }*/
 }

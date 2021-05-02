@@ -20,10 +20,12 @@
     <string name="choose_a_location_option">Choose a location option</string>
     <string name="create_list_error">Your list must have a name and belong to a category</string>
     <string name="create_new_list">Create new list</string>
+    <string name="create_pantry_dialog_title">Create a new pantry</string>
     <string name="insert_a_code">Insert a code</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="list_options">List options</string>
     <string name="product_name">Product name</string>
+    <string name="product_desc">Product Description</string>
     <string name="create_product">Create product</string>
     <string name="delete_list">Delete list</string>
     <string name="sync_with_server">Sync with server</string>
@@ -34,4 +36,13 @@
     <string name="add_products">Add products</string>
     <string name="confirm">Confirm</string>
     <string name="new_product">New product</string>
+    <string name="product_image">Product Image</string>
+    <string name="create_product_error">The product must have a name</string>
+    <string name="name">Name</string>
+    <string name="product">Product</string>
+    <string name="product_details">Product Details</string>
+    <string name="update">Update</string>
+    <string name="available">Available</string>
+    <string name="needed">Needed</string>
+    <string name="cart">Cart</string>
 </resources>
