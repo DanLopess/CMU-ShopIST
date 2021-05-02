@@ -93,19 +93,6 @@ public class CreateProductDialogFragment extends DialogFragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        /* if (requestCode == PICK_IMAGE) {
-            onSelectFromGalleryResult(data);
-        } else {
-            Toast.makeText(context, "You haven't picked Image",Toast.LENGTH_LONG).show();
-        } */
-
-    }
-
     /* private void onSelectFromGalleryResult(Intent data) {
        try {
            final Uri imageUri = data.getData();

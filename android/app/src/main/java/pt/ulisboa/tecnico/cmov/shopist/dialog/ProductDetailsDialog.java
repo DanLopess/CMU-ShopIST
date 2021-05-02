@@ -5,17 +5,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +24,6 @@ import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.ProductImage;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
-import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class ProductDetailsDialog extends DialogFragment {
 
@@ -50,8 +45,6 @@ public class ProductDetailsDialog extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.product_details, null);
 
-
-
         alertDialogBuilder.setTitle(R.string.product_details)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.update, (dialog, id) -> {
@@ -66,10 +59,8 @@ public class ProductDetailsDialog extends DialogFragment {
     private void setPantryProductChanges() {
         NumberPicker availablePicker = mDialogView.findViewById(R.id.product_details_available);
         NumberPicker neededPicker = mDialogView.findViewById(R.id.product_details_needed);
-        NumberPicker cartPicker = mDialogView.findViewById(R.id.product_details_cart);
 
         pantryProduct.setQttAvailable(availablePicker.getValue());
-        pantryProduct.setQttCart(cartPicker.getValue());
         pantryProduct.setQttNeeded(neededPicker.getValue());
     }
 
@@ -96,18 +87,14 @@ public class ProductDetailsDialog extends DialogFragment {
         ImageView image = mDialogView.findViewById(R.id.product_details_image);
         NumberPicker availablePicker = mDialogView.findViewById(R.id.product_details_available);
         NumberPicker neededPicker = mDialogView.findViewById(R.id.product_details_needed);
-        NumberPicker cartPicker = mDialogView.findViewById(R.id.product_details_cart);
         availablePicker.setMinValue(0);
         neededPicker.setMinValue(0);
-        cartPicker.setMinValue(0);
         availablePicker.setMaxValue(99);
         neededPicker.setMaxValue(99);
-        cartPicker.setMaxValue(99);
         name.setText(pantryProduct.getProduct().productName);
         desc.setText(pantryProduct.getProduct().productDescription);
         availablePicker.setValue(pantryProduct.getQttAvailable());
         neededPicker.setValue(pantryProduct.getQttNeeded());
-        cartPicker.setValue(pantryProduct.getQttCart());
         if(image == null) {
         }
 //            image.setImageBitmap(BitmapFactory.decodeByteArray(productAndPrincipalImage.productImage.getImage(), 0, productAndPrincipalImage.productImage.getImage().length));

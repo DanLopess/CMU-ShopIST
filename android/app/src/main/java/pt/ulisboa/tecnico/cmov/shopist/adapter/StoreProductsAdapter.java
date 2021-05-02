@@ -13,19 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProduct;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 
-public class ShoppingProductsAdapter extends RecyclerView.Adapter<ShoppingProductsAdapter.ViewHolder>{
+public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdapter.ViewHolder>{
 
     private List<StoreProduct> mProducts;
 
-    public ShoppingProductsAdapter(List<StoreProduct> products) {
+    public StoreProductsAdapter(List<StoreProduct> products) {
         mProducts = products;
     }
 
     @NonNull
     @Override
-    public ShoppingProductsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StoreProductsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
