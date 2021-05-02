@@ -2,15 +2,37 @@ package pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities;
 
 import android.location.Location;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
 import java.util.UUID;
 
 import lombok.Data;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.converters.LocationEntityConverter;
 
 @Data
+@Entity(tableName = "stores", foreignKeys = {
+        @ForeignKey(
+                entity = LocationEntity.class,
+                parentColumns = "locationId",
+                childColumns = "location"
+        )
+})
 public class Store {
-    private UUID uuid;
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
+    public Long storeId;
+
     private String name;
-    private Location location;
-    private List<StoreProduct> products;
+
+    @TypeConverters(LocationEntityConverter.class)
+    private LocationEntity location;
+
+    public Store(String name, LocationEntity location) {
+        this.name = name;
+        this.location = location;
+    }
 }

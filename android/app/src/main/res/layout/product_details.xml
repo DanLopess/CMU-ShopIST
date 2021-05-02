@@ -156,36 +156,6 @@
                     android:layout_width="8dp"
                     android:layout_height="wrap_content" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.3"
-                    android:orientation="vertical"
-                    android:layout_gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/product_details_cart_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/cart"
-                        android:textSize="8pt"
-                        android:gravity="center"
-                        >
-                    </TextView>
-
-                    <NumberPicker
-                        android:id="@+id/product_details_cart"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="10"
-                        android:inputType="number"
-                        android:textSize="7pt"
-                        android:textColor="@color/black"
-                        android:layout_below="@id/product_details_cart_title"
-                        android:gravity="center"
-                        >
-                    </NumberPicker>
-                </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
 
