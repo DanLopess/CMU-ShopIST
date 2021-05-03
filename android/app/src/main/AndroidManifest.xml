@@ -13,10 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShopIST"
         android:usesCleartextTraffic="true">
-        <activity android:name=".StoreActivity"></activity>
         <activity android:name=".AddPantryProductsActivity" />
-        <activity
-            android:name=".PantryActivity"
+        <activity android:name=".AddStoreProductsActivity" />
+        <activity android:name=".StoreActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".PantryActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -85,6 +85,10 @@ public class ProductRepository implements Cache {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Observable<Integer> getQttNeeded(Long productId) {
+        return productDao.getQttNeeded(productId);
+    }
+
     //================================== Pantry Products ==================================
 
     public Observable<List<PantryProduct>> getPantryProducts(Long pantryId) {
@@ -107,6 +111,11 @@ public class ProductRepository implements Cache {
         });
     }
 
+    public void deletePantryProducts(Long pantryId) {
+        deletePantryProductsFromDb(pantryId).subscribe(aBoolean -> {
+        });
+    }
+
     public void updatePantryProduct(PantryProductCrossRef pantryProduct) {
         insertPantryProductToDb(pantryProduct).subscribe(aBoolean -> {
         });
@@ -122,6 +131,13 @@ public class ProductRepository implements Cache {
     private Observable<Boolean> deletePantryProductFromDb(@NonNull PantryProductCrossRef pantryProd) {
         return Observable.fromCallable(() -> {
             productDao.deletePantryProduct(pantryProd);
+            return true;
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observable<Boolean> deletePantryProductsFromDb(@NonNull Long pantryId) {
+        return Observable.fromCallable(() -> {
+            productDao.deletePantryProducts(pantryId);
             return true;
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
@@ -148,6 +164,11 @@ public class ProductRepository implements Cache {
         });
     }
 
+    public void deleteStoreProducts(Long storeId) {
+        deleteStoreProductsFromDb(storeId).subscribe(aBoolean -> {
+        });
+    }
+
     public void updateStoreProduct(StoreProductCrossRef storeProduct) {
         insertStoreProductToDb(storeProduct).subscribe(aBoolean -> {
         });
@@ -163,6 +184,13 @@ public class ProductRepository implements Cache {
     private Observable<Boolean> deleteStoreProductFromDb(@NonNull StoreProductCrossRef storeProd) {
         return Observable.fromCallable(() -> {
             productDao.deleteStoreProduct(storeProd);
+            return true;
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observable<Boolean> deleteStoreProductsFromDb(@NonNull Long storeId) {
+        return Observable.fromCallable(() -> {
+            productDao.deleteStoreProducts(storeId);
             return true;
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

@@ -35,7 +35,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/product_item_name"
+                android:id="@+id/storeProdName_tv"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_weight="1"
@@ -45,7 +45,7 @@
                 tools:text="ListItem" />
 
             <TextView
-                android:id="@+id/product_description"
+                android:id="@+id/storeProdInfoText_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -42,6 +42,9 @@ public interface ProductDao {
     @Query("SELECT * FROM products p JOIN productsImages pi where p.productId == :id and p.imageId == pi.imageId")
     Observable<ProductAndPrincipalImage> getProductAndImage(Long id);
 
+    @Query("SELECT SUM(qttNeeded) FROM pantry_product WHERE productId == :productId")
+    Observable<Integer> getQttNeeded(Long productId);
+
     //============= PantryProducts =============
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -49,6 +52,9 @@ public interface ProductDao {
 
     @Delete
     void deletePantryProduct(PantryProductCrossRef pantryProd);
+
+    @Query("DELETE FROM pantry_product WHERE pantryId == :pantryId")
+    void deletePantryProducts(Long pantryId);
 
     @Query("SELECT * FROM pantry_product pp JOIN products p where pantryId == :id and pp.productId == p.productId")
     Observable<List<PantryProduct>> getPantryProducts(Long id);
@@ -69,4 +75,7 @@ public interface ProductDao {
 
     @Delete
     void deleteStoreProduct(StoreProductCrossRef storeProd);
+
+    @Query("DELETE FROM store_product WHERE storeId == :storeId")
+    void deleteStoreProducts(Long storeId);
 }

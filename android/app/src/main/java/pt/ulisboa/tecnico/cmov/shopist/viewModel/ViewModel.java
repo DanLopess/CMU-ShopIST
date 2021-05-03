@@ -59,6 +59,10 @@ public class ViewModel extends AndroidViewModel {
         return Observable.just(new ProductImage());
     }
 
+    public Observable<Integer> getQttNeeded(Product product) {
+        return productRepository.getQttNeeded(product.getProductId());
+    }
+
     //============= Pantry =============
 
     public Observable<List<Pantry>> getPantries() {
@@ -77,6 +81,7 @@ public class ViewModel extends AndroidViewModel {
     }
 
     public void deletePantry(Pantry pantry) {
+        productRepository.deletePantryProducts(pantry.getPantryId());
         pantryRepository.deletePantry(pantry);
     }
 
@@ -129,6 +134,7 @@ public class ViewModel extends AndroidViewModel {
     }
 
     public void deleteStore(Store store) {
+        productRepository.deleteStoreProducts(store.getStoreId());
         storeRepository.deleteStore(store);
     }
 

@@ -8,23 +8,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
+import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfStoresAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreatePantryDialogFragment;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateStoreDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class MainActivity extends AppCompatActivity {
-    private DialogFragment mCreateListDialog;
+    private DialogFragment mCreatePantryListDialog;
+    private DialogFragment mCreateStoreListDialog;
     private String mCurrCategory;
     private RecyclerView rvLists;
     private ListOfPantriesAdapter mPantryAdapter;
-    private ListOfPantriesAdapter mShoppingAdapter;
+    private ListOfStoresAdapter mStoreAdapter;
     public ViewModel viewModel;
 
     @Override
@@ -33,16 +33,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
 
-        //load local lists
-        //if wifi available sync lists
+        //if wifi available sync lists ??
 
-        mCreateListDialog = new CreatePantryDialogFragment(this);
+        mCreatePantryListDialog = new CreatePantryDialogFragment(this);
+        mCreateStoreListDialog = new CreateStoreDialogFragment(this);
         setUpLists();
         setUpBottomNavigation();
     }
 
     public void createNewList(MenuItem item) {
-        mCreateListDialog.show(getSupportFragmentManager(), "create list");
+        if (rvLists.getAdapter() == mPantryAdapter)
+            mCreatePantryListDialog.show(getSupportFragmentManager(), "Create Pantry list");
+        else if (rvLists.getAdapter() == mStoreAdapter)
+            mCreateStoreListDialog.show(getSupportFragmentManager(), "Create Store list");
     }
 
     public void addListWithCode(MenuItem item) {
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpLists() {
         rvLists = findViewById(R.id.recyclerView);
         mPantryAdapter = new ListOfPantriesAdapter(this, viewModel.getPantries());
-        mShoppingAdapter = new ListOfPantriesAdapter(this, viewModel.getPantries());
+        mStoreAdapter = new ListOfStoresAdapter(this, viewModel.getStores());
     }
 
     private void setUpBottomNavigation() {
@@ -72,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
                 item -> {
                     mCurrCategory = item.getTitle().toString();
                     titleTextView.setText(mCurrCategory);
-                    if (mCurrCategory.equals("Pantry")) {
+                    if (item.getItemId() == R.id.action_pantry_lists) {
                         rvLists.setAdapter(mPantryAdapter);
                         rvLists.setLayoutManager(layoutManager);
-                    } else if (mCurrCategory.equals("Shopping")) {
-                        rvLists.setAdapter(mShoppingAdapter);
+                    } else if (item.getItemId() == R.id.action_store_lists) {
+                        rvLists.setAdapter(mStoreAdapter);
                         rvLists.setLayoutManager(layoutManager);
                     }
                     return true;

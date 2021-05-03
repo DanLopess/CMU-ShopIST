@@ -20,4 +20,14 @@ public class StoreProduct {
     private Double price;
     private Integer qttNeeded;
     private Integer qttCart;
+
+    public void increaseQttCart() {
+        if (qttCart < 99)
+            qttCart++;
+    }
+
+    public void decreaseQttNeeded() {
+        if (qttNeeded > 0)
+            qttNeeded--;
+    }
 }

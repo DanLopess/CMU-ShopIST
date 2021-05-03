@@ -46,7 +46,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         // Inflate the custom layout
-        View listView = inflater.inflate(R.layout.list_of_lists_item, parent, false);
+        View listView = inflater.inflate(R.layout.list_item_list_of_pantries, parent, false);
 
         // Return a new holder instance
         return new ViewHolder(listView);
@@ -86,7 +86,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
         View.OnClickListener itemOptionsListener = v -> {
             PopupMenu listOptionsMenu = new PopupMenu(v.getContext(), v);
             MenuInflater inflater1 = listOptionsMenu.getMenuInflater();
-            inflater1.inflate(R.menu.list_options_menu, listOptionsMenu.getMenu());
+            inflater1.inflate(R.menu.options_list_menu, listOptionsMenu.getMenu());
             listOptionsMenu.setOnMenuItemClickListener(menuItemClickListener);
             listOptionsMenu.show();
         };
