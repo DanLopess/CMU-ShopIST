@@ -79,6 +79,7 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
             if (product.getQttAvailable() > 0) {
                 product.increaseQttNeeded();
                 product.decreaseQttAvailable();
+                ((PantryActivity) mContext).getViewModel().updatePantryProduct(product);
                 notifyDataSetChanged();
             } else
                 Toast.makeText(mContext, "You don't have this product available in this pantry", Toast.LENGTH_LONG).show();

@@ -14,6 +14,8 @@ import javax.inject.Singleton;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.ShopIstDatabase;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.ProductDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
@@ -107,18 +109,15 @@ public class ProductRepository implements Cache {
     }
 
     public void deletePantryProduct(PantryProductCrossRef pantryProd) {
-        deletePantryProductFromDb(pantryProd).subscribe(aBoolean -> {
-        });
+        deletePantryProductFromDb(pantryProd).subscribe(aBoolean -> {});
     }
 
     public void deletePantryProducts(Long pantryId) {
-        deletePantryProductsFromDb(pantryId).subscribe(aBoolean -> {
-        });
+        deletePantryProductsFromDb(pantryId).subscribe(aBoolean -> {});
     }
 
     public void updatePantryProduct(PantryProductCrossRef pantryProduct) {
-        insertPantryProductToDb(pantryProduct).subscribe(aBoolean -> {
-        });
+        insertPantryProductToDb(pantryProduct).subscribe(aBoolean -> {});
     }
 
     private Observable<Boolean> insertPantryProductToDb(@NonNull PantryProductCrossRef pantryProd) {
@@ -148,6 +147,10 @@ public class ProductRepository implements Cache {
         return productDao.getStoreProducts(storeId);
     }
 
+    public Observable<List<StoreProduct>> getShownStoreProducts(Long storeId) {
+        return productDao.getShownStoreProducts(storeId);
+    }
+
     public Observable<Integer> getStoreSize(Long storeId) {
         return productDao.getStoreSize(storeId);
     }
@@ -155,23 +158,25 @@ public class ProductRepository implements Cache {
     public void addStoreProducts(Long storeId, List<Product> products) {
         for (Product prod : products) {
             StoreProductCrossRef storeProduct = new StoreProductCrossRef(storeId, prod.productId);
-            insertStoreProductToDb(storeProduct).subscribe(aBoolean -> {});
+            productDao.getQttNeeded(prod.getProductId())
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(qtt -> {
+                storeProduct.setQttNeeded(qtt);
+                storeProduct.updateShown();
+                insertStoreProductToDb(storeProduct).subscribe(aBoolean -> {});
+            });
         }
     }
 
     public void deleteStoreProduct(StoreProductCrossRef storeProd) {
-        deleteStoreProductFromDb(storeProd).subscribe(aBoolean -> {
-        });
+        deleteStoreProductFromDb(storeProd).subscribe(aBoolean -> {});
     }
 
     public void deleteStoreProducts(Long storeId) {
-        deleteStoreProductsFromDb(storeId).subscribe(aBoolean -> {
-        });
+        deleteStoreProductsFromDb(storeId).subscribe(aBoolean -> {});
     }
 
     public void updateStoreProduct(StoreProductCrossRef storeProduct) {
-        insertStoreProductToDb(storeProduct).subscribe(aBoolean -> {
-        });
+        insertStoreProductToDb(storeProduct).subscribe(aBoolean -> {});
     }
 
     private Observable<Boolean> insertStoreProductToDb(@NonNull StoreProductCrossRef storeProd) {

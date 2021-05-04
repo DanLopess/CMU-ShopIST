@@ -67,7 +67,10 @@ public interface ProductDao {
     @Query("SELECT * FROM store_product sp JOIN products p where storeId == :id and sp.productId == p.productId")
     Observable<List<StoreProduct>> getStoreProducts(Long id);
 
-    @Query("SELECT COUNT(*) FROM store_product WHERE storeId == :id")
+    @Query("SELECT * FROM store_product sp JOIN products p WHERE storeId == :id AND sp.productId == p.productId AND shown == 1")
+    Observable<List<StoreProduct>> getShownStoreProducts(Long id);
+
+    @Query("SELECT COUNT(*) FROM store_product WHERE storeId == :id AND shown == 1")
     Observable<Integer> getStoreSize(Long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

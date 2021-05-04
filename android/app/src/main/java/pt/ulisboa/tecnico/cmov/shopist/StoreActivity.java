@@ -66,7 +66,7 @@ public class StoreActivity extends AppCompatActivity {
 
         rvProducts = findViewById(R.id.store_prod_list);
 
-        viewModel.getStoreProducts(myId).subscribeOn(Schedulers.io())
+        viewModel.getShownStoreProducts(myId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(list -> {
             adapter = new StoreProductsAdapter(list);
             rvProducts.setAdapter(adapter);

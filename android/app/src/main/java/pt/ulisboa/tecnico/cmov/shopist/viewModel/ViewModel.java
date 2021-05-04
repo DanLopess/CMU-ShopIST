@@ -10,8 +10,10 @@ import java.util.List;
 
 import javax.inject.Singleton;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
@@ -40,7 +42,7 @@ public class ViewModel extends AndroidViewModel {
         productRepository = new ProductRepository(application);
     }
 
-    //============= Products =============
+    //================================== Products ==================================
 
     public Observable<List<Product>> getProducts() {
         return productRepository.getProducts();
@@ -63,7 +65,7 @@ public class ViewModel extends AndroidViewModel {
         return productRepository.getQttNeeded(product.getProductId());
     }
 
-    //============= Pantry =============
+    //================================== Pantry ==================================
 
     public Observable<List<Pantry>> getPantries() {
         return pantryRepository.getPantries();
@@ -105,18 +107,7 @@ public class ViewModel extends AndroidViewModel {
         productRepository.deletePantryProduct(pantryProdToCrossRef(pantryProduct));
     }
 
-    private PantryProductCrossRef pantryProdToCrossRef(PantryProduct pantryProduct) {
-        Long pantryId = pantryProduct.getPantry().getPantryId();
-        Long productId = pantryProduct.getProduct().getProductId();
-        return new PantryProductCrossRef(
-                pantryId,
-                productId,
-                pantryProduct.getQttAvailable(),
-                pantryProduct.getQttNeeded()
-        );
-    }
-
-    //============= Store =============
+    //================================== Store ==================================
 
     public Observable<List<Store>> getStores() {
         return storeRepository.getStores();
@@ -146,6 +137,10 @@ public class ViewModel extends AndroidViewModel {
         return productRepository.getStoreProducts(storeId);
     }
 
+    public Observable<List<StoreProduct>> getShownStoreProducts(Long storeId) {
+        return productRepository.getShownStoreProducts(storeId);
+    }
+
     public Observable<Integer> getStoreSize(Long storeId) {
         return productRepository.getStoreSize(storeId);
     }
@@ -158,6 +153,19 @@ public class ViewModel extends AndroidViewModel {
         productRepository.deleteStoreProduct(storeProdToCrossRef(storeProduct));
     }
 
+    //================================== Auxiliary ==================================
+
+    private PantryProductCrossRef pantryProdToCrossRef(PantryProduct pantryProduct) {
+        Long pantryId = pantryProduct.getPantry().getPantryId();
+        Long productId = pantryProduct.getProduct().getProductId();
+        return new PantryProductCrossRef(
+                pantryId,
+                productId,
+                pantryProduct.getQttAvailable(),
+                pantryProduct.getQttNeeded()
+        );
+    }
+
     private StoreProductCrossRef storeProdToCrossRef(StoreProduct storeProduct) {
         Long storeId = storeProduct.getStore().getStoreId();
         Long productId = storeProduct.getProduct().getProductId();
@@ -166,7 +174,8 @@ public class ViewModel extends AndroidViewModel {
                 productId,
                 storeProduct.getPrice(),
                 storeProduct.getQttNeeded(),
-                storeProduct.getQttCart()
+                storeProduct.getQttCart(),
+                storeProduct.getShown()
         );
     }
 }

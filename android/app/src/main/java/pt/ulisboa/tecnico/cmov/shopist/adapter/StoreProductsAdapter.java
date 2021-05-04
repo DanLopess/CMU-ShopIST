@@ -45,6 +45,12 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         StoreProduct product = mProducts.get(position);
 
+        if (!product.getShown()) {
+            mProducts.remove(product);
+            notifyItemRemoved(position);
+            return;
+        }
+
         PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {
             if (item.getItemId() == R.id.pantry_store_product_options_delete) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
@@ -73,20 +79,26 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
         };
 
         View.OnClickListener addToCartListener = v -> {
-            product.increaseQttCart();
-            product.decreaseQttNeeded();
-            notifyDataSetChanged();
+            if (product.getQttNeeded() > 0) {
+                product.increaseQttCart();
+                product.decreaseQttNeeded();
+                product.updateShown();
+                ((StoreActivity) mContext).getViewModel().updateStoreProduct(product);
+                notifyDataSetChanged();
+            }
         };
 
         TextView nameTextView = holder.name;
         nameTextView.setText(product.getProduct().getProductName());
 
         TextView infoTextView = holder.infoText;
-        ((StoreActivity) mContext).getViewModel().getQttNeeded(product.getProduct())
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(qtt -> {
-                    String infoText = mContext.getString(R.string.needed) + ": " + (qtt > 99 ? 99 : qtt) +
+        ((StoreActivity) mContext).getViewModel().getQttNeeded(product.getProduct()).subscribeOn(
+                Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(qtt -> {
+                    product.setQttNeeded(qtt);
+                    product.updateShown();
+            String infoText = mContext.getString(R.string.needed) + ": " + product.getQttNeeded() +
                     " / " + mContext.getString(R.string.in_cart) + ": " + product.getQttCart();
-                    infoTextView.setText(infoText);
+            infoTextView.setText(infoText);
         });
 
         holder.addToCart.setOnClickListener(addToCartListener);
