@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,21 +20,26 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Objects;
 
-import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.ScanCodeActivity;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.ProductImage;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ProductDetailsDialog extends DialogFragment {
 
+    private static final int SCAN_REQ_CODE = 1;
+
     private final Context mContext;
     private View mDialogView;
-    private PantryProduct pantryProduct;
+    private final Product product;
     private byte[] image;
 
-    public ProductDetailsDialog(Context context, PantryProduct pantryProduct, ProductImage productImage) {
+    public ProductDetailsDialog(Context context, Product product, ProductImage productImage) {
         this.mContext = context;
-        this.pantryProduct = pantryProduct;
+        this.product = product;
         this.image = productImage.getImage();
     }
 
@@ -43,25 +48,26 @@ public class ProductDetailsDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme_FullScreen);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.product_details, null);
+        mDialogView = inflater.inflate(R.layout.dialog_product_details, null);
 
-        alertDialogBuilder.setTitle(R.string.product_details)
+        alertDialogBuilder.setTitle(R.string.edit_product)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.update, (dialog, id) -> {
-                    setPantryProductChanges();
-                    ((PantryActivity) mContext).getViewModel().updatePantryProduct(pantryProduct);
+                    setProductChanges();
+                    ((MainActivity) mContext).getViewModel().updateProduct(product);
                 })
                 .setNegativeButton(R.string.cancel,  (dialog, id) ->
                         Objects.requireNonNull(ProductDetailsDialog.this.getDialog()).cancel());
         return alertDialogBuilder.create();
     }
 
-    private void setPantryProductChanges() {
-        NumberPicker availablePicker = mDialogView.findViewById(R.id.product_details_available);
-        NumberPicker neededPicker = mDialogView.findViewById(R.id.product_details_needed);
+    private void setProductChanges() {
+        EditText prodName = mDialogView.findViewById(R.id.product_details_name);
+        EditText prodDesc = mDialogView.findViewById(R.id.product_details_desc);
 
-        pantryProduct.setQttAvailable(availablePicker.getValue());
-        pantryProduct.setQttNeeded(neededPicker.getValue());
+        if (!prodName.getText().toString().isEmpty())
+            product.setProductName(prodName.getText().toString());
+        product.setProductDescription(prodDesc.getText().toString());
     }
 
     @Override
@@ -69,41 +75,44 @@ public class ProductDetailsDialog extends DialogFragment {
         super.onStart();
         AlertDialog dialog = (AlertDialog)getDialog();
 
-        Button negativeButton = ((AlertDialog)dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
-        Button positiveButton = ((AlertDialog)dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+        assert dialog != null;
+        Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
         negativeButton.setTextColor(ContextCompat.getColor(mContext, R.color.black));
         positiveButton.setTextColor(ContextCompat.getColor(mContext, R.color.black));
 
-        if(dialog != null) {
-            setupDialogValues();
-        } else {
-            // TODO: DIALOG FAILED TO LOAD
-        }
+        setupDialog();
     }
 
-    private void setupDialogValues() {
-        TextView name = mDialogView.findViewById(R.id.product_details_name);
-        TextView desc = mDialogView.findViewById(R.id.product_details_desc);
+    private void setupDialog() {
+        EditText name = mDialogView.findViewById(R.id.product_details_name);
+        EditText desc = mDialogView.findViewById(R.id.product_details_desc);
+        TextView code = mDialogView.findViewById(R.id.product_details_code);
         ImageView image = mDialogView.findViewById(R.id.product_details_image);
-        NumberPicker availablePicker = mDialogView.findViewById(R.id.product_details_available);
-        NumberPicker neededPicker = mDialogView.findViewById(R.id.product_details_needed);
-        availablePicker.setMinValue(0);
-        neededPicker.setMinValue(0);
-        availablePicker.setMaxValue(99);
-        neededPicker.setMaxValue(99);
-        name.setText(pantryProduct.getProduct().productName);
-        desc.setText(pantryProduct.getProduct().productDescription);
-        availablePicker.setValue(pantryProduct.getQttAvailable());
-        neededPicker.setValue(pantryProduct.getQttNeeded());
+        Button scan = mDialogView.findViewById(R.id.scan_code_bt);
+        name.setText(product.getProductName());
+        desc.setText(product.getProductDescription());
+        code.setText(product.getCode());
         if(image == null) {
         }
+        scan.setOnClickListener(v -> scanProduct());
 //            image.setImageBitmap(BitmapFactory.decodeByteArray(productAndPrincipalImage.productImage.getImage(), 0, productAndPrincipalImage.productImage.getImage().length));
     }
 
+    public void scanProduct() {
+        Intent intent = new Intent(mContext, ScanCodeActivity.class);
+        startActivityForResult(intent, SCAN_REQ_CODE);
+    }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SCAN_REQ_CODE && resultCode == RESULT_OK) {
+            assert data != null;
+            String code = data.getStringExtra("code");
+            product.setCode(code);
+            TextView codeText = mDialogView.findViewById(R.id.product_details_code);
+            codeText.setText(product.getCode());
+        }
     }
 }

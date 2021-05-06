@@ -23,7 +23,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
-import pt.ulisboa.tecnico.cmov.shopist.dialog.ProductDetailsDialog;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.PantryProductDetailsDialog;
 
 public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAdapter.ViewHolder>{
 
@@ -111,8 +111,8 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
     private void onClickProduct(PantryProduct pantryProduct) {
        ((PantryActivity) mContext).getViewModel().getProductImage(pantryProduct.getProduct().getProductId())
                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
-           ProductDetailsDialog productDetailsDialog = new ProductDetailsDialog(mContext, pantryProduct, image );
-           productDetailsDialog.show(((PantryActivity) mContext).getSupportFragmentManager(), "product_details");
+           PantryProductDetailsDialog pantryProductDetailsDialog = new PantryProductDetailsDialog(mContext, pantryProduct, image );
+           pantryProductDetailsDialog.show(((PantryActivity) mContext).getSupportFragmentManager(), "product_details");
        });
     }
 

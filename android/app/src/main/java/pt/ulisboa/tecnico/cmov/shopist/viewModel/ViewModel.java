@@ -78,6 +78,14 @@ public class ViewModel extends AndroidViewModel {
         return productRepository.checkIfProdExistsByCode(code);
     }
 
+    public void updateProduct(Product product) {
+        productRepository.updateProduct(product);
+    }
+
+    public void deleteProduct(Product product) {
+        productRepository.deleteProduct(product);
+    }
+
     //================================== Pantry ==================================
 
     public Observable<List<Pantry>> getPantries() {

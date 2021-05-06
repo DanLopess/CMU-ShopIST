@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="50dp">
+
+    <ImageView
+        android:id="@+id/product_details_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:contentDescription="@string/product_image"
+        android:src="@drawable/ic_baseline_fastfood_24" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/product_details_name_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/name"
+            android:textSize="10pt" />
+
+        <EditText
+            android:id="@+id/product_details_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/product_details_name_title"
+            android:autofillHints=""
+            android:hint="@string/insert_name"
+            android:inputType="text"
+            android:textColor="@color/black"
+            android:textSize="8pt" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/product_details_desc_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            android:textSize="10pt" />
+
+        <EditText
+            android:id="@+id/product_details_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/product_details_desc_title"
+            android:autofillHints=""
+            android:hint="@string/insert_description"
+            android:inputType="text"
+            android:textColor="@color/black"
+            android:textSize="8pt" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/product_details_code_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/code"
+            android:textSize="10pt" />
+
+        <TextView
+            android:id="@+id/product_details_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/product_details_code_title"
+            android:textColor="@color/black"
+            android:textSize="8pt"
+            tools:text="Sample Text" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/scan_code_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/scan_code" />
+
+</LinearLayout>
