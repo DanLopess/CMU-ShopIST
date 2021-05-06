@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import pt.ulisboa.tecnico.cmov.shopist.AddPantryProductsActivity;
 import pt.ulisboa.tecnico.cmov.shopist.AddStoreProductsActivity;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
@@ -30,6 +31,7 @@ public class CreateProductDialogFragment extends DialogFragment {
     public static final int PICK_IMAGE = 1;
     public static final int PANTRY = 2;
     public static final int STORE = 3;
+    public static final int PRODUCT = 4;
 
     private final Context mContext;
     // private ImageView imageView;
@@ -108,6 +110,11 @@ public class CreateProductDialogFragment extends DialogFragment {
                             ((AddStoreProductsActivity) mContext).getViewModel().addProduct(prodName, prodDesc);
                         else
                             ((StoreActivity) mContext).getViewModel().addProduct(prodName, prodDesc, code);
+                    } else if (flag == PRODUCT) {
+                        if (code == null)
+                            ((MainActivity) mContext).getViewModel().addProduct(prodName, prodDesc);
+                        else
+                            ((MainActivity) mContext).getViewModel().addProduct(prodName, prodDesc, code);
                     }
                     dialog.dismiss();
                 }

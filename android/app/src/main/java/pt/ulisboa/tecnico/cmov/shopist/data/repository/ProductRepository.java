@@ -99,6 +99,21 @@ public class ProductRepository implements Cache {
         return productDao.checkIfProdExistsByCode(code);
     }
 
+    public void updateProduct(Product product) {
+        insertProductToDb(product).subscribe(aBoolean -> {});
+    }
+
+    public void deleteProduct(Product product) {
+        deleteProductFromDb(product).subscribe(aBoolean -> {});
+    }
+
+    private Observable<Boolean> deleteProductFromDb(@NonNull Product product) {
+        return Observable.fromCallable(() -> {
+            productDao.deleteProduct(product);
+            return true;
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
     //================================== Pantry Products ==================================
 
     public Observable<List<PantryProduct>> getPantryProducts(Long pantryId) {

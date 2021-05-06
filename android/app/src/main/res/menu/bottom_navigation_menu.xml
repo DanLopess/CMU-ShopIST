@@ -7,4 +7,8 @@
         android:enabled="true"
         android:title="@string/stores"
         android:icon="@drawable/ic_shopping_cart" />
+    <item android:id="@+id/action_products_list"
+        android:enabled="true"
+        android:title="@string/products"
+        android:icon="@drawable/ic_baseline_fastfood_24" />
 </menu>

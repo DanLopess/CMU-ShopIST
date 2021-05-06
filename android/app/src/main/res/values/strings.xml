@@ -60,4 +60,14 @@
     <string name="add_to_cart">Add to cart</string>
     <string name="create_store_dialog_title">Create a new store list</string>
     <string name="scan">Scan</string>
+    <string name="products">Products</string>
+    <string name="product_options">Product options</string>
+    <string name="edit_product">Edit product</string>
+    <string name="scan_code">Scan Code</string>
+    <string name="code">Code</string>
+    <string name="insert_description">Insert description</string>
+    <string name="insert_name">Insert name</string>
+    <string name="create_new_product">Create new product</string>
+    <string name="scan_a_barcode">Scan a barcode</string>
+    <string name="product_already_exists">That product already exists</string>
 </resources>

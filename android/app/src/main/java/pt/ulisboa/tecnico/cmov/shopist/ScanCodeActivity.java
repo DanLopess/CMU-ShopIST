@@ -48,7 +48,7 @@ public class ScanCodeActivity extends AppCompatActivity {
         mCodeScanner.setAutoFocusEnabled(true);
         mCodeScanner.setFlashEnabled(false);
         mCodeScanner.setDecodeCallback(this::returnResult);
-        mCodeScanner.setErrorCallback(result -> this.runOnUiThread(() -> Log.e("Scan", "Camera initialization error: " + result.getMessage())));
+        mCodeScanner.setErrorCallback(this::returnError);
         scannerView.setOnClickListener(v -> mCodeScanner.startPreview());
     }
 
@@ -89,6 +89,12 @@ public class ScanCodeActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtra("code", result.getText());
         setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    private void returnError(Exception result) {
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
         finish();
     }
 }
