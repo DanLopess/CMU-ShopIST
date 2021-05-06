@@ -45,6 +45,12 @@ public interface ProductDao {
     @Query("SELECT SUM(qttNeeded) FROM pantry_product WHERE productId == :productId")
     Observable<Integer> getQttNeeded(Long productId);
 
+    @Query("SELECT * FROM products WHERE code == :code")
+    Observable<Product> getProductByCode(String code); //Code is unique
+
+    @Query("SELECT EXISTS(SELECT * FROM products WHERE code == :code)")
+    Observable<Boolean> checkIfProdExistsByCode(String code);
+
     //============= PantryProducts =============
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

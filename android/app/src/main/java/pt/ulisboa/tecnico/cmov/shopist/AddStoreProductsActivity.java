@@ -53,7 +53,7 @@ public class AddStoreProductsActivity extends AppCompatActivity {
     private void initialize() {
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
         storeId = getIntent().getLongExtra("storeId", -1);
-        mCreateProductDialog = new CreateProductDialogFragment(this);
+        mCreateProductDialog = new CreateProductDialogFragment(this, CreateProductDialogFragment.STORE);
 
         rvProducts = findViewById(R.id.rv_existing_products);
 

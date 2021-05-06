@@ -91,6 +91,14 @@ public class ProductRepository implements Cache {
         return productDao.getQttNeeded(productId);
     }
 
+    public Observable<Product> getProductByCode(String code) {
+        return productDao.getProductByCode(code);
+    }
+
+    public Observable<Boolean> checkIfProdExistsByCode(String code) {
+        return productDao.checkIfProdExistsByCode(code);
+    }
+
     //================================== Pantry Products ==================================
 
     public Observable<List<PantryProduct>> getPantryProducts(Long pantryId) {

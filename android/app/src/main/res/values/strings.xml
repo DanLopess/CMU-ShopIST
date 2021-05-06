@@ -59,4 +59,5 @@
     <string name="stores">Stores</string>
     <string name="add_to_cart">Add to cart</string>
     <string name="create_store_dialog_title">Create a new store list</string>
+    <string name="scan">Scan</string>
 </resources>

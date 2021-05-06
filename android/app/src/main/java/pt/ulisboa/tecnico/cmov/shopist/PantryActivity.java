@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,15 +12,20 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 import pt.ulisboa.tecnico.cmov.shopist.adapter.PantryProductsAdapter;
 
 public class PantryActivity extends AppCompatActivity {
+
+    private static final int SCAN_REQ_CODE = 1;
 
     private Long myId;
     private Pantry pantry;
@@ -43,9 +49,29 @@ public class PantryActivity extends AppCompatActivity {
     }
 
     public void scanProduct(MenuItem item) {
-        //TODO scan product code
-        //if new product, create and associate code
-        //if code existent, add to pantry very fast
+        Intent intent = new Intent(this, ScanCodeActivity.class);
+        startActivityForResult(intent, SCAN_REQ_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SCAN_REQ_CODE && resultCode == RESULT_OK) {
+            assert data != null;
+            String code = data.getStringExtra("code");
+            viewModel.checkIfProdExistsByCode(code).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(exists -> {
+                        if (!exists) {
+                            CreateProductDialogFragment dialog = new CreateProductDialogFragment(this, code, CreateProductDialogFragment.PANTRY);
+                            dialog.show(getSupportFragmentManager(), "create product");
+                        }
+                        viewModel.getProductByCode(code).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe(product -> {
+                            viewModel.addPantryProducts(myId, Collections.singletonList(product));
+                            adapter.notifyDataSetChanged();
+                        });
+            });
+        }
     }
 
     public ViewModel getViewModel() {

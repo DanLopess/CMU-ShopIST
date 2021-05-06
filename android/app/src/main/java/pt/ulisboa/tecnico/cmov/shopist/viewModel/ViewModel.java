@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
@@ -49,7 +50,11 @@ public class ViewModel extends AndroidViewModel {
     }
 
     public void addProduct(String name, String description) {
-        productRepository.addProduct(new Product(name, description));
+        productRepository.addProduct(new Product(name, description, null));
+    }
+
+    public void addProduct(String name, String description, String code) {
+        productRepository.addProduct(new Product(name, description, code));
     }
 
     public Observable<ProductAndPrincipalImage> getProductAndPrincipalImage(long id) {
@@ -63,6 +68,14 @@ public class ViewModel extends AndroidViewModel {
 
     public Observable<Integer> getQttNeeded(Product product) {
         return productRepository.getQttNeeded(product.getProductId());
+    }
+
+    public Observable<Product> getProductByCode(String code) {
+        return productRepository.getProductByCode(code);
+    }
+
+    public Observable<Boolean> checkIfProdExistsByCode(String code) {
+        return productRepository.checkIfProdExistsByCode(code);
     }
 
     //================================== Pantry ==================================
