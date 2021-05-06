@@ -33,7 +33,7 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View ProductView = inflater.inflate(R.layout.select_product_item, parent, false);
+        View ProductView = inflater.inflate(R.layout.list_item_select_product, parent, false);
 
         // Return a new holder instance
         return new ViewHolder(ProductView);
@@ -86,8 +86,8 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
         public ViewHolder(View view) {
             super(view);
             // image = view.findViewById(R.id.item_image);
-            name = view.findViewById(R.id.product_item_name);
-            description = view.findViewById(R.id.product_description);
+            name = view.findViewById(R.id.storeProdName_tv);
+            description = view.findViewById(R.id.storeProdInfoText_tv);
             layout = view.findViewById(R.id.productItemLinearLayout);
         }
     }

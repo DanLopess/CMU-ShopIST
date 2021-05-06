@@ -20,13 +20,17 @@ public class StoreProductCrossRef {
     private Double price;
     private Integer qttNeeded;
     private Integer qttCart;
+    private Boolean shown;
 
     @Ignore
     public StoreProductCrossRef(Long storeId, Long productId) {
         this.storeId = storeId;
         this.productId = productId;
         this.price = 0.0;
-        this.qttNeeded = 1;
         this.qttCart = 0;
+    }
+
+    public void updateShown() {
+        shown = qttNeeded > 0 || qttCart > 0;
     }
 }

@@ -1,14 +1,14 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
 
 import java.util.List;
 
@@ -19,18 +19,18 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
-public class AddPantryProductsActivity extends AppCompatActivity {
+public class AddStoreProductsActivity extends AppCompatActivity {
 
     private DialogFragment mCreateProductDialog;
     private RecyclerView rvProducts;
     private SelectProductsAdapter adapter;
     private ViewModel viewModel;
-    private Long pantryId;
+    private Long storeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_pantry_products);
+        setContentView(R.layout.activity_add_store_products);
 
         initialize();
     }
@@ -38,7 +38,7 @@ public class AddPantryProductsActivity extends AppCompatActivity {
     public void returnResult(View v) {
         List<Product> selectedProducts = adapter.getSelectedItems();
         if (!selectedProducts.isEmpty())
-            viewModel.addPantryProducts(pantryId, selectedProducts);
+            viewModel.addStoreProducts(storeId, selectedProducts);
         finish();
     }
 
@@ -52,8 +52,8 @@ public class AddPantryProductsActivity extends AppCompatActivity {
 
     private void initialize() {
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
-        pantryId = getIntent().getLongExtra("pantryId", -1);
-        mCreateProductDialog = new CreateProductDialogFragment(this, CreateProductDialogFragment.PANTRY);
+        storeId = getIntent().getLongExtra("storeId", -1);
+        mCreateProductDialog = new CreateProductDialogFragment(this, CreateProductDialogFragment.STORE);
 
         rvProducts = findViewById(R.id.rv_existing_products);
 
