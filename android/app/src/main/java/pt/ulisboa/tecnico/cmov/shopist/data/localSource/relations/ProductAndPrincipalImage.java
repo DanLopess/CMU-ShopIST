@@ -13,7 +13,7 @@ public class ProductAndPrincipalImage {
     public ProductImage productImage;
 
     public ProductAndPrincipalImage() {
-        product = new Product("nomeprod", "descProd");
+        product = new Product("nomeprod", "descProd", null);
         productImage = new ProductImage();
     }
 

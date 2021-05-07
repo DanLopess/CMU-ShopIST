@@ -1,38 +1,52 @@
 package pt.ulisboa.tecnico.cmov.shopist.dialog;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 import pt.ulisboa.tecnico.cmov.shopist.AddPantryProductsActivity;
+import pt.ulisboa.tecnico.cmov.shopist.AddStoreProductsActivity;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
+import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 
 public class CreateProductDialogFragment extends DialogFragment {
 
+    public static final int PICK_IMAGE = 1;
+    public static final int PANTRY = 2;
+    public static final int STORE = 3;
+    public static final int PRODUCT = 4;
+
     private final Context mContext;
     // private ImageView imageView;
     private View mDialogView;
+    private String code = null;
+    private final int flag; //used to not need to make 2 separate dialogs
 
-    public static final int PICK_IMAGE = 1;
-
-    public CreateProductDialogFragment(Context context) {
+    public CreateProductDialogFragment(Context context, int flag) {
         this.mContext = context;
+        this.flag = flag;
+    }
+    public CreateProductDialogFragment(Context context, String code, int flag) {
+        this.mContext = context;
+        this.code = code;
+        this.flag = flag;
     }
 
     @NonNull
@@ -86,7 +100,22 @@ public class CreateProductDialogFragment extends DialogFragment {
                     Toast.makeText(mContext, R.string.create_product_error, Toast.LENGTH_LONG)
                             .show();
                 } else {
-                    ((AddPantryProductsActivity) mContext).getViewModel().addProduct(prodName, prodDesc);
+                    if (flag == PANTRY) {
+                        if (code == null)
+                            ((AddPantryProductsActivity) mContext).getViewModel().addProduct(prodName, prodDesc);
+                        else
+                            ((PantryActivity) mContext).getViewModel().addProduct(prodName, prodDesc, code);
+                    } else if (flag == STORE) {
+                        if (code == null)
+                            ((AddStoreProductsActivity) mContext).getViewModel().addProduct(prodName, prodDesc);
+                        else
+                            ((StoreActivity) mContext).getViewModel().addProduct(prodName, prodDesc, code);
+                    } else if (flag == PRODUCT) {
+                        if (code == null)
+                            ((MainActivity) mContext).getViewModel().addProduct(prodName, prodDesc);
+                        else
+                            ((MainActivity) mContext).getViewModel().addProduct(prodName, prodDesc, code);
+                    }
                     dialog.dismiss();
                 }
             });

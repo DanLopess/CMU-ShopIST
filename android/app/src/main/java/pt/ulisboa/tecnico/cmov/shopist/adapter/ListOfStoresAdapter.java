@@ -44,12 +44,7 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
     @Override
     public ListOfStoresAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
-        // Inflate the custom layout
-        //TODO maybe change??
-        View listView = inflater.inflate(R.layout.list_of_lists_item, parent, false);
-
-        // Return a new holder instance
+        View listView = inflater.inflate(R.layout.list_item_list_of_stores, parent, false);
         return new ViewHolder(listView);
     }
 
@@ -60,14 +55,13 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
 
         // Set up listeners
         View.OnClickListener itemViewGroupListener = v -> {
-            //TODO Activity
             Intent intent = new Intent(context, StoreActivity.class);
             intent.putExtra("StoreId", list.getStoreId());
             context.startActivity(intent);
         };
 
-        PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {switch (item.getItemId()) {
-            case R.id.list_options_delete:
+        PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {
+            if (item.getItemId() == R.id.list_options_delete) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
                 builder.setTitle(R.string.delete_list)
                         .setMessage(R.string.delete_list_confirmation)
@@ -75,20 +69,20 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
                             ((MainActivity) mContext).getViewModel().deleteStore(list);
                             notifyDataSetChanged();
                         })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {dialog.dismiss();});
+                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                            dialog.dismiss();
+                        });
                 builder.create().show();
-                return true;
-            case R.id.list_options_sync:
+            } else if (item.getItemId() == R.id.list_options_sync) {
                 // TODO sync with server
-                return true;
-            default:
-                return false;
-        }};
+            }
+            return true;
+        };
 
         View.OnClickListener itemOptionsListener = v -> {
             PopupMenu listOptionsMenu = new PopupMenu(v.getContext(), v);
             MenuInflater inflater1 = listOptionsMenu.getMenuInflater();
-            inflater1.inflate(R.menu.list_options_menu, listOptionsMenu.getMenu());
+            inflater1.inflate(R.menu.options_list_menu, listOptionsMenu.getMenu());
             listOptionsMenu.setOnMenuItemClickListener(menuItemClickListener);
             listOptionsMenu.show();
         };
@@ -101,8 +95,12 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
         // TODO String distText = list.getDriveTime() + " " + mContext.getString(R.string.drive_time);
         //distTextView.setText(distText);
 
+        TextView waitTimeTextView = holder.waitTime;
+        // TODO String queueText = list.getQueueWaitTime() + " " + mContext.getString(R.string.minutes_in_queue);
+        //waitTimeTextView.setText(queueText);
+
         TextView itemNrTextView = holder.itemNr;
-        viewModel.getPantrySize(list.storeId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(size -> {
+        viewModel.getStoreSize(list.storeId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(size -> {
             String itemNrText = size + " " + mContext.getString(R.string.items);
             itemNrTextView.setText(itemNrText);
         });
@@ -123,6 +121,7 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
         public TextView name;
         public TextView distTime;
         public TextView itemNr;
+        public TextView waitTime;
         public ImageButton options;
 
         public ViewHolder(View view) {
@@ -131,6 +130,7 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
             name = view.findViewById(R.id.listName_textView);
             distTime = view.findViewById(R.id.listDistTime_tv);
             itemNr = view.findViewById(R.id.listItemNr_tv);
+            waitTime = view.findViewById(R.id.listQueueWaitTime_tv);
             options = view.findViewById(R.id.list_options_bt);
         }
     }

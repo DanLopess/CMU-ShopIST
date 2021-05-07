@@ -42,6 +42,15 @@ public interface ProductDao {
     @Query("SELECT * FROM products p JOIN productsImages pi where p.productId == :id and p.imageId == pi.imageId")
     Observable<ProductAndPrincipalImage> getProductAndImage(Long id);
 
+    @Query("SELECT SUM(qttNeeded) FROM pantry_product WHERE productId == :productId")
+    Observable<Integer> getQttNeeded(Long productId);
+
+    @Query("SELECT * FROM products WHERE code == :code")
+    Observable<Product> getProductByCode(String code); //Code is unique
+
+    @Query("SELECT EXISTS(SELECT * FROM products WHERE code == :code)")
+    Observable<Boolean> checkIfProdExistsByCode(String code);
+
     //============= PantryProducts =============
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -49,6 +58,9 @@ public interface ProductDao {
 
     @Delete
     void deletePantryProduct(PantryProductCrossRef pantryProd);
+
+    @Query("DELETE FROM pantry_product WHERE pantryId == :pantryId")
+    void deletePantryProducts(Long pantryId);
 
     @Query("SELECT * FROM pantry_product pp JOIN products p where pantryId == :id and pp.productId == p.productId")
     Observable<List<PantryProduct>> getPantryProducts(Long id);
@@ -61,7 +73,10 @@ public interface ProductDao {
     @Query("SELECT * FROM store_product sp JOIN products p where storeId == :id and sp.productId == p.productId")
     Observable<List<StoreProduct>> getStoreProducts(Long id);
 
-    @Query("SELECT COUNT(*) FROM store_product WHERE storeId == :id")
+    @Query("SELECT * FROM store_product sp JOIN products p WHERE storeId == :id AND sp.productId == p.productId AND shown == 1")
+    Observable<List<StoreProduct>> getShownStoreProducts(Long id);
+
+    @Query("SELECT COUNT(*) FROM store_product WHERE storeId == :id AND shown == 1")
     Observable<Integer> getStoreSize(Long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -69,4 +84,7 @@ public interface ProductDao {
 
     @Delete
     void deleteStoreProduct(StoreProductCrossRef storeProd);
+
+    @Query("DELETE FROM store_product WHERE storeId == :storeId")
+    void deleteStoreProducts(Long storeId);
 }

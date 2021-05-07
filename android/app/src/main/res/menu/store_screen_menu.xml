@@ -2,12 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/scan_product"
-        android:icon="@drawable/baseline_qr_code_scanner_24"
+        android:icon="@drawable/barcode_scan"
         android:onClick="scanProduct"
         android:title="@string/scan_product"
         app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/add_products"
+    <item android:id="@+id/add_store_products"
         android:icon="@drawable/ic_add"
         android:onClick="addProducts"
         android:title="@string/add_product"
