@@ -18,7 +18,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.StoreProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
@@ -31,7 +30,6 @@ public class StoreActivity extends AppCompatActivity {
     private RecyclerView rvProducts;
     private StoreProductsAdapter adapter;
     private ViewModel viewModel;
-    private ProductAndPrincipalImage productToShowDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

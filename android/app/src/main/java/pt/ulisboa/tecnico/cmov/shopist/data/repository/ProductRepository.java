@@ -1,11 +1,15 @@
 package pt.ulisboa.tecnico.cmov.shopist.data.repository;
 
 import android.app.Application;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.room.Dao;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,17 +17,14 @@ import javax.inject.Singleton;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.ShopIstDatabase;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.ProductDao;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 
@@ -52,10 +53,6 @@ public class ProductRepository implements Cache {
         // .mergeWith(getProductsFromAPI());
     }
 
-    public Observable<ProductAndPrincipalImage> getProductAndPrincipalImage(Long id) {
-        return productDao.getProductAndImage(id);
-    }
-
     // public Observable<List<ProductAndPrincipalImage>> getProductsAndImage() {
     //     if(mCache != null && !mCacheIsDirty) {
     //         return Observable.just(mCache);
@@ -73,17 +70,17 @@ public class ProductRepository implements Cache {
         return backendService.getProducts();
     }
 
-    private Observable<List<ProductAndPrincipalImage>> getProductsAndPrincipalImageFromDB() { return productDao.getProductsAndImage(); }
-    private Observable<List<ProductAndPrincipalImage>> getProductsAndPrincipalImageFromAPI() { return backendService.getProductsAndPrincipalImage(); }
-
-    public void addProduct(Product product) {
-        insertProductToDb(product).subscribe(aBoolean -> mCache.add(product), throwable -> Log.d("DB ERROR", throwable.toString()));
+    public Single<Long> addProduct(Product product) {
+        Single<Long> obs = insertProductToDb(product);
+        obs.subscribe(aBoolean -> {
+            mCache.add(product);
+        }, throwable -> Log.d("DB ERROR", throwable.toString()));
+        return obs;
     }
 
-    private Observable<Boolean> insertProductToDb(@NonNull Product product) {
-        return Observable.fromCallable(() -> {
-            productDao.insert(product);
-            return true;
+    private Single<Long> insertProductToDb(@NonNull Product product) {
+        return Single.fromCallable(() -> {
+            return productDao.insert(product);
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -231,5 +228,23 @@ public class ProductRepository implements Cache {
     @Override
     public void makeCacheDirty() {
         mCacheIsDirty = true;
+    }
+
+    public Single<Bitmap> getProductImage(String path) {
+        Bitmap image = loadImageFromStorage(path);
+        return Single.just(image);
+    }
+
+    private Bitmap loadImageFromStorage(String path) {
+        Bitmap b = null;
+        try {
+            File f = new File(path);
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        return b;
     }
 }

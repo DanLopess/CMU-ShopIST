@@ -59,7 +59,7 @@ public class AddPantryProductsActivity extends AppCompatActivity {
 
         viewModel.getProducts().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(list -> {
-            adapter = new SelectProductsAdapter(list);
+            adapter = new SelectProductsAdapter(this, list);
             rvProducts.setAdapter(adapter);
             rvProducts.setLayoutManager(new LinearLayoutManager(this));
         });

@@ -5,8 +5,6 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Transaction;
-import androidx.room.Update;
 
 import java.util.List;
 
@@ -15,8 +13,6 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProduct
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductWithImages;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 
 @Dao
@@ -25,22 +21,13 @@ public interface ProductDao {
     //============= Products =============
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Product product);
+    long insert(Product product);
 
     @Delete
     void deleteProduct(Product product);
 
     @Query("SELECT * FROM products")
     Observable<List<Product>> getProducts();
-
-    @Query("SELECT * FROM products")
-    Observable<List<ProductAndPrincipalImage>> getProductsAndImage();
-
-    @Query("SELECT * FROM products where productId == :id")
-    Observable<List<ProductWithImages>> getProductWithImages(Long id);
-
-    @Query("SELECT * FROM products p JOIN productsImages pi where p.productId == :id and p.imageId == pi.imageId")
-    Observable<ProductAndPrincipalImage> getProductAndImage(Long id);
 
     @Query("SELECT SUM(qttNeeded) FROM pantry_product WHERE productId == :productId")
     Observable<Integer> getQttNeeded(Long productId);

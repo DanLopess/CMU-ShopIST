@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +21,11 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Objects;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.ProductImage;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 
 public class PantryProductDetailsDialog extends DialogFragment {
@@ -30,12 +33,10 @@ public class PantryProductDetailsDialog extends DialogFragment {
     private final Context mContext;
     private View mDialogView;
     private PantryProduct pantryProduct;
-    private byte[] image;
 
-    public PantryProductDetailsDialog(Context context, PantryProduct pantryProduct, ProductImage productImage) {
+    public PantryProductDetailsDialog(Context context, PantryProduct pantryProduct) {
         this.mContext = context;
         this.pantryProduct = pantryProduct;
-        this.image = productImage.getImage();
     }
 
     @NonNull
@@ -44,6 +45,7 @@ public class PantryProductDetailsDialog extends DialogFragment {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme_FullScreen);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.dialog_pantry_product_details, null);
+
 
         alertDialogBuilder.setTitle(R.string.product_details)
                 .setView(mDialogView)
@@ -95,9 +97,12 @@ public class PantryProductDetailsDialog extends DialogFragment {
         desc.setText(pantryProduct.getProduct().productDescription);
         availablePicker.setValue(pantryProduct.getQttAvailable());
         neededPicker.setValue(pantryProduct.getQttNeeded());
-        if(image == null) {
+        if(pantryProduct.getProduct().getImagePath() != null) {
+            ((PantryActivity) mContext).getViewModel().getProductImage(pantryProduct.getProduct().getImagePath()).
+                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
+                image.setImageBitmap(Bitmap.createScaledBitmap(res, res.getWidth(), res.getHeight(), false));
+            });
         }
-//            image.setImageBitmap(BitmapFactory.decodeByteArray(productAndPrincipalImage.productImage.getImage(), 0, productAndPrincipalImage.productImage.getImage().length));
     }
 
 

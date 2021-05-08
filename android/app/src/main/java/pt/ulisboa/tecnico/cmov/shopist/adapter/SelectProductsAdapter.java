@@ -1,10 +1,12 @@
 package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,16 +16,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.AddPantryProductsActivity;
+import pt.ulisboa.tecnico.cmov.shopist.AddStoreProductsActivity;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
+import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAdapter.ViewHolder>{
 
     private List<Product> mProducts;
     private List<Product> mSelectedProducts = new ArrayList<>();
+    private final Context mContext;
 
-    public SelectProductsAdapter(List<Product> products) {
+    public SelectProductsAdapter(Context context, List<Product> products) {
         mProducts = products;
+        mContext = context;
     }
 
     @NonNull
@@ -50,10 +61,21 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
         TextView tvItemDescription = holder.description;
         tvItemDescription.setText(product.productDescription);
 
-        /*ImageView imageView = holder.image;
-        if(product.getImage() != null) {
-            imageView.setImageBitmap(product.getImage());
-        }*/
+        ImageView imageView = holder.image;
+        if(product.getThumbnailPath() != null) {
+            ViewModel viewModel = null;
+            try {
+                viewModel = ((AddPantryProductsActivity) mContext).getViewModel();
+            } catch (Exception e) {
+                viewModel = ((AddStoreProductsActivity) mContext).getViewModel();
+            }
+            if(viewModel != null) {
+                viewModel.getProductImage(product.getThumbnailPath()).
+                        subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
+                    imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false));
+                });
+            }
+        }
 
         // Listener to select multiple items from the list
         holder.layout.setOnClickListener(v -> {
@@ -81,11 +103,11 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
         public LinearLayout layout;
         public TextView name;
         public TextView description;
-        // public ImageView image;
+         public ImageView image;
 
         public ViewHolder(View view) {
             super(view);
-            // image = view.findViewById(R.id.item_image);
+            image = view.findViewById(R.id.item_image);
             name = view.findViewById(R.id.storeProdName_tv);
             description = view.findViewById(R.id.storeProdInfoText_tv);
             layout = view.findViewById(R.id.productItemLinearLayout);

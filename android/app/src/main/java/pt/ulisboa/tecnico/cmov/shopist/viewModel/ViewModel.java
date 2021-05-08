@@ -1,29 +1,31 @@
 package pt.ulisboa.tecnico.cmov.shopist.viewModel;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
 import android.location.Location;
+import android.media.ThumbnailUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Singleton;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableEmitter;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Single;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.ProductImage;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.PantryRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
@@ -35,9 +37,11 @@ public class ViewModel extends AndroidViewModel {
     PantryRepository pantryRepository;
     StoreRepository storeRepository;
     ProductRepository productRepository;
+    Context mContext;
 
     public ViewModel(@NonNull Application application) {
         super(application);
+        mContext = application.getApplicationContext();
         pantryRepository = new PantryRepository(application);
         storeRepository = new StoreRepository(application);
         productRepository = new ProductRepository(application);
@@ -49,22 +53,31 @@ public class ViewModel extends AndroidViewModel {
         return productRepository.getProducts();
     }
 
-    public void addProduct(String name, String description) {
-        productRepository.addProduct(new Product(name, description, null));
+    public void addProduct(String name, String description, Bitmap image) {
+        String path = null;
+        String thumbPath = null;
+        if(image != null) {
+            path = saveToInternalStorage(image, name + description);
+            Bitmap thumbnail = ThumbnailUtils.extractThumbnail(image, 40, 60);
+            thumbPath = saveToInternalStorage(thumbnail, name + description + "thumb");
+        }
+        productRepository.addProduct(new Product(name, description, null, path, thumbPath));
+    }
+    public Single<Bitmap> getProductImage(String path) {
+        return productRepository.getProductImage(path);
     }
 
-    public void addProduct(String name, String description, String code) {
-        productRepository.addProduct(new Product(name, description, code));
+    public void addProduct(String name, String description, Bitmap image, String code) {
+        String path = null;
+        String thumbPath = null;
+        if(image != null) {
+            path = saveToInternalStorage(image, name + description);
+            Bitmap thumbnail = ThumbnailUtils.extractThumbnail(image, 40, 60);
+            thumbPath = saveToInternalStorage(thumbnail, name + description + "thumb");
+        }
+        productRepository.addProduct(new Product(name, description, null, path, thumbPath));
     }
 
-    public Observable<ProductAndPrincipalImage> getProductAndPrincipalImage(long id) {
-        //return productRepository.getProductAndPrincipalImage(id);
-        return Observable.just(new ProductAndPrincipalImage());
-    }
-
-    public Observable<ProductImage> getProductImage(Long productId) {
-        return Observable.just(new ProductImage());
-    }
 
     public Observable<Integer> getQttNeeded(Product product) {
         return productRepository.getQttNeeded(product.getProductId());
@@ -78,7 +91,16 @@ public class ViewModel extends AndroidViewModel {
         return productRepository.checkIfProdExistsByCode(code);
     }
 
-    public void updateProduct(Product product) {
+    public void updateProduct(Product product, Bitmap image) {
+        String path = null;
+        String thumbPath = null;
+        if(image != null) {
+            path = saveToInternalStorage(image, product.getProductName() + product.getProductDescription());
+            Bitmap thumbnail = ThumbnailUtils.extractThumbnail(image, 40, 60);
+            thumbPath = saveToInternalStorage(thumbnail, product.getProductName() + product.getProductDescription() + "thumb");
+        }
+        product.setThumbnailPath(thumbPath);
+        product.setImagePath(path);
         productRepository.updateProduct(product);
     }
 
@@ -198,5 +220,26 @@ public class ViewModel extends AndroidViewModel {
                 storeProduct.getQttCart(),
                 storeProduct.getShown()
         );
+    }
+
+    private String saveToInternalStorage(Bitmap bitmapImage, String path){
+        ContextWrapper cw = new ContextWrapper(mContext);
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File mypath=new File(directory,path);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return mypath.getAbsolutePath();
     }
 }
