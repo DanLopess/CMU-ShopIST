@@ -6,11 +6,12 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
 @Entity(tableName = "products",
-        foreignKeys = {@ForeignKey(entity = ProductImage.class, parentColumns = "imageId", childColumns = "imageId")},
         indices = {@Index(value = {"code"}, unique = true)})
 public class Product {
     @PrimaryKey(autoGenerate = true)
@@ -18,12 +19,16 @@ public class Product {
     public Long productId;
     public String productName;
     public String productDescription;
-    public String imageId;
+    public String imagePath;
+    public String thumbnailPath;
+//    public List<String> crowdSourceImage;
     public String code;
 
-    public Product(String productName, String productDescription, String code) {
+    public Product(String productName, String productDescription, String code, String imagePath, String thumbnailPath) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.code = code;
+        this.imagePath = imagePath;
+        this.thumbnailPath = thumbnailPath;
     }
 }

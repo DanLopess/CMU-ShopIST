@@ -10,7 +10,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -53,10 +52,6 @@ public class BackendService {
     }
 
     public Observable<List<Product>> getProducts() {
-        return Observable.just(null);
-    }
-
-    public Observable<List<ProductAndPrincipalImage>> getProductsAndPrincipalImage() {
         return Observable.just(null);
     }
 }

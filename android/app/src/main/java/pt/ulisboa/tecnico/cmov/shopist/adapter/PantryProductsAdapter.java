@@ -2,11 +2,14 @@ package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -94,10 +97,13 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
                 " / " + mContext.getString(R.string.needed) + ": " + product.getQttNeeded();
         tvWanted.setText(infoText);
 
-        /*ImageView imageView = holder.image;
-        if(product.getImage() != null) {
-            imageView.setImageBitmap(product.getImage());
-        }*/
+        ImageView imageView = holder.image;
+        if(product.getProduct().getThumbnailPath() != null) {
+            ((PantryActivity) mContext).getViewModel().getProductImage(product.getProduct().getThumbnailPath()).
+                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
+                imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false));
+            });
+        }
 
         holder.options.setOnClickListener(itemOptionsListener);
 
@@ -109,12 +115,13 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
     }
 
     private void onClickProduct(PantryProduct pantryProduct) {
-       ((PantryActivity) mContext).getViewModel().getProductImage(pantryProduct.getProduct().getProductId())
+       ((PantryActivity) mContext).getViewModel().getProductImage(pantryProduct.getProduct().getThumbnailPath())
                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
-           PantryProductDetailsDialog pantryProductDetailsDialog = new PantryProductDetailsDialog(mContext, pantryProduct, image );
+           PantryProductDetailsDialog pantryProductDetailsDialog = new PantryProductDetailsDialog(mContext, pantryProduct);
            pantryProductDetailsDialog.show(((PantryActivity) mContext).getSupportFragmentManager(), "product_details");
        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -124,14 +131,14 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public TextView info;
-        // TODO public ImageView image;
         public ImageButton options;
         public Button consumeBt;
         public LinearLayout productClickableArea;
+        public ImageView image;
 
         public ViewHolder(View view) {
             super(view);
-            // image = view.findViewById(R.id.item_image);
+            image = view.findViewById(R.id.item_image);
             name = view.findViewById(R.id.storeProdName_tv);
             info = view.findViewById(R.id.storeProdInfoText_tv);
             options = view.findViewById(R.id.store_product_options_bt);
