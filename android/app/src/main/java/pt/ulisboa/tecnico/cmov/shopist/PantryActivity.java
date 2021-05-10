@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.ProductAndPrincipalImage;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
@@ -35,7 +34,6 @@ public class PantryActivity extends ProductListActivity {
     private RecyclerView rvProducts;
     private PantryProductsAdapter adapter;
     private ViewModel viewModel;
-    private ProductAndPrincipalImage productToShowDetails;
 
 
     @Override
