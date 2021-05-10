@@ -2,20 +2,20 @@ package pt.ulisboa.tecnico.cmov.shopist.viewModel;
 
 import android.app.Application;
 import android.location.Location;
+import android.location.LocationManager;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Singleton;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
@@ -28,10 +28,10 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.PantryRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.StoreRepository;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 
 @Singleton
 public class ViewModel extends AndroidViewModel {
-
     PantryRepository pantryRepository;
     StoreRepository storeRepository;
     ProductRepository productRepository;
@@ -86,6 +86,7 @@ public class ViewModel extends AndroidViewModel {
         productRepository.deleteProduct(product);
     }
 
+
     //================================== Pantry ==================================
 
     public Observable<List<Pantry>> getPantries() {
@@ -96,11 +97,12 @@ public class ViewModel extends AndroidViewModel {
         return pantryRepository.getPantry(id);
     }
 
-    public void addPantry(String name, String description, Location location) {
-        if (location != null)
-            pantryRepository.addPantry(new Pantry(name, description, new LocationEntity(location.getLatitude(), location.getLongitude())));
-        else
-            pantryRepository.addPantry(new Pantry(name, description, null));
+    public void addPantry(String name, String description, LocationWrapper location) {
+        if (location != null) {
+            pantryRepository.addPantry(new Pantry(name, description, location));
+        } else {
+            pantryRepository.addPantry(new Pantry(name, description));
+        }
     }
 
     public void deletePantry(Pantry pantry) {
@@ -138,11 +140,12 @@ public class ViewModel extends AndroidViewModel {
         return storeRepository.getStore(id);
     }
 
-    public void addStore(String name, Location location) {
-        if (location != null)
-            storeRepository.addStore(new Store(name, new LocationEntity(location.getLatitude(), location.getLongitude())));
-        else
-            storeRepository.addStore(new Store(name, null));
+    public void addStore(String name, LocationWrapper location) {
+        if (location != null) {
+            storeRepository.addStore(new Store(name, location));
+        } else {
+            storeRepository.addStore(new Store(name));
+        }
     }
 
     public void deleteStore(Store store) {

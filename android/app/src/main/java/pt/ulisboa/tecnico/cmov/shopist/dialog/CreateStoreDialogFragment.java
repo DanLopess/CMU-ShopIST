@@ -1,8 +1,10 @@
 package pt.ulisboa.tecnico.cmov.shopist.dialog;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,11 +24,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Objects;
 
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
+import pt.ulisboa.tecnico.cmov.shopist.MapsActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
+
+import static android.app.Activity.RESULT_OK;
+import static pt.ulisboa.tecnico.cmov.shopist.util.Constants.LOCATION_DATA;
+import static pt.ulisboa.tecnico.cmov.shopist.util.Constants.LOCATION_EXTRA;
 
 public class CreateStoreDialogFragment extends DialogFragment {
     private final Context mContext;
     private View mDialogView;
+    private Location pickedLocation;
 
     public CreateStoreDialogFragment(Context context) {
         this.mContext = context;
@@ -57,6 +66,9 @@ public class CreateStoreDialogFragment extends DialogFragment {
         if(dialog != null) {
             EditText inputTitle = mDialogView.findViewById(R.id.editText_listName);
             Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
+            Button pickLocationButton = mDialogView.findViewById(R.id.button_pickLocation);
+
+            pickLocationButton.setOnClickListener(v->pickLocation());
 
             positiveButton.setOnClickListener( v -> {
                 String listTitle = inputTitle.getText().toString();
@@ -65,7 +77,7 @@ public class CreateStoreDialogFragment extends DialogFragment {
                     Toast.makeText(mContext, R.string.create_list_error, Toast.LENGTH_LONG)
                             .show();
                 } else {
-                    ((MainActivity) mContext).getViewModel().addStore(listTitle, null);
+                    ((MainActivity) mContext).getViewModel().addStore(listTitle, new LocationWrapper(pickedLocation));
                     RecyclerView rv = Objects.requireNonNull(getActivity()).findViewById(R.id.recyclerView);
                     Objects.requireNonNull(rv.getAdapter()).notifyDataSetChanged();
                     dialog.dismiss();
@@ -74,14 +86,18 @@ public class CreateStoreDialogFragment extends DialogFragment {
         }
     }
 
-    private Location getLocationOption(Spinner spinnerLoc) {
-        int option = spinnerLoc.getSelectedItemPosition();
-        if (option == 0 || option == 3)
-            return null;
-        else if (option == 1)
-            return null; // return curr location
-        else { // TODO pick location, open map and pick location
-            return null;
+    private void pickLocation() {
+        Activity act = getActivity();
+        if (act != null) {
+            Intent intent = new Intent(getActivity(), MapsActivity.class);
+            startActivityForResult(intent, LOCATION_DATA);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == LOCATION_DATA && resultCode == RESULT_OK) {
+            pickedLocation = Objects.requireNonNull(data.getExtras()).getParcelable(LOCATION_EXTRA);
         }
     }
 }

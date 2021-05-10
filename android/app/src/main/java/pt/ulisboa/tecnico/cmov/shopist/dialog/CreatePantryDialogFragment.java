@@ -1,17 +1,16 @@
 package pt.ulisboa.tecnico.cmov.shopist.dialog;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,13 +21,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Objects;
 
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
+import pt.ulisboa.tecnico.cmov.shopist.MapsActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
+
+import static android.app.Activity.RESULT_OK;
+import static pt.ulisboa.tecnico.cmov.shopist.util.Constants.LOCATION_DATA;
+import static pt.ulisboa.tecnico.cmov.shopist.util.Constants.LOCATION_EXTRA;
 
 public class CreatePantryDialogFragment extends DialogFragment {
     private final Context mContext;
     private View mDialogView;
+    private Location pickedLocation;
+
 
     public CreatePantryDialogFragment(Context context) {
         this.mContext = context;
@@ -40,6 +45,7 @@ public class CreatePantryDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.dialog_create_pantry, null);
+
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
@@ -59,9 +65,12 @@ public class CreatePantryDialogFragment extends DialogFragment {
         if(dialog != null) {
             EditText inputTitle = mDialogView.findViewById(R.id.editText_listName);
             EditText inputDesc = mDialogView.findViewById(R.id.editText_listDescription);
-            Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
+            Button pickLocationButton = mDialogView.findViewById(R.id.button_pickLocation);
+            Button createButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
 
-            positiveButton.setOnClickListener( v -> {
+            pickLocationButton.setOnClickListener(v->pickLocation());
+
+            createButton.setOnClickListener( v -> {
                 String listTitle = inputTitle.getText().toString();
                 String listDesc = inputDesc.getText().toString();
 
@@ -72,7 +81,7 @@ public class CreatePantryDialogFragment extends DialogFragment {
                     if (listDesc.trim().isEmpty()) {
                         listDesc = null;
                     }
-                    ((MainActivity) mContext).getViewModel().addPantry(listTitle, listDesc, null);
+                    ((MainActivity) mContext).getViewModel().addPantry(listTitle, listDesc, new LocationWrapper(pickedLocation));
                     RecyclerView rv = Objects.requireNonNull(getActivity()).findViewById(R.id.recyclerView);
                     Objects.requireNonNull(rv.getAdapter()).notifyDataSetChanged();
                     dialog.dismiss();
@@ -81,14 +90,18 @@ public class CreatePantryDialogFragment extends DialogFragment {
         }
     }
 
-    private Location getLocationOption(Spinner spinnerLoc) {
-        int option = spinnerLoc.getSelectedItemPosition();
-        if (option == 0 || option == 3)
-            return null;
-        else if (option == 1)
-            return null; // return curr location
-        else { // TODO pick location, open map and pick location
-            return null;
+    private void pickLocation() {
+        Activity act = getActivity();
+        if (act != null) {
+            Intent intent = new Intent(getActivity(), MapsActivity.class);
+            startActivityForResult(intent, LOCATION_DATA);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == LOCATION_DATA && resultCode == RESULT_OK) {
+            pickedLocation = Objects.requireNonNull(data.getExtras()).getParcelable(LOCATION_EXTRA);
         }
     }
 }

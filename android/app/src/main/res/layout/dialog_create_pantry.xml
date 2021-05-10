@@ -34,6 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/pick_location" />
+        android:text="@string/pick_location"
+        android:visibility="visible"
+        tools:visibility="visible" />
 
 </LinearLayout>

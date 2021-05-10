@@ -70,4 +70,11 @@
     <string name="create_new_product">Create new product</string>
     <string name="scan_a_barcode">Scan a barcode</string>
     <string name="product_already_exists">That product already exists</string>
+    <string name="places_api_key">AIzaSyBptQh-aUyc6aa_ywzCFRtSAZY7lxQWpAQ</string>
+    <string name="confirm_location">Confirm Location</string>
+    <string name="location_permission_denied">Location permissions were denied</string>
+    <string name="permission_required_toast">Permission is required</string>
+    <string name="permission_rationale_location">Location permission is required</string>
+    <string name="no_lists">You don\'t have any shopping lists</string>
+    <string name="no_products">You don\'t have any products</string>
 </resources>

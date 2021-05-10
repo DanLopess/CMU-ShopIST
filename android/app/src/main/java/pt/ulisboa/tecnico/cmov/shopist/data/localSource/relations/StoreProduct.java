@@ -17,7 +17,7 @@ public class StoreProduct {
     public Store store;
 
     @Embedded
-    private Product product;
+    public Product product;
 
     private Double price;
 
