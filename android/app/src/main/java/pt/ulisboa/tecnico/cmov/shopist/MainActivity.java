@@ -8,9 +8,15 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Messenger;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -20,6 +26,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
+import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
+import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
+import pt.inesc.termite.wifidirect.SimWifiP2pManager;
+import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfStoresAdapter;
@@ -49,13 +60,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        mContext = this;
+        AppGlobalContext globalContext = (AppGlobalContext) getApplicationContext();
+        globalContext.startService();
 
         //if wifi available sync lists ??
 
-        mCreatePantryListDialog = new CreatePantryDialogFragment(this);
-        mCreateStoreListDialog = new CreateStoreDialogFragment(this);
-        mCreateProductDialog = new CreateProductDialogFragment(this, CreateProductDialogFragment.PRODUCT);
-        mContext = this;
+        setUpDialogs();
         setUpLists();
         setUpBottomNavigation();
     }
@@ -106,6 +117,12 @@ public class MainActivity extends AppCompatActivity {
 
     public ViewModel getViewModel() {
         return viewModel;
+    }
+
+    private void setUpDialogs() {
+        mCreatePantryListDialog = new CreatePantryDialogFragment(this);
+        mCreateStoreListDialog = new CreateStoreDialogFragment(this);
+        mCreateProductDialog = new CreateProductDialogFragment(this, CreateProductDialogFragment.PRODUCT);
     }
 
     private void setUpLists() {

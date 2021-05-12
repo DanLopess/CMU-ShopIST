@@ -1,2 +1,3 @@
 include ':app'
+include ':Termite-WifiP2P-API'
 rootProject.name = "ShopIST"
