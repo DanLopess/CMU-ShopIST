@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/product_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_fastfood_24" />
+
+    <TextView
+        android:id="@+id/cartProdName_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/cartProdItemPrice_tv"
+        app:layout_constraintStart_toEndOf="@+id/item_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="ListItem" />
+
+    <TextView
+        android:id="@+id/cartProdItemPrice_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="1"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/cartProdName_tv"
+        app:layout_constraintTop_toBottomOf="@+id/cartProdName_tv"
+        tools:text="Support Text" />
+
+    <TextView
+        android:id="@+id/cartProdTotalPrice_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_weight="1"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/cartProdName_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Support Text" />
+
+    <TextView
+        android:id="@+id/cartProdQtt_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/cartProdName_tv"
+        app:layout_constraintStart_toEndOf="@+id/cartProdName_tv"
+        tools:text="x 12" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,6 +26,11 @@
             app:menu="@menu/pantry_screen_menu"
             app:navigationIcon="?attr/homeAsUpIndicator">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/store_title"
                 android:layout_width="wrap_content"
@@ -33,11 +38,16 @@
                 android:textColor="@color/black"
                 android:textSize="30sp"
                 android:textStyle="bold"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="15dp"
                 tools:text="Title" />
 
-        </androidx.appcompat.widget.Toolbar>
+            <TextView
+                android:id="@+id/store_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/description" />
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/map_view"

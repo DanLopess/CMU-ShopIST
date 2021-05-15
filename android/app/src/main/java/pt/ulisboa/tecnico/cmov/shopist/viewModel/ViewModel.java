@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Singleton;
 
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -44,6 +45,7 @@ import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 
 @Singleton
 public class ViewModel extends AndroidViewModel {
+
     PantryRepository pantryRepository;
     StoreRepository storeRepository;
     ProductRepository productRepository;
@@ -74,7 +76,9 @@ public class ViewModel extends AndroidViewModel {
         productRepository.addProduct(new Product(name, description, null, path, thumbPath));
     }
     public Single<Bitmap> getProductImage(String path) {
-        return productRepository.getProductImage(path);
+        if (path != null)
+            return productRepository.getProductImage(path);
+        return null;
     }
 
     public void addProduct(String name, String description, Bitmap image, String code) {
@@ -117,7 +121,6 @@ public class ViewModel extends AndroidViewModel {
     public void deleteProduct(Product product) {
         productRepository.deleteProduct(product);
     }
-
 
     //================================== Pantry ==================================
 
@@ -207,9 +210,9 @@ public class ViewModel extends AndroidViewModel {
         return storeRepository.getStore(id);
     }
 
-    public void addStore(String name, LocationWrapper location) {
+    public void addStore(String name, String description, LocationWrapper location) {
         if (location != null) {
-            storeRepository.addStore(new Store(name, location));
+            storeRepository.addStore(new Store(name, description, location));
         } else {
             storeRepository.addStore(new Store(name));
         }
@@ -244,6 +247,14 @@ public class ViewModel extends AndroidViewModel {
         productRepository.deleteStoreProduct(storeProdToCrossRef(storeProduct));
     }
 
+    public void updateStore(Store store) {
+        storeRepository.updateStore(store);
+    }
+
+    public Observable<List<StoreProduct>> getStoreProductsInCart(Long storeId) {
+        return productRepository.getStoreProductsInCart(storeId);
+    }
+
     //================================== Auxiliary ==================================
 
     private PantryProductCrossRef pantryProdToCrossRef(PantryProduct pantryProduct) {
@@ -273,11 +284,11 @@ public class ViewModel extends AndroidViewModel {
     private String saveToInternalStorage(Bitmap bitmapImage, String path){
         ContextWrapper cw = new ContextWrapper(mContext);
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        File mypath=new File(directory,path);
+        File myPath = new File(directory,path);
 
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(mypath);
+            fos = new FileOutputStream(myPath);
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -288,6 +299,6 @@ public class ViewModel extends AndroidViewModel {
                 e.printStackTrace();
             }
         }
-        return mypath.getAbsolutePath();
+        return myPath.getAbsolutePath();
     }
 }

@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -147,9 +146,7 @@ public class ProductDetailsDialog extends DialogFragment {
         } else {
             Toast.makeText(mContext, "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
-
     }
-
 
     private void onSelectFromGalleryResult(Intent data) {
         try {

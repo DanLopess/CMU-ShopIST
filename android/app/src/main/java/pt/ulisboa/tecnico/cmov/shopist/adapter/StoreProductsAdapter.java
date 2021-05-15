@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -24,6 +25,9 @@ import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.PantryProductDetailsDialog;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.ProductDetailsDialog;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.StoreProductDetailsDialog;
 
 public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdapter.ViewHolder>{
 
@@ -83,7 +87,6 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
         View.OnClickListener addToCartListener = v -> {
             if (product.getQttNeeded() > 0) {
                 product.increaseQttCart();
-                product.decreaseQttNeeded();
                 product.updateShown();
                 ((StoreActivity) mContext).getViewModel().updateStoreProduct(product);
                 notifyDataSetChanged();
@@ -114,6 +117,11 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
                 imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false));
             });
         }
+
+        holder.productClickableArea.setOnClickListener(v -> {
+            StoreProductDetailsDialog storeProductDetailsDialog = new StoreProductDetailsDialog(mContext, product);
+            storeProductDetailsDialog.show(((StoreActivity) mContext).getSupportFragmentManager(), "product_details");
+        });
     }
 
     @Override
@@ -127,6 +135,7 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
         public Button addToCart;
         public ImageButton options;
         public ImageView image;
+        public LinearLayout productClickableArea;
 
         public ViewHolder(View view) {
             super(view);
@@ -135,6 +144,7 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
             addToCart = view.findViewById(R.id.addToCart_bt);
             options = view.findViewById(R.id.store_product_options_bt);
             infoText = view.findViewById(R.id.storeProdInfoText_tv);
+            productClickableArea = view.findViewById(R.id.product_item_clickable_area);
         }
     }
 }

@@ -72,6 +72,9 @@ public class StoreRepository implements Cache {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
+    public void updateStore(Store store) {
+        insertStoreToDb(store).subscribe(aBoolean -> {});
+    }
 
     @Override
     public void clearCache() {
@@ -82,5 +85,4 @@ public class StoreRepository implements Cache {
     public void makeCacheDirty() {
         mCacheIsDirty = true;
     }
-
 }
