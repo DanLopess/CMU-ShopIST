@@ -13,7 +13,7 @@ public class Coordinates {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Coordinates coordinates = (Coordinates) o;
-        return this.distance(coordinates) <= 5;
+        return this.distance(coordinates) <= 2;
     }
 
     public double distance(Coordinates coordinates) {
