@@ -14,7 +14,7 @@ public class Product {
     private UUID uuid;
     private String name;
     private String description;
-    private List<Store> stores; // in which stores this product exists
+    private List<Beacon> beacons; // in which stores this product exists
     private String imagesLocation; // TODO add directory for all images of this product
 
     @Override
