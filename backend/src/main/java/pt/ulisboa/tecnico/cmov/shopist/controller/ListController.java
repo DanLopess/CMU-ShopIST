@@ -15,6 +15,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/list")
 public class ListController {
+
+    // create complete list
+    // save who's the list owner
+    // update list
+    // delete list (only if is the list's owner)
+
+
     ListService listService;
 
     @Autowired

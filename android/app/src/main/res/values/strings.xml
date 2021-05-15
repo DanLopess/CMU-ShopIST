@@ -77,4 +77,8 @@
     <string name="permission_rationale_location">Location permission is required</string>
     <string name="no_lists">You don\'t have any shopping lists</string>
     <string name="no_products">You don\'t have any products</string>
+    <string name="search_place">Search a place</string>
+    <string name="selected_location">Selected Location</string>
+    <string name="show_qr_code">Show QR Code</string>
+    <string name="sync_icon">Syncronization icon</string>
 </resources>

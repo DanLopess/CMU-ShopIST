@@ -52,6 +52,19 @@
             app:layout_constraintTop_toBottomOf="@+id/listName_textView"
             tools:text="T minute drive" />
 
+        <ImageView
+            android:id="@+id/sync_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/sync_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/list_options_bt"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/stat_notify_sync_noanim"
+            android:visibility="invisible"
+            app:tint="#0CC814" />
+
         <ImageButton
             android:id="@+id/list_options_bt"
             android:layout_width="wrap_content"

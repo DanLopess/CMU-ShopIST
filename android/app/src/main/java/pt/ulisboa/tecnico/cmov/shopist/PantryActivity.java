@@ -6,17 +6,14 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.maps.MapView;
 
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -47,13 +44,11 @@ public class PantryActivity extends ProductListActivity {
         Intent intent = new Intent(this, AddPantryProductsActivity.class);
         intent.putExtra("pantryId", myId);
         startActivity(intent);
-        //setHasProductsVisibility();
     }
 
     public void scanProduct(MenuItem item) {
         Intent intent = new Intent(this, ScanCodeActivity.class);
         startActivityForResult(intent, SCAN_REQ_CODE);
-        //setHasProductsVisibility();
     }
 
     @Override
@@ -72,7 +67,6 @@ public class PantryActivity extends ProductListActivity {
                         .observeOn(AndroidSchedulers.mainThread()).subscribe(product -> {
                             viewModel.addPantryProducts(myId, Collections.singletonList(product));
                             adapter.notifyDataSetChanged();
-                            //setHasProductsVisibility();
                         });
             });
         }
@@ -104,9 +98,6 @@ public class PantryActivity extends ProductListActivity {
                     rvProducts.setAdapter(adapter);
                     rvProducts.setLayoutManager(new LinearLayoutManager(this));
                 });
-
-
-        //setHasProductsVisibility();
     }
 
     @Override
@@ -114,17 +105,4 @@ public class PantryActivity extends ProductListActivity {
         if (pantry.getLocationWrapper() == null) return null;
         return pantry.getLocationWrapper().toLocation();
     }
-
-
-/*    private void setHasProductsVisibility() {
-        TextView title = findViewById(R.id.no_products_text_view);
-        if (title != null && rvProducts != null && rvProducts.getAdapter() != null
-                && rvProducts.getAdapter().getItemCount() > 0) {
-            rvProducts.setVisibility(View.VISIBLE);
-            title.setVisibility(View.GONE);
-        } else if (title != null && rvProducts != null) {
-            rvProducts.setVisibility(View.GONE);
-            title.setVisibility(View.VISIBLE);
-        }
-    }*/
 }

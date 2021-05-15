@@ -5,12 +5,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,23 +34,21 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import pt.ulisboa.tecnico.cmov.shopist.util.Constants;
+import java.util.List;
+
 import pt.ulisboa.tecnico.cmov.shopist.util.PermissionUtils;
+import pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils;
 
 import static pt.ulisboa.tecnico.cmov.shopist.util.Constants.LOCATION_EXTRA;
 
 public class MapsActivity extends AppCompatActivity
         implements
-        OnMyLocationButtonClickListener,
-        OnMyLocationClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -61,7 +61,9 @@ public class MapsActivity extends AppCompatActivity
 
     // Views
     private View mapView;
+    private TextView selectedLocationTextView;
 
+    // Variables
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean permissionDenied = false;
 
@@ -77,8 +79,8 @@ public class MapsActivity extends AppCompatActivity
 
     private void initViews() {
         Button submitLocationButton = findViewById(R.id.button_confirmLocation);
-
-
+        selectedLocationTextView = findViewById(R.id.tv_display_marker_location);
+        //materialSearchBar = findViewById(R.id.searchBar);
         submitLocationButton.setOnClickListener(v -> returnResult());
     }
 
@@ -95,6 +97,7 @@ public class MapsActivity extends AppCompatActivity
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+
     }
 
     @Override
@@ -105,6 +108,8 @@ public class MapsActivity extends AppCompatActivity
         //enable location button
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setCompassEnabled(false);
+
+        mMap.setOnMarkerDragListener(createOnMarkerDragListener());
 
         //move location button to the required position and adjust params such margin
         if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) {
@@ -147,12 +152,29 @@ public class MapsActivity extends AppCompatActivity
                 }
             }
         });
+    }
 
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions()
-//                .position(sydney)
-//                .title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    private GoogleMap.OnMarkerDragListener createOnMarkerDragListener() {
+        return new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(@NonNull Marker arg0) {
+                Log.d("System out", "onMarkerDragStart..."+arg0.getPosition().latitude+"..."+arg0.getPosition().longitude);
+            }
+
+            @Override
+            public void onMarkerDragEnd(@NonNull Marker arg0) {
+                Log.d("System out", "onMarkerDragEnd..."+arg0.getPosition().latitude+"..."+arg0.getPosition().longitude);
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(arg0.getPosition()));
+                resultLocation = ShopISTUtils.latLngToLocation(arg0.getPosition());
+                setLocationOnText();
+            }
+
+            @Override
+            public void onMarkerDrag(@NonNull Marker arg0) {
+                Log.i("System out", "onMarkerDrag...");
+            }
+        };
     }
 
     private void enableMyLocation() {
@@ -172,38 +194,20 @@ public class MapsActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             if (mFusedLocationProviderClient != null) {
-                mFusedLocationProviderClient.getLastLocation()
-                        .addOnCompleteListener(new OnCompleteListener<Location>() {
-                            @SuppressLint("MissingPermission")
-                            @Override
-                            public void onComplete(@NonNull Task<Location> task) {
-                                if (task.isSuccessful()) {
-                                    resultLocation = task.getResult();
-                                    if (resultLocation != null) {
-                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(resultLocation.getLatitude(), resultLocation.getLongitude()), DEFAULT_ZOOM));
-                                    }
-                                    else {
-                                        final LocationRequest locationRequest = LocationRequest.create();
-                                        locationRequest.setInterval(1000);
-                                        locationRequest.setFastestInterval(5000);
-                                        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-                                        locationCallback = new LocationCallback() {
-                                            @Override
-                                            public void onLocationResult(@NonNull LocationResult locationResult) {
-                                                super.onLocationResult(locationResult);
-                                                resultLocation = locationResult.getLastLocation();
-                                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(resultLocation.getLatitude(), resultLocation.getLongitude()), DEFAULT_ZOOM));
-                                                //remove location updates in order not to continues check location unnecessarily
-                                                mFusedLocationProviderClient.removeLocationUpdates(locationCallback);
-                                            }
-                                        };
-                                        mFusedLocationProviderClient.requestLocationUpdates(locationRequest, null);
-                                    }
-                                } else {
-                                    Toast.makeText(MapsActivity.this, "Unable to get last location ", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                mFusedLocationProviderClient.getLastLocation().addOnCompleteListener(task ->
+                {
+                    if (task.isSuccessful()) {
+                        resultLocation = task.getResult();
+                        if (resultLocation == null) {
+                            askForNewLocation();
+                        }
+                        moveCameraToLocation();
+                        setMapMarkerOnResultLocation();
+                        setLocationOnText();
+                    } else {
+                        Toast.makeText(MapsActivity.this, "Unable to get last location ", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         } else {
             // Permission to access the location is missing. Show rationale and request permission
@@ -213,25 +217,11 @@ public class MapsActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
-    }
-
-    @Override
-    public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
             // leave the activity if location is not permitted (could change to only searchable)
             return;
         }
-
         if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
             // Enable the my location layer if the permission has been granted.
             enableMyLocation();
@@ -267,9 +257,47 @@ public class MapsActivity extends AppCompatActivity
         finish();
     }
 
-    private void returnError(Exception result) {
-        Intent intent = new Intent();
-        setResult(RESULT_CANCELED, intent);
-        finish();
+    // Auxiliary methods
+
+    @SuppressLint("MissingPermission")
+    private void askForNewLocation() {
+        final LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(1000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                resultLocation = locationResult.getLastLocation();
+                //remove location updates in order not to continues check location unnecessarily
+                mFusedLocationProviderClient.removeLocationUpdates(locationCallback);
+            }
+        };
+        mFusedLocationProviderClient.requestLocationUpdates(locationRequest, null);
+    }
+
+    private void moveCameraToLocation() {
+        LatLng latLng = ShopISTUtils.locationToLatLng(resultLocation);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+    }
+
+    private void setMapMarkerOnResultLocation() {
+        LatLng latLng = ShopISTUtils.locationToLatLng(resultLocation);
+        mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .draggable(true));
+
+    }
+
+    private void setLocationOnText() {
+        List<Address> addresses = ShopISTUtils.getAddressesByLocation(getBaseContext(), resultLocation);
+        if (addresses.size() > 0) {
+            String locationInfo = ShopISTUtils.joinStringsByComma(addresses.get(0).getThoroughfare(),
+                    addresses.get(0).getLocality(),
+                    addresses.get(0).getPostalCode());
+
+            selectedLocationTextView.setText(locationInfo);
+        }
     }
 }

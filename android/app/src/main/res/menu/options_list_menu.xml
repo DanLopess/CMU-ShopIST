@@ -3,5 +3,8 @@
     <item android:id="@+id/list_options_delete"
         android:title="@string/delete_list" />
     <item android:id="@+id/list_options_sync"
-        android:title="@string/sync_with_server" />
+        android:title="@string/sync_with_server"/>
+    <item android:id="@+id/list_get_qr_code"
+        android:title="@string/show_qr_code"
+        android:visible="false"/>
 </menu>

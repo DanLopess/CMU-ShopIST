@@ -13,6 +13,11 @@ import java.util.List;
 public class ProductController {
     ProductService productService;
 
+    // send price per barcode
+    // get price per barcode
+    // save image per barcode
+    // get images per barcode
+
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;

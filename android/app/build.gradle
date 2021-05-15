@@ -33,7 +33,6 @@ dependencies {
     implementation 'androidx.wear:wear:1.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
-
     compileOnly 'com.google.android.wearable:wearable:2.6.0'
     def room_version = "2.3.0-alpha02"
     def dagger_version = "2.34.1"

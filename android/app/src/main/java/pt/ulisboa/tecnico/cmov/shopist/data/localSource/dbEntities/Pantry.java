@@ -15,7 +15,7 @@ public class Pantry {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     public Long pantryId;
-
+    // TODO add uuid
     private String name;
     private String description;
 
