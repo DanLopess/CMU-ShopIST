@@ -118,11 +118,8 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
                 builder.create().show();
                 return true;
             case R.id.list_options_sync:
-                list.setShared(true);
-                setSyncIconVisibility(list, holder);
-                // TODO try to sync with server
-                // if not synced, stays the same and throws error
-                // else, puts view as not visible
+                viewModel.savePantryToBackend(list);
+                Toast.makeText(mContext, "Sharing...", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.list_get_qr_code:
                 Toast.makeText(mContext, "Clicked to get qr code", Toast.LENGTH_SHORT).show();

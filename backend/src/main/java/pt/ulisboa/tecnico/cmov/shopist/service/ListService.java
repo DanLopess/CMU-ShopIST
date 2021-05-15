@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.shopist.service;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListExistsException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListNotFoundException;
@@ -18,45 +19,37 @@ import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.isEmpty;
 @Data
 @Service
 public class ListService {
-    private final Set<ListOfProducts> lists;
+    private final Set<PantryDto> pantries;
 
     private ProductService productService;
 
     @Autowired
     public ListService(ProductService productService) {
-        lists = new HashSet<>();
+        pantries = new HashSet<>();
         this.productService = productService;
     }
 
     public ListService() {
-        this.lists = new HashSet<>();
+        this.pantries = new HashSet<>();
     }
 
-    public String createList(ListOfProducts list) throws InvalidDataException, ListExistsException {
-        validateList(list);
-        if (!lists.add(list)) {
-            throw new ListExistsException("List already exists in server.");
+    public String createPantry(PantryDto pantryDto) throws InvalidDataException, ListExistsException {
+        validatePantry(pantryDto);
+        if (!pantries.add(pantryDto)) {
+            throw new ListExistsException("Pantry already exists in server.");
         }
-        list.setCreationDate(LocalDateTime.now());
-        list.setUpdateDate(LocalDateTime.now());
-        list.setId(UUID.randomUUID().toString());
-        addNewProductsToProductService(list.getProducts());
-        return list.getId();
+        pantryDto.setUuid(UUID.randomUUID().toString());
+        return pantryDto.getUuid();
     }
 
-    public ListOfProducts updateList(ListOfProducts list) throws InvalidDataException, ListNotFoundException {
-        validateList(list);
-        Optional<ListOfProducts> listToUpdate = lists.stream().filter(list::equals).findAny();
-        if (listToUpdate.isEmpty()) {
+    public PantryDto updateList(PantryDto pantryDto) throws InvalidDataException, ListNotFoundException {
+        validatePantry(pantryDto);
+        Optional<PantryDto> pantryToUpdate = pantries.stream().filter(pantryDto::equals).findAny();
+        if (pantryToUpdate.isEmpty()) {
             throw new ListNotFoundException("Specified list was not found");
         } else {
-            ListOfProducts updatedList = listToUpdate.get();
-            updatedList.setUpdateDate(LocalDateTime.now());
-            updatedList.setName(list.getName());
-            updatedList.setCategory(list.getCategory());
-            updatedList.setProducts(list.getProducts());
-            addNewProductsToProductService(updatedList.getProducts());
-            return updatedList;
+            pantryToUpdate.get().update(pantryDto);
+            return pantryToUpdate.get();
         }
     }
 
@@ -68,13 +61,13 @@ public class ListService {
         });
     }
 
-    public Optional<ListOfProducts> getListByUUID(String id) {
+    public Optional<PantryDto> getListByUUID(String id) {
         if (id == null) return Optional.empty();
-        return lists.stream().filter(list -> id.equals(list.getId())).findAny();
+        return pantries.stream().filter(pantry -> id.equalsIgnoreCase(pantry.getUuid())).findAny();
     }
 
-    public void validateList(ListOfProducts list) throws InvalidDataException {
-        if (isEmpty(list.getName()) || isEmpty(list.getCategory()) || list.getProducts() == null || list.getProducts().isEmpty() ) {
+    public void validatePantry(PantryDto pantry) throws InvalidDataException {
+        if (isEmpty(pantry.getName())) {
             throw new InvalidDataException("List has invalid information");
         }
     }

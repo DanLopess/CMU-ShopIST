@@ -14,8 +14,11 @@ import androidx.lifecycle.AndroidViewModel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Singleton;
@@ -23,6 +26,8 @@ import javax.inject.Singleton;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
@@ -145,6 +150,13 @@ public class ViewModel extends AndroidViewModel {
         return productRepository.getPantryProducts(pantryId);
     }
 
+    public List<PantryProduct> getOncePantryProducts(Long pantryId) {
+        List<PantryProduct> pantryProducts = new ArrayList<>();
+        getPantryProducts(pantryId).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(pantryProducts::addAll).dispose();
+        return pantryProducts;
+    }
+
     public Observable<Integer> getPantrySize(Long pantryId) {
         return productRepository.getPantrySize(pantryId);
     }
@@ -155,6 +167,34 @@ public class ViewModel extends AndroidViewModel {
 
     public void deletePantryProduct(PantryProduct pantryProduct) {
         productRepository.deletePantryProduct(pantryProdToCrossRef(pantryProduct));
+    }
+
+    public void updatePantry(Pantry pantry) {
+        pantryRepository.updatePantry(pantry, getOncePantryProducts(pantry.getPantryId()));
+    }
+
+    public void savePantryToBackend(Pantry pantry) {
+        getPantryProducts(pantry.getPantryId()).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<List<PantryProduct>>() {
+                    final Set<PantryProduct> products = new HashSet<>();
+
+                    @Override
+                    public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<PantryProduct> pantryProducts) {
+                        products.addAll(pantryProducts);
+                        pantryRepository.savePantryToBackend(pantry, new ArrayList<>(products));
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+
     }
 
     //================================== Store ==================================
