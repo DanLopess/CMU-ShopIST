@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -13,6 +14,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.data.pojo.BeaconTime;
+import pt.ulisboa.tecnico.cmov.shopist.data.pojo.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +45,7 @@ public class BackendService {
 
         Log.d("BACKENDSERVICE", "BackendService running");
     }
+
 
     public static BackendService getInstance() {
         return backendServiceInstance;
@@ -98,4 +102,16 @@ public class BackendService {
     // post pantry
     // put pantry
     // get pantrybyuuid
+
+    public Observable<UUID> postInTime(BeaconTime beaconTime) {
+        return backendAPI.postInTime(beaconTime);
+    }
+
+    public void postOutTime(BeaconTime beaconTime) {
+        backendAPI.postOutTime(beaconTime);
+    }
+
+    public Observable<Long> getQueueTime(Coordinates coordinates) {
+        return backendAPI.getQueueTime(coordinates);
+    }
 }

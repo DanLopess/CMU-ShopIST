@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.shopist.data.remoteSource;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -9,6 +10,8 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
 import retrofit2.Call;
+import pt.ulisboa.tecnico.cmov.shopist.data.pojo.BeaconTime;
+import pt.ulisboa.tecnico.cmov.shopist.data.pojo.Coordinates;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -39,4 +42,13 @@ public interface BackendAPI {
 
     @PUT(pantryUrl)
     Call<PantryDto> updatePantry(@Body PantryDto pantryDto);
+
+    @POST("/api/beacon/in")
+    Observable<UUID> postInTime(@Body BeaconTime beaconTime);
+
+    @POST("/api/beacon/out")
+    void postOutTime(@Body BeaconTime beaconTime);
+
+    @GET("/api/beacon/queueTime")
+    Observable<Long> getQueueTime(@Body Coordinates coordinates);
 }
