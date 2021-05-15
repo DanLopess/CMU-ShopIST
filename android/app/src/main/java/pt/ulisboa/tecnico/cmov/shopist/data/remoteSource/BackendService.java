@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmov.shopist.data.remoteSource;
 
+import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -9,6 +11,7 @@ import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
@@ -17,6 +20,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.data.pojo.BeaconTime;
 import pt.ulisboa.tecnico.cmov.shopist.data.pojo.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,15 +28,27 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class BackendService {
+public class BackendService extends Application {
 
     private final BackendAPI backendAPI;
     private static final BackendService backendServiceInstance = new BackendService();
+    Context mContext = getApplicationContext();
+
+    private long cacheSize = 10 * 1024 * 1024; // 10 MB
+
+    private Cache cache = new Cache(getApplicationContext().getCacheDir(), cacheSize);
 
     private BackendService() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        OkHttpClient httpClient = new OkHttpClient.Builder().cache(cache).addInterceptor(chain -> {
+            okhttp3.Response request = chain.proceed(chain.request());
+            if(ShopISTUtils.hasNetwork(getApplicationContext())) {
+                return request.newBuilder().header("Cache-Control", "public, max-age=" + 10).build();
+            } else {
+                return request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build();
+            }
+        }).addInterceptor(interceptor).build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BackendAPI.BASE_URL)
