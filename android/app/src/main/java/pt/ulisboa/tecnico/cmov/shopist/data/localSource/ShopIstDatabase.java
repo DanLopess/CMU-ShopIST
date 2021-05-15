@@ -4,10 +4,11 @@ import android.content.Context;
 
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.converters.LocationConverter;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.PantryDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.StoreDao;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
@@ -22,8 +23,8 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProductC
                 PantryProductCrossRef.class,
                 Store.class,
                 StoreProductCrossRef.class,
-                LocationEntity.class
-        }, version = 8)
+        }, version = 12)
+@TypeConverters({LocationConverter.class})
 public abstract class ShopIstDatabase extends RoomDatabase {
 
     private static ShopIstDatabase instance = null;

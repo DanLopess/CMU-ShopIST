@@ -3,7 +3,7 @@ COPY ./pom.xml ./pom.xml
 RUN mvn dependency:go-offline -B
 COPY ./src ./src
 ARG PROFILE=test
-EXPOSE 80/tcp
+EXPOSE 8999/tcp
 RUN mvn -P$PROFILE -Dmaven.test.skip=true package
 
 FROM azul/zulu-openjdk-alpine:11

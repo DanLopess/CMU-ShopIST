@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
+import android.location.LocationManager;
 import android.location.Location;
 import android.media.ThumbnailUtils;
 
@@ -13,13 +14,22 @@ import androidx.lifecycle.AndroidViewModel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Singleton;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
@@ -30,10 +40,10 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.PantryRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.StoreRepository;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 
 @Singleton
 public class ViewModel extends AndroidViewModel {
-
     PantryRepository pantryRepository;
     StoreRepository storeRepository;
     ProductRepository productRepository;
@@ -108,6 +118,7 @@ public class ViewModel extends AndroidViewModel {
         productRepository.deleteProduct(product);
     }
 
+
     //================================== Pantry ==================================
 
     public Observable<List<Pantry>> getPantries() {
@@ -118,11 +129,12 @@ public class ViewModel extends AndroidViewModel {
         return pantryRepository.getPantry(id);
     }
 
-    public void addPantry(String name, String description, Location location) {
-        if (location != null)
-            pantryRepository.addPantry(new Pantry(name, description, new LocationEntity(location.getLatitude(), location.getLongitude())));
-        else
-            pantryRepository.addPantry(new Pantry(name, description, null));
+    public void addPantry(String name, String description, LocationWrapper location) {
+        if (location != null) {
+            pantryRepository.addPantry(new Pantry(name, description, location));
+        } else {
+            pantryRepository.addPantry(new Pantry(name, description));
+        }
     }
 
     public void deletePantry(Pantry pantry) {
@@ -138,6 +150,13 @@ public class ViewModel extends AndroidViewModel {
         return productRepository.getPantryProducts(pantryId);
     }
 
+    public List<PantryProduct> getOncePantryProducts(Long pantryId) {
+        List<PantryProduct> pantryProducts = new ArrayList<>();
+        getPantryProducts(pantryId).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(pantryProducts::addAll).dispose();
+        return pantryProducts;
+    }
+
     public Observable<Integer> getPantrySize(Long pantryId) {
         return productRepository.getPantrySize(pantryId);
     }
@@ -150,6 +169,34 @@ public class ViewModel extends AndroidViewModel {
         productRepository.deletePantryProduct(pantryProdToCrossRef(pantryProduct));
     }
 
+    public void updatePantry(Pantry pantry) {
+        pantryRepository.updatePantry(pantry, getOncePantryProducts(pantry.getPantryId()));
+    }
+
+    public void savePantryToBackend(Pantry pantry) {
+        getPantryProducts(pantry.getPantryId()).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<List<PantryProduct>>() {
+                    final Set<PantryProduct> products = new HashSet<>();
+
+                    @Override
+                    public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<PantryProduct> pantryProducts) {
+                        products.addAll(pantryProducts);
+                        pantryRepository.savePantryToBackend(pantry, new ArrayList<>(products));
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+
+    }
+
     //================================== Store ==================================
 
     public Observable<List<Store>> getStores() {
@@ -160,11 +207,12 @@ public class ViewModel extends AndroidViewModel {
         return storeRepository.getStore(id);
     }
 
-    public void addStore(String name, Location location) {
-        if (location != null)
-            storeRepository.addStore(new Store(name, new LocationEntity(location.getLatitude(), location.getLongitude())));
-        else
-            storeRepository.addStore(new Store(name, null));
+    public void addStore(String name, LocationWrapper location) {
+        if (location != null) {
+            storeRepository.addStore(new Store(name, location));
+        } else {
+            storeRepository.addStore(new Store(name));
+        }
     }
 
     public void deleteStore(Store store) {

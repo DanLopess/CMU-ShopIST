@@ -1,9 +1,9 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import java.util.Collections;
 
@@ -22,21 +23,20 @@ import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 import pt.ulisboa.tecnico.cmov.shopist.adapter.PantryProductsAdapter;
 
-public class PantryActivity extends AppCompatActivity {
+public class PantryActivity extends ProductListActivity {
 
     private static final int SCAN_REQ_CODE = 1;
 
-    private Long myId;
     private Pantry pantry;
     private RecyclerView rvProducts;
     private PantryProductsAdapter adapter;
     private ViewModel viewModel;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantry);
-
         initialize();
     }
 
@@ -86,7 +86,8 @@ public class PantryActivity extends AppCompatActivity {
         viewModel.getPantry(myId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(pantry -> {
                     this.pantry = pantry;
-                    title.setText(this.pantry.name);
+                    title.setText(this.pantry.getName());
+                    initializeMap();
                 });
 
         rvProducts = findViewById(R.id.pantry_prod_list);
@@ -97,5 +98,11 @@ public class PantryActivity extends AppCompatActivity {
                     rvProducts.setAdapter(adapter);
                     rvProducts.setLayoutManager(new LinearLayoutManager(this));
                 });
+    }
+
+    @Override
+    public Location getListLocation() {
+        if (pantry.getLocationWrapper() == null) return null;
+        return pantry.getLocationWrapper().toLocation();
     }
 }

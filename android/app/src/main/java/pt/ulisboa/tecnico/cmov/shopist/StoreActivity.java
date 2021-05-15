@@ -1,13 +1,13 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -21,7 +21,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
-public class StoreActivity extends AppCompatActivity {
+public class StoreActivity extends ProductListActivity {
 
     private static final int SCAN_REQ_CODE = 1;
 
@@ -35,8 +35,13 @@ public class StoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
-
         initialize();
+    }
+
+    @Override
+    public Location getListLocation() {
+        if (store.getLocationWrapper() == null) return null;
+        return store.getLocationWrapper().toLocation();
     }
 
     public void addProducts(MenuItem item) {
@@ -86,6 +91,7 @@ public class StoreActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(store -> {
             this.store = store;
             title.setText(this.store.getName());
+            initializeMap();
         });
 
         rvProducts = findViewById(R.id.store_prod_list);

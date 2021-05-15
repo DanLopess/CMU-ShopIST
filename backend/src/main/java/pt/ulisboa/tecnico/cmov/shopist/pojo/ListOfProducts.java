@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class ListOfProducts {
-    private UUID uuid;
+    private String id;
     private String name;
     private LocalDateTime creationDate;
     private LocalDateTime updateDate;
@@ -21,7 +21,7 @@ public class ListOfProducts {
 
     public ListOfProducts(String name, String category) {
         this.products = new ArrayList<>();
-        this.uuid = UUID.randomUUID();
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.creationDate = LocalDateTime.now();
         this.updateDate = LocalDateTime.now();
@@ -33,11 +33,11 @@ public class ListOfProducts {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ListOfProducts that = (ListOfProducts) o;
-        return Objects.equals(uuid, that.uuid);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid);
+        return Objects.hash(id);
     }
 }

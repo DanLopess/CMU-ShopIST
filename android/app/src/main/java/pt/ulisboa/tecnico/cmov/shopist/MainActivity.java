@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             });
         } else if (requestCode == PANTRY_SCAN_REQ_CODE && resultCode == RESULT_OK) {
             //TODO add Pantry from QR code scanned
+            // pantry will have isOwner = false
         }
     }
 
