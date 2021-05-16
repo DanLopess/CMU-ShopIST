@@ -84,4 +84,6 @@
     <string name="sync_icon">Syncronization icon</string>
     <string name="qr_code">QR Code</string>
     <string name="ok">Ok</string>
+    <string name="close">Close</string>
+    <string name="minutes">" minutes away"</string>
 </resources>

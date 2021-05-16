@@ -7,13 +7,30 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
+import com.google.android.gms.common.util.IOUtils;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import lombok.val;
+import pt.ulisboa.tecnico.cmov.shopist.R;
 
 
 public class ShopISTUtils {
@@ -48,4 +65,16 @@ public class ShopISTUtils {
     public static String joinStringsByComma(String... strings) {
         return String.join(", ", strings);
     }
+
+    public static String getDrivingTimeBetweenTwoLocations(Location l1, Location l2) {
+        if (l1 != null && l2 != null) {
+            float distanceInKms = l1.distanceTo(l2)/1000;
+            int speed = 10; // average km/h
+            float estimatedDriveTimeInMinutes = distanceInKms / speed * 60;
+            return String.valueOf(Math.round(estimatedDriveTimeInMinutes));
+        } else {
+            return null;
+        }
+    }
+
 }

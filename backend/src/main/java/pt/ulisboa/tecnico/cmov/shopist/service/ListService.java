@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListExistsException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListNotFoundException;
@@ -39,6 +40,11 @@ public class ListService {
             throw new ListExistsException("Pantry already exists in server.");
         }
         pantryDto.setUuid(UUID.randomUUID().toString());
+        for (PantryProductDto productDto : pantryDto.getProducts()) {
+            if (productDto.getBarcode() == null) {
+                productDto.setBarcode(UUID.randomUUID().toString());
+            }
+        }
         return pantryDto;
     }
 

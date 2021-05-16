@@ -1,9 +1,13 @@
 package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,9 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
@@ -27,29 +36,35 @@ import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
-import pt.ulisboa.tecnico.cmov.shopist.dialog.ProductDetailsDialog;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.QRCodeDialog;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
+
+import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.getDrivingTimeBetweenTwoLocations;
 
 public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAdapter.ViewHolder>{
 
     private List<Pantry> mLists;
     private Context mContext;
     private ViewModel viewModel;
+    private final FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location currentLocation = null;
 
     public ListOfPantriesAdapter(Context context, Observable<List<Pantry>> lists) {
+        mContext = context;
         lists.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(items -> {
            mLists = items;
            this.notifyDataSetChanged();
            viewModel = ((MainActivity) mContext).getViewModel();
         });
-        mContext = context;
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
     }
 
     @NonNull
     @Override
     public ListOfPantriesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        getDeviceLocation();
 
         // Inflate the custom layout
         View listView = inflater.inflate(R.layout.list_item_list_of_pantries, parent, false);
@@ -88,8 +103,11 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
         TextView distTextView = holder.distTime;
         if (list.getLocationWrapper().toLocation() != null) {
-            // TODO get location and distance in minutes
-            //distTextView.setText(distText);
+            String timeToPantryLocation = getDrivingTimeBetweenTwoLocations(currentLocation, list.getLocationWrapper().toLocation());
+            if (timeToPantryLocation != null) {
+                String time = timeToPantryLocation + mContext.getResources().getString(R.string.minutes);
+                distTextView.setText(time);
+            }
         }
 
         TextView itemNrTextView = holder.itemNr;
@@ -124,17 +142,21 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
                 Toast.makeText(mContext, "Sharing...", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.list_get_qr_code:
-                if (list.getUuid() != null) {
-                    QRCodeDialog qrCodeDialog = new QRCodeDialog(mContext, list.getUuid());
-                    qrCodeDialog.show(((MainActivity) mContext).getSupportFragmentManager(), "product_details");
-                } else {
-                    Toast.makeText(mContext, "Something went wrong.", Toast.LENGTH_SHORT).show();
-                }
+                showQRCodeDialog(list);
                 return true;
             default:
                 return false;
         }};
         return menuItemClickListener;
+    }
+
+    private void showQRCodeDialog(Pantry list) {
+        if (list.getUuid() != null) {
+            QRCodeDialog qrCodeDialog = new QRCodeDialog(mContext, list.getUuid());
+            qrCodeDialog.show(((MainActivity) mContext).getSupportFragmentManager(), "product_details");
+        } else {
+            Toast.makeText(mContext, "Something went wrong.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setQRCodeTextVisibility(Pantry list, PopupMenu listOptionsMenu, ViewHolder holder) {
@@ -155,8 +177,27 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
         if (list.isShared()) {
             imageView.setVisibility(View.VISIBLE);
+            if (!list.isOwner()) {
+                imageView.setColorFilter(Color.rgb(34,187,243));
+            }
         } else {
             imageView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void getDeviceLocation() {
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            if (mFusedLocationProviderClient != null) {
+                mFusedLocationProviderClient.getLastLocation().addOnCompleteListener(task ->
+                {
+                    if (task.isSuccessful()) {
+                        currentLocation = task.getResult();
+                    } else {
+                        Toast.makeText(mContext, "Unable to get current location ", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
     }
 

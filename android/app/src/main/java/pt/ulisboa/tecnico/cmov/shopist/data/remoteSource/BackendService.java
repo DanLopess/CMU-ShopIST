@@ -60,21 +60,8 @@ public class BackendService {
         return Observable.just(null);
     }
 
-    public PantryDto getPantry(String uuid) {
-        final PantryDto[] pantryDto = {null};
-        backendAPI.getPantryByUUID(uuid).enqueue(new Callback<PantryDto>() {
-            @Override
-            public void onResponse(Call<PantryDto> call, Response<PantryDto> response) {
-                pantryDto[0] = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<PantryDto> call, Throwable t) {
-                Log.e("BackendService", "Failed to get pantry from server");
-
-            }
-        });
-        return pantryDto[0];
+    public Call<PantryDto> getPantry(String uuid) {
+        return backendAPI.getPantryByUUID(uuid);
     }
 
     public Call<PantryDto> postPantryDto(PantryDto pantryDto) {
@@ -94,8 +81,4 @@ public class BackendService {
             }
         });
     }
-
-    // post pantry
-    // put pantry
-    // get pantrybyuuid
 }

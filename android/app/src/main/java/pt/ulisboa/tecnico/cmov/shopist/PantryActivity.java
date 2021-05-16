@@ -98,6 +98,7 @@ public class PantryActivity extends ProductListActivity {
                     rvProducts.setAdapter(adapter);
                     rvProducts.setLayoutManager(new LinearLayoutManager(this));
                 });
+        initializeMap();
     }
 
     @Override

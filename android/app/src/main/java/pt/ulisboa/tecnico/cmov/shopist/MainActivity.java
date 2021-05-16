@@ -3,20 +3,24 @@ package pt.ulisboa.tecnico.cmov.shopist;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Messenger;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -37,6 +41,7 @@ import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfStoresAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreatePantryDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateStoreDialogFragment;
+import pt.ulisboa.tecnico.cmov.shopist.util.PermissionUtils;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     private Context mContext;
     public ViewModel viewModel;
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +77,16 @@ public class MainActivity extends AppCompatActivity {
         setUpDialogs();
         setUpLists();
         setUpBottomNavigation();
+        setUpLocationPermissions();
+    }
+
+    private void setUpLocationPermissions() {
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing. Show rationale and request permission
+            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        }
     }
 
     public void createNewList(MenuItem item) {
@@ -110,9 +128,9 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> Toast.makeText(mContext, mContext.getString(R.string.product_already_exists), Toast.LENGTH_SHORT).show());
                 }
             });
-        } else if (requestCode == PANTRY_SCAN_REQ_CODE && resultCode == RESULT_OK) {
-            //TODO add Pantry from QR code scanned
-            // pantry will have isOwner = false
+        } else if (requestCode == PANTRY_SCAN_REQ_CODE && resultCode == RESULT_OK && data != null) {
+            String code = data.getStringExtra("code");
+            viewModel.addSyncedPantryFromBackend(code);
         }
     }
 

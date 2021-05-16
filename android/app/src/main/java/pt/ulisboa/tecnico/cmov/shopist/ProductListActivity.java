@@ -35,6 +35,7 @@ public abstract class ProductListActivity extends AppCompatActivity implements O
         if (mapView != null) {
             mapView.onCreate(new Bundle());
             mapView.getMapAsync(this);
+            mapView.onResume();
         } else {
             Log.e(this.toString(), "Failed to obtain map view.");
         }
@@ -51,6 +52,7 @@ public abstract class ProductListActivity extends AppCompatActivity implements O
                     .position(loc)
             );
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
+
             //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
             // TODO why does it need clicks to load the full map?
         } else {
@@ -61,6 +63,8 @@ public abstract class ProductListActivity extends AppCompatActivity implements O
     @Override
     public void onResume() {
         if (mapView != null) {
+            mapView.onCreate(null);
+            mapView.getMapAsync(this);
             mapView.onResume();
         }
         super.onResume();

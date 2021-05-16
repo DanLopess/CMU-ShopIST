@@ -62,7 +62,7 @@ public class QRCodeDialog extends DialogFragment {
 
         builder.setTitle(R.string.qr_code)
                 .setView(mDialogView)
-                .setPositiveButton(R.string.ok,  (dialog, id) ->
+                .setPositiveButton(R.string.close,  (dialog, id) ->
                         Objects.requireNonNull(QRCodeDialog.this.getDialog()).cancel());
         return builder.create();
     }

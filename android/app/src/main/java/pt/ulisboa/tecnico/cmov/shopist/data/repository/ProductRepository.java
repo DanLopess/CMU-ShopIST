@@ -18,6 +18,8 @@ import javax.inject.Singleton;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.ShopIstDatabase;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.ProductDao;
@@ -79,9 +81,8 @@ public class ProductRepository implements Cache {
     }
 
     private Single<Long> insertProductToDb(@NonNull Product product) {
-        return Single.fromCallable(() -> {
-            return productDao.insert(product);
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        return Single.fromCallable(() -> productDao.insert(product))
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<Integer> getQttNeeded(Long productId) {
@@ -97,11 +98,11 @@ public class ProductRepository implements Cache {
     }
 
     public void updateProduct(Product product) {
-        insertProductToDb(product).subscribe(aBoolean -> {});
+        insertProductToDb(product).subscribe(buildGenericDisposableSingleObserver());
     }
 
     public void deleteProduct(Product product) {
-        deleteProductFromDb(product).subscribe(aBoolean -> {});
+        deleteProductFromDb(product).subscribe(buildGenericDisposableObserver());
     }
 
     private Observable<Boolean> deleteProductFromDb(@NonNull Product product) {
@@ -124,20 +125,20 @@ public class ProductRepository implements Cache {
     public void addPantryProducts(Long pantryId, List<Product> products) {
         for (Product prod : products) {
             PantryProductCrossRef pantryProduct = new PantryProductCrossRef(pantryId, prod.productId);
-            insertPantryProductToDb(pantryProduct).subscribe(aBoolean -> {});
+            insertPantryProductToDb(pantryProduct).subscribe(buildGenericDisposableObserver());
         }
     }
 
     public void deletePantryProduct(PantryProductCrossRef pantryProd) {
-        deletePantryProductFromDb(pantryProd).subscribe(aBoolean -> {});
+        deletePantryProductFromDb(pantryProd).subscribe(buildGenericDisposableObserver());
     }
 
     public void deletePantryProducts(Long pantryId) {
-        deletePantryProductsFromDb(pantryId).subscribe(aBoolean -> {});
+        deletePantryProductsFromDb(pantryId).subscribe(buildGenericDisposableObserver());
     }
 
     public void updatePantryProduct(PantryProductCrossRef pantryProduct) {
-        insertPantryProductToDb(pantryProduct).subscribe(aBoolean -> {});
+        insertPantryProductToDb(pantryProduct).subscribe(buildGenericDisposableObserver());
     }
 
     private Observable<Boolean> insertPantryProductToDb(@NonNull PantryProductCrossRef pantryProd) {
@@ -182,21 +183,21 @@ public class ProductRepository implements Cache {
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(qtt -> {
                 storeProduct.setQttNeeded(qtt);
                 storeProduct.updateShown();
-                insertStoreProductToDb(storeProduct).subscribe(aBoolean -> {});
+                insertStoreProductToDb(storeProduct).subscribe(buildGenericDisposableObserver());
             });
         }
     }
 
     public void deleteStoreProduct(StoreProductCrossRef storeProd) {
-        deleteStoreProductFromDb(storeProd).subscribe(aBoolean -> {});
+        deleteStoreProductFromDb(storeProd).subscribe(buildGenericDisposableObserver());
     }
 
     public void deleteStoreProducts(Long storeId) {
-        deleteStoreProductsFromDb(storeId).subscribe(aBoolean -> {});
+        deleteStoreProductsFromDb(storeId).subscribe(buildGenericDisposableObserver());
     }
 
     public void updateStoreProduct(StoreProductCrossRef storeProduct) {
-        insertStoreProductToDb(storeProduct).subscribe(aBoolean -> {});
+        insertStoreProductToDb(storeProduct).subscribe(buildGenericDisposableObserver());
     }
 
     private Observable<Boolean> insertStoreProductToDb(@NonNull StoreProductCrossRef storeProd) {
@@ -218,6 +219,39 @@ public class ProductRepository implements Cache {
             productDao.deleteStoreProducts(storeId);
             return true;
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private DisposableObserver<Boolean> buildGenericDisposableObserver() {
+        return new DisposableObserver<Boolean>() {
+            @Override
+            public void onNext(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
+
+            }
+
+            @Override
+            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                dispose();
+            }
+
+            @Override
+            public void onComplete() {
+                dispose();
+            }
+        };
+    }
+
+    private DisposableSingleObserver<Long> buildGenericDisposableSingleObserver() {
+        return new DisposableSingleObserver<Long>() {
+            @Override
+            public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Long aLong) {
+
+            }
+
+            @Override
+            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                dispose();
+            }
+        };
     }
 
     @Override
