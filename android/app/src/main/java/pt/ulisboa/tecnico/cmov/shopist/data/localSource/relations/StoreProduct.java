@@ -39,11 +39,6 @@ public class StoreProduct {
             qttCart++;
     }
 
-    public void decreaseQttNeeded() {
-        if (qttNeeded > 0)
-            qttNeeded--;
-    }
-
     public void updateShown() {
         shown = qttNeeded > 0 || qttCart > 0;
     }
