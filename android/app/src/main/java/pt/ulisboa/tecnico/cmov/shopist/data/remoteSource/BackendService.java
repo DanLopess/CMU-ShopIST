@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.shopist.data.remoteSource;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -17,8 +16,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.data.pojo.BeaconTime;
-import pt.ulisboa.tecnico.cmov.shopist.data.pojo.Coordinates;
+import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
+import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
 import pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils;
 import retrofit2.Call;

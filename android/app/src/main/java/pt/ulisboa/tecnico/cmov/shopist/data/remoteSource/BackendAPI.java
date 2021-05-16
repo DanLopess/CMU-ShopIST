@@ -10,14 +10,13 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
 import retrofit2.Call;
-import pt.ulisboa.tecnico.cmov.shopist.data.pojo.BeaconTime;
-import pt.ulisboa.tecnico.cmov.shopist.data.pojo.Coordinates;
+import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
+import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface BackendAPI {

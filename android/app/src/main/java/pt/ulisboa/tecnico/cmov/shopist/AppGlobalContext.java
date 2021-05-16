@@ -12,17 +12,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.os.Messenger;
-import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -34,10 +30,9 @@ import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
-import pt.ulisboa.tecnico.cmov.shopist.data.pojo.BeaconTime;
-import pt.ulisboa.tecnico.cmov.shopist.data.pojo.Coordinates;
+import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
+import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
-import pt.ulisboa.tecnico.cmov.shopist.util.PermissionUtils;
 
 public class AppGlobalContext extends Application implements SimWifiP2pManager.PeerListListener {
 

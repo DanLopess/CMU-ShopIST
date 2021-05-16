@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.data.pojo;
+package pt.ulisboa.tecnico.cmov.shopist.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
