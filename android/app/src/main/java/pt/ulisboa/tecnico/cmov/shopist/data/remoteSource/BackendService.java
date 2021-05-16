@@ -28,22 +28,22 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class BackendService extends Application {
+public class BackendService {
 
     private final BackendAPI backendAPI;
-    private static final BackendService backendServiceInstance = new BackendService();
-    Context mContext = getApplicationContext();
+    private static BackendService backendServiceInstance;
 
     private long cacheSize = 10 * 1024 * 1024; // 10 MB
 
-    private Cache cache = new Cache(getApplicationContext().getCacheDir(), cacheSize);
+    private Cache cache;
 
-    private BackendService() {
+    private BackendService(Context context) {
+        cache = new Cache(context.getCacheDir(), cacheSize);
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient httpClient = new OkHttpClient.Builder().cache(cache).addInterceptor(chain -> {
             okhttp3.Response request = chain.proceed(chain.request());
-            if(ShopISTUtils.hasNetwork(getApplicationContext())) {
+            if(ShopISTUtils.hasNetwork(context)) {
                 return request.newBuilder().header("Cache-Control", "public, max-age=" + 10).build();
             } else {
                 return request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build();
@@ -62,6 +62,13 @@ public class BackendService extends Application {
         Log.d("BACKENDSERVICE", "BackendService running");
     }
 
+
+    public static BackendService getInstance(Context context) {
+        if(backendServiceInstance == null) {
+            backendServiceInstance = new BackendService(context);
+        }
+        return backendServiceInstance;
+    }
 
     public static BackendService getInstance() {
         return backendServiceInstance;

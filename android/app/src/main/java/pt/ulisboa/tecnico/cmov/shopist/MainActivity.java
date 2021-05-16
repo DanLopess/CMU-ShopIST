@@ -34,10 +34,12 @@ import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfStoresAdapter;
+import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreatePantryDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateStoreDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.util.PermissionUtils;
+import pt.ulisboa.tecnico.cmov.shopist.viewModel.MyViewModelFactory;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,11 +63,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
-        mContext = this;
         AppGlobalContext globalContext = (AppGlobalContext) getApplicationContext();
         globalContext.startService();
+        setContentView(R.layout.activity_main);
+        viewModel = ViewModelProviders.of(this, new MyViewModelFactory(this.getApplication())).get(ViewModel.class);
+        mContext = this;
 
         //if wifi available sync lists ??
         checkLocationPermission();

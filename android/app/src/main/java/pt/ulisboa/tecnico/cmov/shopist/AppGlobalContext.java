@@ -12,17 +12,22 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.os.Messenger;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
@@ -45,7 +50,7 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
     private boolean mBound = false;
     private SimWifiP2pBroadcastReceiver mReceiver;
     private Boolean inQueue = false;
-    private BackendService backendService = BackendService.getInstance();
+    private BackendService mBackendService;
     private LocationManager mLocationManager;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -78,6 +83,7 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
         Intent intent = new Intent(this, SimWifiP2pService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mBackendService = BackendService.getInstance(getApplicationContext());
     }
 
     public void peersChanged() {
@@ -93,28 +99,41 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
             if (device.deviceName.endsWith(TERMITE_TAG)) {
                 if (!inQueue) {
                     Timestamp now = new Timestamp(new Date().getTime());
-                    Location location = getDeviceLocation();
+                    Location location = getLastKnownLocation();
                     if (location == null) {
                         continue;
                     }
                     BeaconTime beaconTime = new BeaconTime(now, getCoordinates(location), null);
-                    backendService.postInTime(beaconTime).observeOn(AndroidSchedulers.mainThread()).subscribe(uuid -> {
-                        this.uuid = uuid;
+                    mBackendService.postInTime(beaconTime).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<UUID>() {
+                        @Override
+                        public void onNext(@NonNull UUID res) {
+                            inQueue = true;
+                            uuid = res;
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
                     });
                     Toast.makeText(getApplicationContext(), "Peers Changed and beacon recognized", Toast.LENGTH_SHORT).show();
-                    inQueue = true;
                 }
                 return;
             }
         }
         if (inQueue) {
             Timestamp now = new Timestamp(new Date().getTime());
-            Location location = getDeviceLocation();
+            Location location = getLastKnownLocation();
             if (location == null) {
                 return;
             }
             BeaconTime beaconTime = new BeaconTime(now, getCoordinates(location), null);
-            backendService.postOutTime(beaconTime);
+            mBackendService.postOutTime(beaconTime);
             Toast.makeText(getApplicationContext(), "Peers Changed and beacon no longer in sight", Toast.LENGTH_SHORT).show();
             inQueue = false;
         } else {
@@ -122,11 +141,29 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
         }
     }
 
-    private Location getDeviceLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    private Location getDeviceLocation(String provider) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            return mLocationManager.getLastKnownLocation(provider);
         }
         return null;
+    }
+
+    private Location getLastKnownLocation() {
+        mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            Location l = getDeviceLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
     }
 
     private Coordinates getCoordinates(Location location) {

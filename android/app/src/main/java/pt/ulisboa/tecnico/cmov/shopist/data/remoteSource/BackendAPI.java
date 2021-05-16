@@ -21,8 +21,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface BackendAPI {
-    String BASE_URL = "http://daniellopes.ddns.net/";
+//    String BASE_URL = "http://daniellopes.ddns.net/";
 
+    String BASE_URL = "http://localhost:8999/";
     String pantryUrl = "/api/pantry";
 
     @POST("/api/store/")
@@ -51,7 +52,8 @@ public interface BackendAPI {
     Observable<UUID> postInTime(@Body BeaconTime beaconTime);
 
     @POST("/api/beacon/out")
-    void postOutTime(@Body BeaconTime beaconTime);
+    @Headers("Cache-Control: no-cache")
+    Observable<UUID> postOutTime(@Body BeaconTime beaconTime);
 
     @GET("/api/beacon/queueTime")
     Observable<Long> getQueueTime(@Body Coordinates coordinates);

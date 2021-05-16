@@ -159,7 +159,10 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
     @Override
     public int getItemCount() {
-        return mLists.size();
+        if(mLists != null) {
+            return mLists.size();
+        }
+        return 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
