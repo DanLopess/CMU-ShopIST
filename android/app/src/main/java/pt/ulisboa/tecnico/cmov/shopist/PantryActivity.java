@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
@@ -31,7 +32,6 @@ public class PantryActivity extends ProductListActivity {
     private RecyclerView rvProducts;
     private PantryProductsAdapter adapter;
     private ViewModel viewModel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +80,7 @@ public class PantryActivity extends ProductListActivity {
         Toolbar toolbar = findViewById(R.id.select_products_toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
         TextView title = findViewById(R.id.add_product_title);
+        TextView description = findViewById(R.id.activity_pantry_list_desc);
 
         myId = getIntent().getLongExtra("PantryId", -1);
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
@@ -87,6 +88,8 @@ public class PantryActivity extends ProductListActivity {
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(pantry -> {
                     this.pantry = pantry;
                     title.setText(this.pantry.getName());
+                    description.setText(this.pantry.getDescription());
+                    description.setVisibility(description.getText().toString().trim().isEmpty() ? View.GONE : View.VISIBLE);
                     initializeMap();
                 });
 

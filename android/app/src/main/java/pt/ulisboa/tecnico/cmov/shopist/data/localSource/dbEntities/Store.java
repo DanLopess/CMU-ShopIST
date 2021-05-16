@@ -18,6 +18,7 @@ public class Store {
     public Long storeId;
 
     private String name;
+    private String description;
 
     @TypeConverters(LocationConverter.class)
     private LocationWrapper locationWrapper;
@@ -26,8 +27,9 @@ public class Store {
         this.name = name;
     }
 
-    public Store(String name, LocationWrapper location) {
+    public Store(String name, String description, LocationWrapper location) {
         this.name = name;
         this.locationWrapper = location;
+        this.description = description;
     }
 }

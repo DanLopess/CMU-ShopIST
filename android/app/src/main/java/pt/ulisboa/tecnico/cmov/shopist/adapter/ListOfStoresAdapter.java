@@ -23,6 +23,8 @@ import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.PantryDetailsDialog;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.StoreDetailsDialog;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapter.ViewHolder>{
@@ -73,10 +75,13 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
                             dialog.dismiss();
                         });
                 builder.create().show();
-            } else if (item.getItemId() == R.id.list_options_sync) {
-                // TODO sync with server
-            }
-            return true;
+                return true;
+            } else if (item.getItemId() == R.id.list_options_edit) {
+                StoreDetailsDialog storeDetailsDialog = new StoreDetailsDialog(mContext, list);
+                storeDetailsDialog.show(((MainActivity) mContext).getSupportFragmentManager(), "store_details");
+                return true;
+            } else
+                return false;
         };
 
         View.OnClickListener itemOptionsListener = v -> {

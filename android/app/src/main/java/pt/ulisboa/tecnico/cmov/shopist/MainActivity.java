@@ -8,15 +8,9 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Messenger;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -26,11 +20,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
-import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
-import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
-import pt.inesc.termite.wifidirect.SimWifiP2pManager;
-import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
+import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfStoresAdapter;

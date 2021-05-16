@@ -1,15 +1,11 @@
 package pt.ulisboa.tecnico.cmov.shopist.dialog;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,11 +19,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 import pt.ulisboa.tecnico.cmov.shopist.AddPantryProductsActivity;
 import pt.ulisboa.tecnico.cmov.shopist.AddStoreProductsActivity;
@@ -35,10 +29,8 @@ import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 
 import static android.app.Activity.RESULT_OK;
-import static android.content.Context.CAMERA_SERVICE;
 
 public class CreateProductDialogFragment extends DialogFragment {
 
@@ -82,19 +74,6 @@ public class CreateProductDialogFragment extends DialogFragment {
                         Objects.requireNonNull(CreateProductDialogFragment.this.getDialog()).cancel());
         return alertDialogBuilder.create();
     }
-
-    private void onClickCreateProduct(View dialogView) {
-        EditText editText = dialogView.findViewById(R.id.product_name);
-        String name = editText.getText().toString();
-
-        // TODO fix images
-        /*if(imageView != null) {
-            data.addProduct(new Product(name, ((BitmapDrawable) imageView.getDrawable()).getBitmap()));
-        } else {
-            data.addProduct(new Product(name, null));
-        }*/
-    }
-//        data.addProduct(new Product(null, name, null, null));
 
     @Override
     public void onStart() {
@@ -151,9 +130,7 @@ public class CreateProductDialogFragment extends DialogFragment {
         } else {
             Toast.makeText(mContext, "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
-
     }
-
 
     private void onSelectFromGalleryResult(Intent data) {
         try {

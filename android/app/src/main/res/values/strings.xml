@@ -81,5 +81,16 @@
     <string name="search_place">Search a place</string>
     <string name="selected_location">Selected Location</string>
     <string name="show_qr_code">Show QR Code</string>
-    <string name="sync_icon">Syncronization icon</string>
+    <string name="sync_icon">Synchronization icon</string>
+    <string name="edit_list">Edit List</string>
+    <string name="pick_a_new_location">Pick a new location</string>
+    <string name="pantry_details">Pantry details</string>
+    <string name="back">Back</string>
+    <string name="price_unit">Price / Unit</string>
+    <string name="total">Total</string>
+    <string name="finish_shopping">Finish Shopping</string>
+    <string name="price">Price</string>
+    <string name="finish_shopping_confirmation">Are you sure you want to finish shopping in this store and move the items to the pantry?</string>
+    <string name="finish">finish</string>
+    <string name="select_pantry">Select Pantry</string>
 </resources>
