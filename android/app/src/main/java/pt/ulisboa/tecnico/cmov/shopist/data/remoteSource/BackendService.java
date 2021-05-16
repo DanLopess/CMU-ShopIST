@@ -1,19 +1,25 @@
 package pt.ulisboa.tecnico.cmov.shopist.data.remoteSource;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
+import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,12 +30,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BackendService {
 
     private final BackendAPI backendAPI;
-    private static final BackendService backendServiceInstance = new BackendService();
+    private static BackendService backendServiceInstance;
 
-    private BackendService() {
+    private long cacheSize = 10 * 1024 * 1024; // 10 MB
+
+    private Cache cache;
+
+    private BackendService(Context context) {
+        cache = new Cache(context.getCacheDir(), cacheSize);
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient httpClient = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        OkHttpClient httpClient = new OkHttpClient.Builder().cache(cache).addInterceptor(chain -> {
+            okhttp3.Response request = chain.proceed(chain.request());
+            if(ShopISTUtils.hasNetwork(context)) {
+                return request.newBuilder().header("Cache-Control", "public, max-age=" + 10).build();
+            } else {
+                return request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build();
+            }
+        }).addInterceptor(interceptor).build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BackendAPI.BASE_URL)
@@ -41,6 +59,14 @@ public class BackendService {
         backendAPI = retrofit.create(BackendAPI.class);
 
         Log.d("BACKENDSERVICE", "BackendService running");
+    }
+
+
+    public static BackendService getInstance(Context context) {
+        if(backendServiceInstance == null) {
+            backendServiceInstance = new BackendService(context);
+        }
+        return backendServiceInstance;
     }
 
     public static BackendService getInstance() {
@@ -98,4 +124,16 @@ public class BackendService {
     // post pantry
     // put pantry
     // get pantrybyuuid
+
+    public Observable<UUID> postInTime(BeaconTime beaconTime) {
+        return backendAPI.postInTime(beaconTime);
+    }
+
+    public void postOutTime(BeaconTime beaconTime) {
+        backendAPI.postOutTime(beaconTime);
+    }
+
+    public Observable<Long> getQueueTime(Coordinates coordinates) {
+        return backendAPI.getQueueTime(coordinates);
+    }
 }
