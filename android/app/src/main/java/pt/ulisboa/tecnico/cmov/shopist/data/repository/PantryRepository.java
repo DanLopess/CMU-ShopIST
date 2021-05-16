@@ -148,6 +148,10 @@ public class PantryRepository implements Cache {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
+    public void updatePantry(Pantry pantry) {
+        insertPantryToDb(pantry).subscribe(aBoolean -> {});
+    }
+
     @Override
     public void clearCache() {
         mCache = new ArrayList<>();
@@ -157,5 +161,4 @@ public class PantryRepository implements Cache {
     public void makeCacheDirty() {
         mCacheIsDirty = true;
     }
-
 }

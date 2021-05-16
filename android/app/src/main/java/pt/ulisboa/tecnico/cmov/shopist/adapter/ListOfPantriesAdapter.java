@@ -36,6 +36,7 @@ import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.PantryDetailsDialog;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.QRCodeDialog;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
@@ -125,8 +126,8 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
     @NonNull
     private PopupMenu.OnMenuItemClickListener getOnMenuItemClickListener(@NonNull ViewHolder holder, int position, Pantry list) {
-        @SuppressLint("NonConstantResourceId") PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {switch (item.getItemId()) {
-            case R.id.list_options_delete:
+        @SuppressLint("NonConstantResourceId") PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {
+            if (item.getItemId() == R.id.list_options_delete) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
                 builder.setTitle(R.string.delete_list)
                         .setMessage(R.string.delete_list_confirmation)
@@ -134,19 +135,25 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
                             ((MainActivity) mContext).getViewModel().deletePantry(mLists.get(position));
                             notifyDataSetChanged();
                         })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {dialog.dismiss();});
+                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                            dialog.dismiss();
+                        });
                 builder.create().show();
                 return true;
-            case R.id.list_options_sync:
+            } else if (item.getItemId() == R.id.list_options_sync) {
                 viewModel.savePantryToBackend(list);
                 Toast.makeText(mContext, "Sharing...", Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.list_get_qr_code:
+            } else if (item.getItemId() == R.id.list_options_edit) {
+                PantryDetailsDialog pantryDetailsDialog = new PantryDetailsDialog(mContext, list);
+                pantryDetailsDialog.show(((MainActivity) mContext).getSupportFragmentManager(), "pantry_details");
+                return true;
+            } else if (item.getItemId() == R.id.list_get_qr_code) {
                 showQRCodeDialog(list);
                 return true;
-            default:
+            } else
                 return false;
-        }};
+        };
         return menuItemClickListener;
     }
 

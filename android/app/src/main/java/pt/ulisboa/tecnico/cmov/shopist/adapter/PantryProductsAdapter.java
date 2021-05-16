@@ -85,7 +85,7 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
                 ((PantryActivity) mContext).getViewModel().updatePantryProduct(product);
                 notifyDataSetChanged();
             } else
-                Toast.makeText(mContext, "You don't have this product available in this pantry", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "You don't have this product available in this pantry", Toast.LENGTH_SHORT).show();
         };
 
         // Set item views based on your views and data model
@@ -110,18 +110,10 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
         holder.consumeBt.setOnClickListener(consumeListener);
 
         holder.productClickableArea.setOnClickListener(v -> {
-            onClickProduct(mProducts.get(position));
+            PantryProductDetailsDialog pantryProductDetailsDialog = new PantryProductDetailsDialog(mContext, product);
+            pantryProductDetailsDialog.show(((PantryActivity) mContext).getSupportFragmentManager(), "product_details");
         });
     }
-
-    private void onClickProduct(PantryProduct pantryProduct) {
-       ((PantryActivity) mContext).getViewModel().getProductImage(pantryProduct.getProduct().getThumbnailPath())
-               .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
-           PantryProductDetailsDialog pantryProductDetailsDialog = new PantryProductDetailsDialog(mContext, pantryProduct);
-           pantryProductDetailsDialog.show(((PantryActivity) mContext).getSupportFragmentManager(), "product_details");
-       });
-    }
-
 
     @Override
     public int getItemCount() {

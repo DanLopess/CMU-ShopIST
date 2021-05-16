@@ -63,6 +63,9 @@ public interface ProductDao {
     @Query("SELECT * FROM store_product sp JOIN products p WHERE storeId == :id AND sp.productId == p.productId AND shown == 1")
     Observable<List<StoreProduct>> getShownStoreProducts(Long id);
 
+    @Query("SELECT * FROM store_product sp JOIN products p WHERE storeId == :id AND sp.productId == p.productId AND qttCart > 0")
+    Observable<List<StoreProduct>> getStoreProductsInCart(Long id);
+
     @Query("SELECT COUNT(*) FROM store_product WHERE storeId == :id AND shown == 1")
     Observable<Integer> getStoreSize(Long id);
 

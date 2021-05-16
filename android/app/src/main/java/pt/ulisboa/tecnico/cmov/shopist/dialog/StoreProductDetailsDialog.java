@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.shopist.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -23,19 +25,19 @@ import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
+import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 
-public class PantryProductDetailsDialog extends DialogFragment {
+public class StoreProductDetailsDialog extends DialogFragment {
 
     private final Context mContext;
     private View mDialogView;
-    private PantryProduct pantryProduct;
+    private StoreProduct storeProduct;
 
-    public PantryProductDetailsDialog(Context context, PantryProduct pantryProduct) {
+    public StoreProductDetailsDialog(Context context, StoreProduct storeProduct) {
         this.mContext = context;
-        this.pantryProduct = pantryProduct;
+        this.storeProduct = storeProduct;
     }
 
     @NonNull
@@ -43,26 +45,27 @@ public class PantryProductDetailsDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme_FullScreen);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        mDialogView = inflater.inflate(R.layout.dialog_pantry_product_details, null);
+        mDialogView = inflater.inflate(R.layout.dialog_store_product_details, null);
 
 
         alertDialogBuilder.setTitle(R.string.product_details)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.update, (dialog, id) -> {
-                    setPantryProductChanges();
-                    ((PantryActivity) mContext).getViewModel().updatePantryProduct(pantryProduct);
+                    setStoreProductChanges();
+                    ((StoreActivity) mContext).getViewModel().updateStoreProduct(storeProduct);
                 })
                 .setNegativeButton(R.string.cancel,  (dialog, id) ->
-                        Objects.requireNonNull(PantryProductDetailsDialog.this.getDialog()).cancel());
+                        Objects.requireNonNull(StoreProductDetailsDialog.this.getDialog()).cancel());
         return alertDialogBuilder.create();
     }
 
-    private void setPantryProductChanges() {
-        NumberPicker availablePicker = mDialogView.findViewById(R.id.product_details_available);
-        NumberPicker neededPicker = mDialogView.findViewById(R.id.product_details_needed);
+    private void setStoreProductChanges() {
+        NumberPicker cartPicker = mDialogView.findViewById(R.id.store_product_details_cart);
+        storeProduct.setQttCart(cartPicker.getValue());
 
-        pantryProduct.setQttAvailable(availablePicker.getValue());
-        pantryProduct.setQttNeeded(neededPicker.getValue());
+        EditText price = mDialogView.findViewById(R.id.store_product_details_price);
+        storeProduct.setPrice(Double.parseDouble(price.getText().toString()));
+        //TODO update on server?
     }
 
     @Override
@@ -79,22 +82,23 @@ public class PantryProductDetailsDialog extends DialogFragment {
         setupDialogValues();
     }
 
+    @SuppressLint("SetTextI18n")
     private void setupDialogValues() {
-        TextView name = mDialogView.findViewById(R.id.product_details_name);
-        TextView desc = mDialogView.findViewById(R.id.product_details_desc);
-        ImageView image = mDialogView.findViewById(R.id.product_details_image);
-        NumberPicker availablePicker = mDialogView.findViewById(R.id.product_details_available);
-        NumberPicker neededPicker = mDialogView.findViewById(R.id.product_details_needed);
-        availablePicker.setMinValue(0);
-        neededPicker.setMinValue(0);
-        availablePicker.setMaxValue(99);
-        neededPicker.setMaxValue(99);
-        name.setText(pantryProduct.getProduct().productName);
-        desc.setText(pantryProduct.getProduct().productDescription);
-        availablePicker.setValue(pantryProduct.getQttAvailable());
-        neededPicker.setValue(pantryProduct.getQttNeeded());
-        if(pantryProduct.getProduct().getImagePath() != null) {
-            ((PantryActivity) mContext).getViewModel().getProductImage(pantryProduct.getProduct().getImagePath()).
+        TextView name = mDialogView.findViewById(R.id.store_product_details_name);
+        TextView desc = mDialogView.findViewById(R.id.store_product_details_desc);
+        ImageView image = mDialogView.findViewById(R.id.store_product_details_image);
+        EditText price = mDialogView.findViewById(R.id.store_product_details_price);
+        TextView needed = mDialogView.findViewById(R.id.store_product_details_needed);
+        NumberPicker cartPicker = mDialogView.findViewById(R.id.store_product_details_cart);
+        cartPicker.setMinValue(0);
+        cartPicker.setMaxValue(99);
+        name.setText(storeProduct.getProduct().getProductName());
+        desc.setText(storeProduct.getProduct().getProductDescription());
+        price.setText(storeProduct.getPrice().toString());
+        needed.setText(storeProduct.getQttNeeded().toString());
+        cartPicker.setValue(storeProduct.getQttCart());
+        if(storeProduct.getProduct().getImagePath() != null) {
+            ((StoreActivity) mContext).getViewModel().getProductImage(storeProduct.getProduct().getImagePath()).
                     subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
                 image.setImageBitmap(Bitmap.createScaledBitmap(res, res.getWidth(), res.getHeight(), false));
             });

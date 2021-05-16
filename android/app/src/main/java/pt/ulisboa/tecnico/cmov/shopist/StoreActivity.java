@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -84,6 +86,14 @@ public class StoreActivity extends ProductListActivity {
         Toolbar toolbar = findViewById(R.id.store_toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
         TextView title = findViewById(R.id.store_title);
+        TextView description = findViewById(R.id.store_description);
+
+        Button toCart = findViewById(R.id.toCart_button);
+        toCart.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CartActivity.class);
+            intent.putExtra("storeId", this.myId);
+            startActivity(intent);
+        });
 
         myId = getIntent().getLongExtra("StoreId", -1);
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
@@ -91,6 +101,8 @@ public class StoreActivity extends ProductListActivity {
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(store -> {
             this.store = store;
             title.setText(this.store.getName());
+            description.setText(this.store.getDescription());
+            description.setVisibility(description.getText().toString().trim().isEmpty() ? View.GONE : View.VISIBLE);
             initializeMap();
         });
 

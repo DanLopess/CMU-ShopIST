@@ -29,4 +29,16 @@ public class PantryProduct {
         if (qttAvailable > 0)
             qttAvailable--;
     }
+
+    public void increaseQttAvailable(Integer qtt) {
+        qttAvailable += qtt;
+        if (qttAvailable > 99)
+            qttAvailable = 99;
+    }
+
+    public void decreaseQttNeeded(Integer qtt) {
+        qttNeeded -= qtt;
+        if (qttNeeded < 0)
+            qttNeeded = 0;
+    }
 }

@@ -65,6 +65,7 @@ public class CreateStoreDialogFragment extends DialogFragment {
 
         if(dialog != null) {
             EditText inputTitle = mDialogView.findViewById(R.id.editText_listName);
+            EditText inputDesc = mDialogView.findViewById(R.id.editText_storeDescription);
             Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
             Button pickLocationButton = mDialogView.findViewById(R.id.button_pickLocation);
 
@@ -72,12 +73,13 @@ public class CreateStoreDialogFragment extends DialogFragment {
 
             positiveButton.setOnClickListener( v -> {
                 String listTitle = inputTitle.getText().toString();
+                String listDesc = inputDesc.getText().toString();
 
                 if (listTitle.trim().isEmpty()) {
                     Toast.makeText(mContext, R.string.create_list_error, Toast.LENGTH_LONG)
                             .show();
                 } else {
-                    ((MainActivity) mContext).getViewModel().addStore(listTitle, new LocationWrapper(pickedLocation));
+                    ((MainActivity) mContext).getViewModel().addStore(listTitle, listDesc, new LocationWrapper(pickedLocation));
                     RecyclerView rv = Objects.requireNonNull(getActivity()).findViewById(R.id.recyclerView);
                     Objects.requireNonNull(rv.getAdapter()).notifyDataSetChanged();
                     dialog.dismiss();

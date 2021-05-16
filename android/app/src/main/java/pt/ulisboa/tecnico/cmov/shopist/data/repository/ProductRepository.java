@@ -172,6 +172,10 @@ public class ProductRepository implements Cache {
         return productDao.getShownStoreProducts(storeId);
     }
 
+    public Observable<List<StoreProduct>> getStoreProductsInCart(Long storeId) {
+        return productDao.getStoreProductsInCart(storeId);
+    }
+
     public Observable<Integer> getStoreSize(Long storeId) {
         return productDao.getStoreSize(storeId);
     }
