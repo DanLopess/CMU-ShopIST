@@ -20,9 +20,9 @@ import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface BackendAPI {
-//    String BASE_URL = "http://daniellopes.ddns.net/";
+    String BASE_URL = "http://daniellopes.ddns.net/";
 
-    String BASE_URL = "http://localhost:8999/";
+//    String BASE_URL = "http://localhost:8999/";
     String pantryUrl = "/api/pantry";
 
     @POST("/api/store/")
