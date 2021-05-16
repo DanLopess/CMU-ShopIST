@@ -51,12 +51,6 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         StoreProduct product = mProducts.get(position);
 
-        if (!product.getShown()) {
-            mProducts.remove(product);
-            notifyItemRemoved(position);
-            return;
-        }
-
         PopupMenu.OnMenuItemClickListener menuItemClickListener = item -> {
             if (item.getItemId() == R.id.pantry_store_product_options_delete) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
@@ -85,12 +79,9 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
         };
 
         View.OnClickListener addToCartListener = v -> {
-            if (product.getQttNeeded() > 0) {
-                product.increaseQttCart();
-                product.updateShown();
-                ((StoreActivity) mContext).getViewModel().updateStoreProduct(product);
-                notifyDataSetChanged();
-            }
+            product.increaseQttCart();
+            ((StoreActivity) mContext).getViewModel().updateStoreProduct(product);
+            notifyItemChanged(position);
         };
 
         TextView nameTextView = holder.name;
@@ -104,6 +95,10 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
             String infoText = mContext.getString(R.string.needed) + ": " + product.getQttNeeded() +
                     " / " + mContext.getString(R.string.in_cart) + ": " + product.getQttCart();
             infoTextView.setText(infoText);
+            if (checkNotShown(product)) {
+                ((StoreActivity) mContext).getViewModel().updateStoreProduct(product);
+                notifyItemRemoved(position);
+            }
         });
 
         holder.addToCart.setOnClickListener(addToCartListener);
@@ -122,6 +117,14 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
             StoreProductDetailsDialog storeProductDetailsDialog = new StoreProductDetailsDialog(mContext, product);
             storeProductDetailsDialog.show(((StoreActivity) mContext).getSupportFragmentManager(), "product_details");
         });
+    }
+
+    private boolean checkNotShown(StoreProduct product) {
+        if (!product.getShown()) {
+            mProducts.remove(product);
+            return true;
+        }
+        return false;
     }
 
     @Override

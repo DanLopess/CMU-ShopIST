@@ -28,10 +28,6 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
         mProducts = products;
     }
 
-    public List<StoreProduct> getProducts () {
-        return mProducts;
-    }
-
     @NonNull
     @Override
     public CartProductsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -64,7 +60,8 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
         }
 
         TextView qttTextView = holder.qtt;
-        qttTextView.setText("x " + product.getQttCart());
+        String qttText = "x " + product.getQttCart();
+        qttTextView.setText(qttText);
 
         ImageView imageView = holder.image;
         if(product.getProduct().getThumbnailPath() != null) {

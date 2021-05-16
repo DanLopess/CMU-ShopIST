@@ -200,7 +200,12 @@ public class ProductRepository implements Cache {
     }
 
     public void updateStoreProduct(StoreProductCrossRef storeProduct) {
-        insertStoreProductToDb(storeProduct).subscribe(aBoolean -> {});
+        productDao.getQttNeeded(storeProduct.getProductId())
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(qtt -> {
+            storeProduct.setQttNeeded(qtt);
+            storeProduct.updateShown();
+            insertStoreProductToDb(storeProduct).subscribe(aBoolean -> {});
+        });
     }
 
     private Observable<Boolean> insertStoreProductToDb(@NonNull StoreProductCrossRef storeProd) {

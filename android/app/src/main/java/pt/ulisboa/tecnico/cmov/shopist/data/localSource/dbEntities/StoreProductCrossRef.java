@@ -23,7 +23,7 @@ public class StoreProductCrossRef {
     private Boolean shown;
 
     @Ignore
-    public StoreProductCrossRef(Long storeId, Long productId) {
+    public StoreProductCrossRef(@NonNull Long storeId, @NonNull Long productId) {
         this.storeId = storeId;
         this.productId = productId;
         this.price = 0.0;
