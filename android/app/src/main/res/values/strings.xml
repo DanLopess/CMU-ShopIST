@@ -97,4 +97,5 @@
     <string name="finish_shopping_confirmation">Are you sure you want to finish shopping in this store and move the items to the pantry?</string>
     <string name="finish">finish</string>
     <string name="select_pantry">Select Pantry</string>
+    <string name="choose_a_pantry">Choose a Pantry</string>
 </resources>

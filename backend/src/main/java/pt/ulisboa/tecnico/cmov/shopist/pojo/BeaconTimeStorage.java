@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.shopist.pojo;
 
+import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 
 import java.sql.Timestamp;
@@ -44,10 +45,10 @@ public class BeaconTimeStorage {
         return true;
     }
 
-    public long getMeanDurationLast1Hour() {
+    private int getMeanDurationLast1Hour() {
         Timestamp now = new Timestamp(new Date().getTime());
-        long count = 0;
-        long sum = 0;
+        int count = 0;
+        int sum = 0;
         Set<UUID> keySet = storage.keySet();
         for(UUID uuid : keySet) {
             Timestamp out = storage.get(uuid).getOut();
@@ -57,6 +58,27 @@ public class BeaconTimeStorage {
             }
         }
         return count != 0 ? sum / count : 0;
+
+    }
+
+    public QueueTimeResponseDTO getStats() {
+        int mean = getMeanDurationLast1Hour();
+        int inQueue = getInQueue(mean);
+        return new QueueTimeResponseDTO(mean, inQueue);
+    }
+
+    /* get people got it in (3 * mean) minutes ago and didn't leave yet*/
+    private int getInQueue(int mean) {
+        Timestamp now = new Timestamp(new Date().getTime());
+        int count = 0;
+        Set<UUID> keySet = storage.keySet();
+        for(UUID uuid : keySet) {
+            BeaconTimes times = storage.get(uuid);
+            if(times.getOut() == null && differenceInSeconds(now, times.getIn()) <= 3L * mean) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private long getMeanDuration() {
@@ -67,6 +89,10 @@ public class BeaconTimeStorage {
     private long durationInSeconds(UUID uuid) {
         BeaconTimes times = storage.get(uuid);
         return differenceInSeconds(times.getOut(), times.getIn());
+    }
+
+    public boolean hasStorageUuid(UUID uuid) {
+        return storage.containsKey(uuid);
     }
 
     private long differenceInSeconds(Timestamp t2, Timestamp t1) {

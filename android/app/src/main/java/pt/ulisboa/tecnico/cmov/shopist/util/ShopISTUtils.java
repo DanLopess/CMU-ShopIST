@@ -5,6 +5,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.google.android.gms.common.util.IOUtils;
@@ -64,6 +66,16 @@ public class ShopISTUtils {
 
     public static String joinStringsByComma(String... strings) {
         return String.join(", ", strings);
+    }
+
+    public static boolean hasNetwork(Context context) {
+        boolean isConnected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        if(activeNetwork != null && activeNetwork.isConnected()) {
+            isConnected = true;
+        }
+        return isConnected;
     }
 
     public static String getDrivingTimeBetweenTwoLocations(Location l1, Location l2) {
