@@ -68,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
     private Context mContext;
     public ViewModel viewModel;
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

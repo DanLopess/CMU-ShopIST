@@ -38,11 +38,8 @@ public interface BackendAPI {
     @GET(pantryUrl)
     Call<PantryDto> getPantryByUUID(@Query("uuid") String uuid);
 
-    @POST(pantryUrl)
-    Call<PantryDto> createPantry(@Body PantryDto pantryDto);
-
     @Headers("Cache-Control: no-cache")
-    Single<String> createPantry(@Body PantryDto pantryDto);
+    Call<PantryDto> createPantry(@Body PantryDto pantryDto);
 
     @PUT(pantryUrl)
     @Headers("Cache-Control: no-cache")
