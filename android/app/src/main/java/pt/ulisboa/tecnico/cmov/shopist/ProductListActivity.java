@@ -53,8 +53,6 @@ public abstract class ProductListActivity extends AppCompatActivity implements O
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
             //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
             // TODO why does it need clicks to load the full map?
-            mMap.setOnMapClickListener(arg0 -> Log.i("onMapClick", "Horray!"));
-            // TODO Add when clicked new view with the map and an option to obtain directions
         } else {
             mapView.setVisibility(View.GONE);
         }

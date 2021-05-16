@@ -77,7 +77,7 @@ public class BackendService {
         return pantryDto[0];
     }
 
-    public Single<String> postPantryDto(PantryDto pantryDto) {
+    public Call<PantryDto> postPantryDto(PantryDto pantryDto) {
         return backendAPI.createPantry(pantryDto);
     }
 

@@ -33,7 +33,7 @@ public class ListController {
 
     @PostMapping
     @Operation(summary = "Create a list", description = "Return the created list UUID")
-    public String createList(@RequestBody PantryDto list) throws InvalidDataException, ListExistsException {
+    public PantryDto createList(@RequestBody PantryDto list) throws InvalidDataException, ListExistsException {
         return listService.createPantry(list);
     }
 

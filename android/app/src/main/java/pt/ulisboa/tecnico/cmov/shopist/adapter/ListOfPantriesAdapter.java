@@ -27,6 +27,8 @@ import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.ProductDetailsDialog;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.QRCodeDialog;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAdapter.ViewHolder>{
@@ -122,8 +124,12 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
                 Toast.makeText(mContext, "Sharing...", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.list_get_qr_code:
-                Toast.makeText(mContext, "Clicked to get qr code", Toast.LENGTH_SHORT).show();
-                // todo open dialog with show QR code
+                if (list.getUuid() != null) {
+                    QRCodeDialog qrCodeDialog = new QRCodeDialog(mContext, list.getUuid());
+                    qrCodeDialog.show(((MainActivity) mContext).getSupportFragmentManager(), "product_details");
+                } else {
+                    Toast.makeText(mContext, "Something went wrong.", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             default:
                 return false;

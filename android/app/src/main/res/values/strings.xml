@@ -82,4 +82,6 @@
     <string name="selected_location">Selected Location</string>
     <string name="show_qr_code">Show QR Code</string>
     <string name="sync_icon">Syncronization icon</string>
+    <string name="qr_code">QR Code</string>
+    <string name="ok">Ok</string>
 </resources>

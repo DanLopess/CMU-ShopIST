@@ -33,13 +33,13 @@ public class ListService {
         this.pantries = new HashSet<>();
     }
 
-    public String createPantry(PantryDto pantryDto) throws InvalidDataException, ListExistsException {
+    public PantryDto createPantry(PantryDto pantryDto) throws InvalidDataException, ListExistsException {
         validatePantry(pantryDto);
         if (!pantries.add(pantryDto)) {
             throw new ListExistsException("Pantry already exists in server.");
         }
         pantryDto.setUuid(UUID.randomUUID().toString());
-        return pantryDto.getUuid();
+        return pantryDto;
     }
 
     public PantryDto updateList(PantryDto pantryDto) throws InvalidDataException, ListNotFoundException {

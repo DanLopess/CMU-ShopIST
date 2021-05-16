@@ -35,7 +35,7 @@ public interface BackendAPI {
     Call<PantryDto> getPantryByUUID(@Query("uuid") String uuid);
 
     @POST(pantryUrl)
-    Single<String> createPantry(@Body PantryDto pantryDto);
+    Call<PantryDto> createPantry(@Body PantryDto pantryDto);
 
     @PUT(pantryUrl)
     Call<PantryDto> updatePantry(@Body PantryDto pantryDto);

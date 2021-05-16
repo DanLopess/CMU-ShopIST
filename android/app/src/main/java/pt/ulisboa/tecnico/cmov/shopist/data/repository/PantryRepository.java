@@ -80,42 +80,25 @@ public class PantryRepository implements Cache {
 
     public void savePantryToBackend(Pantry pantry, List<PantryProduct> products) {
         PantryDto pantryDto = new PantryDto(pantry, products);
-        backendService.postPantryDto(pantryDto)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableSingleObserver<String>() {
-                    @Override
-                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull String s) {
-                        Log.i("PantryRepository", "Saved pantry on server");
-                        pantry.setUuid(s);
-                        if (pantry.getUuid() != null) {
-                            pantry.setShared(true);
-                            addPantry(pantry); // update pantry
-                        }
+        Call<PantryDto> call = backendService.postPantryDto(pantryDto);
+        call.enqueue(new Callback<PantryDto>() {
+            @Override
+            public void onResponse(Call<PantryDto> call, Response<PantryDto> response) {
+                Log.i("PantryRepository", "Saved pantry on server");
+                PantryDto receivedDto = response.body();
+                if (receivedDto != null) {
+                    pantry.setUuid(receivedDto.getUuid());
+                    if (pantry.getUuid() != null) {
+                        pantry.setShared(true);
+                        addPantry(pantry); // update pantry
                     }
-
-                    @Override
-                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                        Log.e("PantryRepository", "Failed to create pantry on server");
-                    }
-                });
-
-//        Call<String> call = backendService.postPantryDto(pantryDto);
-//        call.enqueue(new Callback<String>() {
-//            @Override
-//            public void onResponse(Call<String> call, Response<String> response) {
-//                Log.i("PantryRepository", "Saved pantry on server");
-//                pantry.setUuid(response.body());
-//                if (pantry.getUuid() != null) {
-//                    pantry.setShared(true);
-//                    addPantry(pantry); // update pantry
-//                }
-//            }
-//            @Override
-//            public void onFailure(Call<String> call, Throwable t) {
-//                Log.e("PantryRepository", "Failed to create pantry on server");
-//            }
-//        });
+                }
+            }
+            @Override
+            public void onFailure(Call<PantryDto> call, Throwable t) {
+                Log.e("PantryRepository", "Failed to create pantry on server");
+            }
+        });
     }
 
     public void updatePantry(Pantry pantry, List<PantryProduct> products) {
