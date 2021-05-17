@@ -93,7 +93,11 @@
     <string name="finish_shopping_confirmation">Are you sure you want to finish shopping in this store and move the items to the pantry?</string>
     <string name="finish">finish</string>
     <string name="select_pantry">Select Pantry</string>
+    <string name="loading">Loading…</string>
+    <string name="minutes_in_queue">minute(s) in queue</string>
     <string name="choose_a_pantry">Choose a Pantry</string>
     <string name="rate_this_product">Rate this product</string>
     <string name="other_users_rated">Other users rated</string>
+    <string name="queue_time_estimation">Queue Estimation Time</string>
+    <string name="seconds">Seconds</string>
 </resources>

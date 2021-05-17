@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class QueueTimeResponseDTO {
-    private Integer meanTimeInQueueInLastHour;
-    private Integer estimationTimeInQueue;
+public class Beacon {
+    private Coordinates coordinates;
 }

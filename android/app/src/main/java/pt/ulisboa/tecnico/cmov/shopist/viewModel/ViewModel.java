@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Singleton;
 
@@ -34,6 +36,8 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.PantryRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.StoreRepository;
+import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
+import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 
@@ -116,7 +120,7 @@ public class ViewModel extends AndroidViewModel {
         productRepository.deleteProduct(product);
     }
 
-    public ProductRating getProductRatingByBarcode(String barcode) {
+    public Observable<ProductRating> getProductRatingByBarcode(String barcode) {
         return productRepository.getProductRatingByBarcode(barcode);
     }
 
@@ -255,6 +259,14 @@ public class ViewModel extends AndroidViewModel {
 
     public Observable<List<StoreProduct>> getStoreProductsInCart(Long storeId) {
         return productRepository.getStoreProductsInCart(storeId);
+    }
+
+    public Observable<QueueTimeResponseDTO> getStoreStats(Store store) {
+        return storeRepository.getStats(new Coordinates(store.getLocationWrapper().getLatitude(), store.getLocationWrapper().getLongitude()), null);
+    }
+
+    public Observable<QueueTimeResponseDTO> getEstimationStats(Store store, UUID uuid) {
+        return storeRepository.getStats(new Coordinates(store.getLocationWrapper().getLatitude(), store.getLocationWrapper().getLongitude()), uuid);
     }
 
     //================================== Auxiliary ==================================

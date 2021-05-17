@@ -8,8 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +27,7 @@ import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.CartProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
@@ -38,6 +42,7 @@ public class CartActivity extends AppCompatActivity {
     Map<Integer, Long> pantriesPos = new HashMap<>();
     List<String> pantriesNames = new ArrayList<>();
     List<StoreProduct> cartProds = new ArrayList<>();
+    Integer time = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,8 +121,36 @@ public class CartActivity extends AppCompatActivity {
 
         rvProducts = findViewById(R.id.cart_prod_list);
 
+        TextView queueTime = findViewById(R.id.cart_queue_time);
+
         Button finishShoppingBt = findViewById(R.id.cartFinishShopping_bt);
         finishShoppingBt.setOnClickListener(v -> finishShopping());
+
+
+        viewModel.getStore(storeId).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(store1 -> {
+                    viewModel.getEstimationStats(store1, AppGlobalContext.getUUID()).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(responseDTO -> {
+                                time = responseDTO.getEstimationTimeInQueue();
+                                if(time != null && time >= 0) {
+                                    TextView text = findViewById(R.id.cart_queue_time_text);
+                                    text.setText(getString(R.string.queue_time_estimation));
+                                    new CountDownTimer(time * 1000, 1000) {
+
+                                        public void onTick(long millisUntilFinished) {
+                                            queueTime.setText(millisUntilFinished / 1000 + " " + getString(R.string.seconds));
+                                        }
+
+                                        public void onFinish() {
+                                            queueTime.setText(0 + " " + getString(R.string.seconds));
+                                        }
+
+                                    }.start();
+                                }
+                            }, throwable -> throwable.printStackTrace());
+                });
 
         viewModel.getStoreProductsInCart(storeId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

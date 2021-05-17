@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 import pt.ulisboa.tecnico.cmov.shopist.dto.InTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.OutTimeRequestDTO;
+import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.StoreExistsException;
@@ -35,12 +36,6 @@ public class BeaconController {
         return beaconService.createBeacon(beacon);
     }
 
-    @PutMapping
-    @Operation(summary = "Update a beacon", description = "Returns the updated store")
-    public Beacon updateStore(@RequestBody Beacon beacon) throws InvalidDataException, StoreNotFoundException {
-        return beaconService.updateBeacon(beacon);
-    }
-
     @PostMapping(path = "/in")
     @Operation(summary = "save the time the user got in beacon's range", description = "Return UUID")
     public UUID postInTime(@RequestBody InTimeRequestDTO time) throws InvalidDataException {
@@ -53,9 +48,9 @@ public class BeaconController {
         return beaconService.outTime(time);
     }
 
-    @GetMapping(path = "/queueTime")
+    @PostMapping(path = "/queueTime")
     @Operation(summary = "get queue's mean duration time of last 1 hour")
-    public QueueTimeResponseDTO getMeanDurationTime(@RequestBody Coordinates coordinates) {
-        return beaconService.getMeanDurationLast1Hour(coordinates);
+    public QueueTimeResponseDTO getMeanDurationTime(@RequestBody QueueTimeRequestDTO requestDTO) {
+        return beaconService.getMeanDurationLast1Hour(requestDTO);
     }
 }
