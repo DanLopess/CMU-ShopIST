@@ -98,4 +98,6 @@
     <string name="choose_a_pantry">Choose a Pantry</string>
     <string name="rate_this_product">Rate this product</string>
     <string name="other_users_rated">Other users rated</string>
+    <string name="queue_time_estimation">Queue Estimation Time</string>
+    <string name="seconds">Seconds</string>
 </resources>

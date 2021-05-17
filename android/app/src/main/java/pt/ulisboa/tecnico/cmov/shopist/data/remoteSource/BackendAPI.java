@@ -60,14 +60,11 @@ public interface BackendAPI {
     Observable<UUID> postOutTime(@Body BeaconTime beaconTime);
 
     @POST("/api/beacon/queueTime")
+    @Headers("Cache-Control: no-cache")
     Observable<QueueTimeResponseDTO> getQueueTime(@Body QueueTimeRequestDTO requestDTO);
 
-    @POST("/api/beacon/queueTime")
-    @Headers("Cache-Control: no-cache")
-    Observable<QueueTimeResponseDTO> getRemainingEstimation(@Body QueueTimeRequestDTO requestDTO);
-
     @GET(ratingUrl)
-    Call<ProductRating> getProductRating(@Query("barcode") String barcode);
+    Observable<ProductRating> getProductRating(@Query("barcode") String barcode);
 
     @POST(ratingUrl)
     @Headers("Cache-Control: no-cache")

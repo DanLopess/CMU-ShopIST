@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
@@ -94,7 +95,7 @@ public class ProductDetailsDialog extends DialogFragment {
 
         if (product.getCode() != null/* and is connected to internet???*/) {
             product.setRating(rating.getRating());
-            ((MainActivity) mContext).getViewModel().postProductRating(product.getCode(), Math.round(product.getRating()), Math.round(currRating));
+            ((MainActivity) mContext).getViewModel().postProductRating(product.getCode(), Math.round(product.getRating()), currRating == null ? null : Math.round(currRating));
             //update on server, if possible;
         }
     }
@@ -130,14 +131,26 @@ public class ProductDetailsDialog extends DialogFragment {
             RatingBar rating = mDialogView.findViewById(R.id.product_details_rating);
 
             currRating = product.getRating();
-            if (currRating == 0f)
-                currRating = null;
+
             rating.setRating(currRating != null ? currRating : 0.0f);
 
-            ProductRating productRating;
-            productRating = ((MainActivity) mContext).getViewModel().getProductRatingByBarcode(product.getCode());
-            //TODO get othersRating from server, if possible;
-            updateRatings(productRating);
+            ((MainActivity) mContext).getViewModel().getProductRatingByBarcode(product.getCode()).
+                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableObserver<ProductRating>() {
+                @Override
+                public void onNext(@io.reactivex.rxjava3.annotations.NonNull ProductRating productRating) {
+                    updateRatings(productRating);
+                }
+
+                @Override
+                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
         }
 
         if(product.getImagePath() != null) {

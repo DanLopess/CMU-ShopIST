@@ -1,26 +1,29 @@
 package pt.ulisboa.tecnico.cmov.shopist.data.remoteSource;
 
 import android.content.Context;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.Cache;
+import okhttp3.CacheControl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.dto.Beacon;
 import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
 import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
@@ -41,19 +44,19 @@ public class BackendService {
     private long cacheSize = 10 * 1024 * 1024; // 10 MB
 
     private Cache cache;
+    private Context mContext;
 
     private BackendService(Context context) {
         cache = new Cache(context.getCacheDir(), cacheSize);
+        mContext = context;
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient httpClient = new OkHttpClient.Builder().cache(cache).addNetworkInterceptor(chain -> {
-            okhttp3.Response request = chain.proceed(chain.request());
-            if(ShopISTUtils.hasNetwork(context)) {
-                return request.newBuilder().header("Cache-Control", "public, max-age=" + 15).build();
-            } else {
-                return request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build();
-            }
-        }).addInterceptor(interceptor).build();
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .addInterceptor(getOfflineInterceptor())
+                .addNetworkInterceptor(getOnlineInterceptor())
+                .cache(cache)
+                .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BackendAPI.BASE_URL)
@@ -65,6 +68,31 @@ public class BackendService {
         backendAPI = retrofit.create(BackendAPI.class);
 
         Log.d("BACKENDSERVICE", "BackendService running");
+    }
+
+    private Interceptor getOnlineInterceptor() {
+        return chain -> {
+            okhttp3.Response response = chain.proceed(chain.request());
+            int maxAge = 60; // read from cache for 60 seconds even if there is internet connection
+            return response.newBuilder()
+                    .header("Cache-Control", "public, max-age=" + maxAge)
+                    .removeHeader("Pragma")
+                    .build();
+        };
+    }
+
+    private Interceptor getOfflineInterceptor() {
+        return chain -> {
+            Request request = chain.request();
+            if (!ShopISTUtils.hasNetwork(mContext)) {
+                int maxStale = 60 * 60 * 24 * 7; // Offline cache available for 7 days
+                request = request.newBuilder()
+                        .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
+                        .removeHeader("Pragma")
+                        .build();
+            }
+            return chain.proceed(request);
+        };
     }
 
 
@@ -142,20 +170,8 @@ public class BackendService {
         return backendAPI.getQueueTime(queueTimeRequestDTO);
     }
 
-    public ProductRating getProductRating(String barcode) {
-        final ProductRating[] productRating = {null};
-        backendAPI.getProductRating(barcode).enqueue(new Callback<ProductRating>() {
-            @Override
-            public void onResponse(@NonNull Call<ProductRating> call, @NonNull Response<ProductRating> response) {
-                productRating[0] = response.body();
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ProductRating> call, @NonNull Throwable t) {
-                Log.e("BackendService", "Failed to get product rating from server");
-            }
-        });
-        return productRating[0];
+    public Observable<ProductRating> getProductRating(String barcode) {
+        return backendAPI.getProductRating(barcode);
     }
 
     public ProductRating postProductRating(String barcode, Integer rating, Integer prev) {

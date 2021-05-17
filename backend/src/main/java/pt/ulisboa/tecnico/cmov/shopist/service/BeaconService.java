@@ -118,11 +118,7 @@ public class BeaconService {
 
     public QueueTimeResponseDTO getMeanDurationLast1Hour(QueueTimeRequestDTO requestDTO) {
         Optional<Beacon> beacon;
-        if(requestDTO.getUuid() == null) {
-            beacon = this.getBeaconWithLeastDistance(requestDTO.getCoordinates());
-        } else {
-            beacon = Optional.ofNullable(getBeaconWithUuid(requestDTO.getUuid()));
-        }
+        beacon = this.getBeaconWithLeastDistance(requestDTO.getCoordinates());
         return beacon.map(beacon1 -> beacon1.getBeaconTimeStorage().getStats(requestDTO.getUuid())).orElse(new QueueTimeResponseDTO(null, null));
     }
 

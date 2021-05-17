@@ -120,7 +120,7 @@ public class ViewModel extends AndroidViewModel {
         productRepository.deleteProduct(product);
     }
 
-    public ProductRating getProductRatingByBarcode(String barcode) {
+    public Observable<ProductRating> getProductRatingByBarcode(String barcode) {
         return productRepository.getProductRatingByBarcode(barcode);
     }
 

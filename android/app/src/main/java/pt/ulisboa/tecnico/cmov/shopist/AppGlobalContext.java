@@ -41,7 +41,7 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
 
     public static final String TERMITE_TAG = "ShopIST";
 
-    private UUID uuid = null;
+    private static UUID uuid = null;
 
     private SimWifiP2pManager mManager = null;
     private SimWifiP2pManager.Channel mChannel = null;
@@ -71,6 +71,10 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
             mBound = false;
         }
     };
+
+    public static UUID getUUID() {
+        return uuid;
+    }
 
     public void startService() {
         IntentFilter filter = new IntentFilter();
