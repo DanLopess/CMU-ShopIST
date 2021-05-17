@@ -8,17 +8,22 @@ import androidx.annotation.NonNull;
 import java.util.List;
 import java.util.UUID;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.dto.Beacon;
 import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
 import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
+import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
 import pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils;
 import retrofit2.Call;
@@ -41,10 +46,10 @@ public class BackendService {
         cache = new Cache(context.getCacheDir(), cacheSize);
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient httpClient = new OkHttpClient.Builder().cache(cache).addInterceptor(chain -> {
+        OkHttpClient httpClient = new OkHttpClient.Builder().cache(cache).addNetworkInterceptor(chain -> {
             okhttp3.Response request = chain.proceed(chain.request());
             if(ShopISTUtils.hasNetwork(context)) {
-                return request.newBuilder().header("Cache-Control", "public, max-age=" + 10).build();
+                return request.newBuilder().header("Cache-Control", "public, max-age=" + 15).build();
             } else {
                 return request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build();
             }
@@ -74,9 +79,8 @@ public class BackendService {
         return backendServiceInstance;
     }
 
-    public Observable<Store> postStore(Store store) {
-        Log.d("STORE-SENT", store.toString());
-        return backendAPI.postStore(store);
+    public Observable<Beacon> postBeacon(Beacon beacon) {
+        return backendAPI.postBeacon(beacon);
     }
 
     public Observable<List<Pantry>> getPantries() {
@@ -130,12 +134,12 @@ public class BackendService {
         return backendAPI.postInTime(beaconTime);
     }
 
-    public void postOutTime(BeaconTime beaconTime) {
-        backendAPI.postOutTime(beaconTime);
+    public Observable<UUID> postOutTime(BeaconTime beaconTime) {
+        return backendAPI.postOutTime(beaconTime);
     }
 
-    public Observable<Long> getQueueTime(Coordinates coordinates) {
-        return backendAPI.getQueueTime(coordinates);
+    public Observable<QueueTimeResponseDTO> getQueueTime(QueueTimeRequestDTO queueTimeRequestDTO) {
+        return backendAPI.getQueueTime(queueTimeRequestDTO);
     }
 
     public ProductRating getProductRating(String barcode) {
