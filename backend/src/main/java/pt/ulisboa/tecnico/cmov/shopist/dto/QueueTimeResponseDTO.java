@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class QueueTimeResponseDTO {
-    private Integer meanTimeInLastHourInSeconds;
-    private Integer queueCount;
+    private Integer meanTimeInQueueInLastHour;
+    private Integer estimationTimeInQueue;
 }

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pt.ulisboa.tecnico.cmov.shopist.dto.InTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.OutTimeRequestDTO;
+import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.StoreExistsException;
@@ -13,7 +14,10 @@ import pt.ulisboa.tecnico.cmov.shopist.pojo.Beacon;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.BeaconTimes;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.Coordinates;
 
+import javax.swing.text.html.Option;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,6 +29,8 @@ import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.isEmpty;
 public class BeaconService {
     private final Set<Beacon> beacons;
 
+    private final DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+
     public BeaconService() {
         this.beacons = new HashSet<>();
     }
@@ -32,21 +38,9 @@ public class BeaconService {
     public Beacon createBeacon(Beacon s) throws StoreExistsException, InvalidDataException {
         validateBeaconData(s);
         if (!beacons.add(s)) {
-            throw new StoreExistsException("Store already exists in server.");
+            throw new StoreExistsException("Beacon already exists in server.");
         }
         return s;
-    }
-
-    public Beacon updateBeacon(Beacon s) throws StoreNotFoundException, InvalidDataException {
-        validateBeaconData(s);
-        Optional<Beacon> storeToUpdate = beacons.stream().filter(s::equals).findAny();
-        if (storeToUpdate.isEmpty()) {
-            throw new StoreNotFoundException("Specified beacon was not found");
-        } else {
-            Beacon updatedBeacon = storeToUpdate.get();
-            updatedBeacon.setCoordinates(s.getCoordinates());
-            return s;
-        }
     }
 
     public Optional<List<Beacon>> getBeaconByTimeUuid(int meters, Coordinates coordinates) {
@@ -84,6 +78,11 @@ public class BeaconService {
         if (s.getCoordinates() == null) {
             throw new InvalidDataException("Store has invalid information");
         }
+        Optional<Beacon> beacon = getBeaconWithLeastDistance(s.getCoordinates());
+        Beacon beacon1 = beacon.orElse(null);
+        if(beacon1 != null) {
+            throw new InvalidDataException("Beacon already exists in a radius of 100 meters");
+        }
     }
 
     public UUID inTime(InTimeRequestDTO time) throws InvalidDataException {
@@ -91,7 +90,8 @@ public class BeaconService {
         Optional<Beacon> beacon = this.getBeaconWithLeastDistance(time.getCoordinates());
         Beacon beacon1 = beacon.orElse(null);
         if(beacon1 != null) {
-            beacon1.getBeaconTimeStorage().saveInTime(uuid, time.getTimestamp());
+            LocalDateTime localTime = LocalDateTime.parse(time.getTimestamp(), formatter);
+            beacon1.getBeaconTimeStorage().saveInTime(uuid, localTime);
             return uuid;
         }
         throw new InvalidDataException("beacon not found");
@@ -100,7 +100,8 @@ public class BeaconService {
     public UUID outTime(OutTimeRequestDTO time) throws InvalidDataException {
         Beacon beacon = this.getBeaconWithUuid(time.getUuid());
         if(beacon != null) {
-            beacon.getBeaconTimeStorage().saveOutTime(time.getUuid(), time.getTimestamp());
+            LocalDateTime localTime = LocalDateTime.parse(time.getTimestamp(), formatter);
+            beacon.getBeaconTimeStorage().saveOutTime(time.getUuid(), localTime);
             return time.getUuid();
         }
         throw new InvalidDataException("beacon not found");
@@ -115,9 +116,14 @@ public class BeaconService {
         return null;
     }
 
-    public QueueTimeResponseDTO getMeanDurationLast1Hour(Coordinates coordinates) {
-        Optional<Beacon> store = this.getBeaconWithLeastDistance(coordinates);
-        return store.map(beacon1 -> beacon1.getBeaconTimeStorage().getStats()).orElse(new QueueTimeResponseDTO(null, null));
+    public QueueTimeResponseDTO getMeanDurationLast1Hour(QueueTimeRequestDTO requestDTO) {
+        Optional<Beacon> beacon;
+        if(requestDTO.getUuid() == null) {
+            beacon = this.getBeaconWithLeastDistance(requestDTO.getCoordinates());
+        } else {
+            beacon = Optional.ofNullable(getBeaconWithUuid(requestDTO.getUuid()));
+        }
+        return beacon.map(beacon1 -> beacon1.getBeaconTimeStorage().getStats(requestDTO.getUuid())).orElse(new QueueTimeResponseDTO(null, null));
     }
 
     // TODO GET ALL STORES BY COORDINATE PROXIMITY
