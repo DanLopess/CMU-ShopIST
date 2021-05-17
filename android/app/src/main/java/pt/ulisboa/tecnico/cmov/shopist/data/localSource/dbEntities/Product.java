@@ -2,11 +2,8 @@ package pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-
-import java.util.List;
 
 import lombok.Data;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
@@ -25,13 +22,15 @@ public class Product {
 //    public List<String> crowdSourceImage;
 
     public String code;
+    public Float rating;
 
-    public Product(String productName, String productDescription, String code, String imagePath, String thumbnailPath) {
+    public Product(String productName, String productDescription, String code, String imagePath, String thumbnailPath, Float rating) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.code = code;
         this.imagePath = imagePath;
         this.thumbnailPath = thumbnailPath;
+        this.rating = rating;
     }
 
     public Product(PantryProductDto productDto) {

@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.inject.Singleton;
 
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -40,6 +39,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.StoreRepository;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
+import pt.ulisboa.tecnico.cmov.shopist.dto
 import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -75,7 +75,7 @@ public class ViewModel extends AndroidViewModel {
             Bitmap thumbnail = ThumbnailUtils.extractThumbnail(image, 40, 60);
             thumbPath = saveToInternalStorage(thumbnail, name + description + "thumb");
         }
-        productRepository.addProduct(new Product(name, description, null, path, thumbPath));
+        productRepository.addProduct(new Product(name, description, null, path, thumbPath, null));
     }
     public Single<Bitmap> getProductImage(String path) {
         if (path != null)
@@ -91,7 +91,7 @@ public class ViewModel extends AndroidViewModel {
             Bitmap thumbnail = ThumbnailUtils.extractThumbnail(image, 40, 60);
             thumbPath = saveToInternalStorage(thumbnail, name + description + "thumb");
         }
-        productRepository.addProduct(new Product(name, description, null, path, thumbPath));
+        productRepository.addProduct(new Product(name, description, code, path, thumbPath, null));
     }
 
 
@@ -122,6 +122,14 @@ public class ViewModel extends AndroidViewModel {
 
     public void deleteProduct(Product product) {
         productRepository.deleteProduct(product);
+    }
+
+    public ProductRating getProductRatingByBarcode(String barcode) {
+        return productRepository.getProductRatingByBarcode(barcode);
+    }
+
+    public ProductRating postProductRating(String barcode, Integer rating, Integer prev) {
+        return productRepository.postProductRating(barcode, rating, prev);
     }
 
     //================================== Pantry ==================================

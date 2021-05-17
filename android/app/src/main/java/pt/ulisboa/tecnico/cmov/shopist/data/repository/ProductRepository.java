@@ -29,6 +29,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProductC
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
+import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
 
 @Singleton
 public class ProductRepository implements Cache {
@@ -70,6 +71,14 @@ public class ProductRepository implements Cache {
 
     private Observable<List<Product>> getProductsFromAPI() {
         return backendService.getProducts();
+    }
+
+    public ProductRating getProductRatingByBarcode(String barcode) {
+        return backendService.getProductRating(barcode);
+    }
+
+    public ProductRating postProductRating(String barcode, Integer rating, Integer prev) {
+        return backendService.postProductRating(barcode, rating, prev);
     }
 
     public Single<Long> addProduct(Product product) {

@@ -9,6 +9,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
 import retrofit2.Call;
 import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
 import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
@@ -24,6 +25,7 @@ public interface BackendAPI {
 
     String BASE_URL = "http://MBP-de-Daniel.ubnt.lopes:80";
     String pantryUrl = "/api/pantry";
+    String ratingUrl = "/api/product/ratings";
 
     @POST("/api/store/")
     @Headers("Cache-Control: no-cache")
@@ -56,4 +58,13 @@ public interface BackendAPI {
 
     @GET("/api/beacon/queueTime")
     Observable<Long> getQueueTime(@Body Coordinates coordinates);
+
+    @GET(ratingUrl)
+    Call<ProductRating> getProductRating(@Query("barcode") String barcode);
+
+    @POST(ratingUrl)
+    @Headers("Cache-Control: no-cache")
+    Call<ProductRating> addProductRating(@Query("barcode") String barcode,
+                                @Query("rating") Integer rating,
+                                @Query("prev") Integer prev);
 }

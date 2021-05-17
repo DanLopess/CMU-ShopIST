@@ -59,13 +59,13 @@ public class ListService {
         }
     }
 
-    public void addNewProductsToProductService(List<Product> products) {
+    /*public void addNewProductsToProductService(List<Product> products) {
         products.forEach(p -> {
             try {
                 productService.addProduct(p);
             } catch (ProductExistsException ignored) { }
         });
-    }
+    }*/
 
     public Optional<PantryDto> getListByUUID(String id) {
         if (id == null) return Optional.empty();

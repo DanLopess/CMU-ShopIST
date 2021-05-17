@@ -2,9 +2,12 @@ package pt.ulisboa.tecnico.cmov.shopist.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.ProductExistsException;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductImage;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductRating;
 
 import java.util.*;
 import java.util.List;
@@ -12,29 +15,34 @@ import java.util.List;
 @Slf4j
 @Service
 public class ProductService {
-    private final Set<Product> products;
+    private final Map<String, ProductRating> productsRatings;
+    private final Map<String, String> productsPrices;
+    private final Map<String, String> productsImages;
 
     public ProductService() {
-        this.products = new HashSet<>();
+        this.productsRatings = new HashMap<>();
+        this.productsPrices = new HashMap<>();
+        this.productsImages = new HashMap<>();
     }
 
-    public Optional<Product> findProductById(String id) {
-        if (id == null) return Optional.empty();
-        return products.stream().filter(p -> id.equalsIgnoreCase(p.getId())).findAny();
+    public Optional<ProductRating> findProductRatingByBarcode(String barcode) {
+        if (barcode == null) return Optional.empty();
+        return Optional.ofNullable(productsRatings.get(barcode));
     }
 
-    public Optional<Product> findProductByName(String name) {
-        if (name == null) return Optional.empty();
-        return products.stream().filter(p -> name.equalsIgnoreCase(p.getName())).findAny();
-    }
-
-    public void addProduct(Product p) throws ProductExistsException {
-        if (!products.add(p)) {
-            throw new ProductExistsException("Product already exists in server.");
+    public ProductRating addProductRating(Integer prevRating, Integer rating, String barcode) {
+        Optional<ProductRating> productRating = findProductRatingByBarcode(barcode);
+        if (productRating.isPresent()) {
+            productRating.get().addRating(prevRating, rating);
+            return productRating.get();
+        } else {
+            ProductRating prodRating = new ProductRating(rating);
+            productsRatings.put(barcode, prodRating);
+            return prodRating;
         }
     }
 
-    public String addImageToProduct(ProductImage productImage) {
+    /*public String addImageToProduct(ProductImage productImage) {
         Optional<Product> product = findProductById(productImage.getProductId());
         if (product.isPresent() && productImage.getImageBytes() != null) {
             product.get().addImage(productImage);
@@ -61,5 +69,5 @@ public class ProductService {
         } else {
             return new ArrayList<>();
         }
-    }
+    }*/
 }

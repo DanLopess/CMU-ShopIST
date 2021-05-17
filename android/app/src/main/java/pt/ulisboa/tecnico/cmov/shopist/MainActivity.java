@@ -24,13 +24,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfStoresAdapter;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreatePantryDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateStoreDialogFragment;
+import pt.ulisboa.tecnico.cmov.shopist.dialog.ProductDetailsDialog;
 import pt.ulisboa.tecnico.cmov.shopist.util.PermissionUtils;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.MyViewModelFactory;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
@@ -116,14 +121,49 @@ public class MainActivity extends AppCompatActivity {
             assert data != null;
             String code = data.getStringExtra("code");
             viewModel.checkIfProdExistsByCode(code).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(exists -> {
-                if (!exists) {
-                    CreateProductDialogFragment dialog = new CreateProductDialogFragment(this, code, CreateProductDialogFragment.PRODUCT);
-                    dialog.show(getSupportFragmentManager(), "create product");
-                } else {
-                    runOnUiThread(() -> Toast.makeText(mContext, mContext.getString(R.string.product_already_exists), Toast.LENGTH_SHORT).show());
-                }
-            });
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableObserver<Boolean>() {
+                       @Override
+                       public void onNext(@NonNull Boolean exists) {
+                           if (!exists) {
+                               CreateProductDialogFragment dialog = new CreateProductDialogFragment(MainActivity.this, code, CreateProductDialogFragment.PRODUCT);
+                               dialog.show(getSupportFragmentManager(), "create product");
+                           } else {
+                               runOnUiThread(() -> Toast.makeText(mContext, mContext.getString(R.string.product_already_exists), Toast.LENGTH_SHORT).show());
+                               viewModel.getProductByCode(code).subscribeOn(Schedulers.io())
+                                       .observeOn(AndroidSchedulers.mainThread())
+                                       .subscribe(new DisposableObserver<Product>() {
+                                           @Override
+                                           public void onNext(@NonNull Product product) {
+                                               ProductDetailsDialog productDetailsDialog = new ProductDetailsDialog(mContext, product);
+                                               productDetailsDialog.show(((MainActivity) mContext).getSupportFragmentManager(), "product_details");
+                                               onComplete();
+                                           }
+
+                                           @Override
+                                           public void onError(@NonNull Throwable e) {
+                                               dispose();
+                                           }
+
+                                           @Override
+                                           public void onComplete() {
+                                               dispose();
+                                           }
+                                       });
+                           }
+                           onComplete();
+                       }
+
+                       @Override
+                       public void onError(@NonNull Throwable e) {
+                            dispose();
+                       }
+
+                       @Override
+                       public void onComplete() {
+                           dispose();
+                       }
+                       });
         } else if (requestCode == PANTRY_SCAN_REQ_CODE && resultCode == RESULT_OK && data != null) {
             String code = data.getStringExtra("code");
             viewModel.addSyncedPantryFromBackend(code);
@@ -137,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpDialogs() {
         mCreatePantryListDialog = new CreatePantryDialogFragment(this);
         mCreateStoreListDialog = new CreateStoreDialogFragment(this);
-        mCreateProductDialog = new CreateProductDialogFragment(this, CreateProductDialogFragment.PRODUCT);
+        mCreateProductDialog = new CreateProductDialogFragment(this, null, CreateProductDialogFragment.PRODUCT);
     }
 
     private void setUpLists() {
