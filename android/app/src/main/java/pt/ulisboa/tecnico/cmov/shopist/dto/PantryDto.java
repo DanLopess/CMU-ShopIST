@@ -20,6 +20,7 @@ public class PantryDto {
 
     public PantryDto(Pantry pantry, List<PantryProduct> productList) {
         this.pantryId = pantry.getPantryId();
+        this.uuid = pantry.getUuid();
         this.name = pantry.getName();
         this.description = pantry.getDescription();
         this.products = new ArrayList<>();

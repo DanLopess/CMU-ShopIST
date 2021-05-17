@@ -130,6 +130,31 @@ public class ViewModel extends AndroidViewModel {
         return pantryRepository.getPantries();
     }
 
+    public void refreshPantries() {
+        getPantries()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new DisposableObserver<List<Pantry>>() {
+                @Override
+                public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<Pantry> pantries) {
+                    for (Pantry p : pantries) {
+                        if (p.isShared()) {
+                            addSyncedPantryFromBackend(p.getUuid());
+                        }
+                    }
+                }
+                @Override
+                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                    dispose();
+                }
+                @Override
+                public void onComplete() {
+                    dispose();
+                }
+            });
+    }
+
+
     public Observable<Pantry> getPantry(Long id) {
         return pantryRepository.getPantry(id);
     }
@@ -155,13 +180,6 @@ public class ViewModel extends AndroidViewModel {
         return productRepository.getPantryProducts(pantryId);
     }
 
-    public List<PantryProduct> getOncePantryProducts(Long pantryId) {
-        List<PantryProduct> pantryProducts = new ArrayList<>();
-        getPantryProducts(pantryId).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(pantryProducts::addAll).dispose();
-        return pantryProducts;
-    }
-
     public Observable<Integer> getPantrySize(Long pantryId) {
         return productRepository.getPantrySize(pantryId);
     }
@@ -175,7 +193,24 @@ public class ViewModel extends AndroidViewModel {
     }
 
     public void updatePantry(Pantry pantry) {
-        pantryRepository.updatePantry(pantry, getOncePantryProducts(pantry.getPantryId()));
+        getPantryProducts(pantry.getPantryId()).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<List<PantryProduct>>() {
+                    @Override
+                    public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<PantryProduct> pantryProducts) {
+                        pantryRepository.updatePantry(pantry, pantryProducts);
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                        dispose();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dispose();
+                    }
+                });
     }
 
     public void addSyncedPantryFromBackend(String uuid) {

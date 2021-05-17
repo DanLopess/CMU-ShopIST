@@ -27,10 +27,10 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
-import java.util.Locale;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
@@ -52,11 +52,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
     public ListOfPantriesAdapter(Context context, Observable<List<Pantry>> lists) {
         mContext = context;
-        lists.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(items -> {
-           mLists = items;
-           this.notifyDataSetChanged();
-           viewModel = ((MainActivity) mContext).getViewModel();
-        });
+        getAndRefreshLists(lists);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
     }
 
@@ -206,6 +202,29 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
                 });
             }
         }
+    }
+
+    public void getAndRefreshLists(Observable<List<Pantry>> lists) {
+        lists.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<List<Pantry>>() {
+                   @Override
+                   public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<Pantry> pantries) {
+                       mLists = pantries;
+                       notifyDataSetChanged();
+                       viewModel = ((MainActivity) mContext).getViewModel();
+                   }
+
+                   @Override
+                   public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                       dispose();
+                   }
+
+                   @Override
+                   public void onComplete() {
+                        dispose();
+                   }
+               });
     }
 
     @Override

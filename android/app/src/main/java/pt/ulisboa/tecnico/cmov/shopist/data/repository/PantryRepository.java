@@ -63,6 +63,11 @@ public class PantryRepository implements Cache {
         return pantryDao.getPantryByUuid(uuid);
     }
 
+    public Call<PantryDto> getAPIPantryByUuid(String uuid) {
+        // first try to get from cache, then get fro
+        return backendService.getPantry(uuid);
+    }
+
     public void addPantry(Pantry pantry) {
         insertPantryToDb(pantry).subscribe(new DisposableObserver<Boolean>() {
             @Override
@@ -130,6 +135,7 @@ public class PantryRepository implements Cache {
     private Observable<List<Pantry>> getPantriesFromDb() {
         return pantryDao.getPantries();
     }
+
     private Observable<List<Pantry>> getPantriesFromApi() {
         return backendService.getPantries();
     }

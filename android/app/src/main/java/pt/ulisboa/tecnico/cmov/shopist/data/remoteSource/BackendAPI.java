@@ -20,9 +20,9 @@ import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface BackendAPI {
-    String BASE_URL = "http://daniellopes.ddns.net/";
+    //String BASE_URL = "http://daniellopes.ddns.net/";
 
-//    String BASE_URL = "http://MBP-de-Daniel.ubnt.lopes:8999";
+    String BASE_URL = "http://MBP-de-Daniel.ubnt.lopes:80";
     String pantryUrl = "/api/pantry";
 
     @POST("/api/store/")
@@ -38,6 +38,7 @@ public interface BackendAPI {
     @GET(pantryUrl)
     Call<PantryDto> getPantryByUUID(@Query("uuid") String uuid);
 
+    @POST(pantryUrl)
     @Headers("Cache-Control: no-cache")
     Call<PantryDto> createPantry(@Body PantryDto pantryDto);
 

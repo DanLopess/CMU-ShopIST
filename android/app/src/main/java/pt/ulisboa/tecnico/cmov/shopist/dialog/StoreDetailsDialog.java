@@ -36,7 +36,6 @@ public class StoreDetailsDialog extends DialogFragment {
     private final Context mContext;
     private View mDialogView;
     private final Store store;
-    private Location pickedLocation;
 
     public StoreDetailsDialog(Context context, Store store) {
         this.mContext = context;
@@ -107,7 +106,7 @@ public class StoreDetailsDialog extends DialogFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == LOCATION_DATA && resultCode == RESULT_OK) {
-            pickedLocation = Objects.requireNonNull(data.getExtras()).getParcelable(LOCATION_EXTRA);
+            Location pickedLocation = Objects.requireNonNull(data.getExtras()).getParcelable(LOCATION_EXTRA);
             store.setLocationWrapper(new LocationWrapper(pickedLocation));
         }
     }
