@@ -25,7 +25,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping
+    /* @PostMapping
     public String addImageToProduct(@RequestBody ProductImage productImage) {
         return productService.addImageToProduct(productImage);
     }
@@ -40,7 +40,7 @@ public class ProductController {
         } else {
             throw new ProductNotFoundException("Must insert product id or product name");
         }
-    }
+    }*/
 
     @GetMapping("/ratings")
     public ProductRating getProductRatingByBarcode(@RequestParam(required = true) String barcode) {
