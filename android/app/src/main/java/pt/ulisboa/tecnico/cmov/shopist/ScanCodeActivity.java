@@ -34,8 +34,8 @@ public class ScanCodeActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar_scan_code);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        codeScanner();
         setUpPermissions();
+        codeScanner();
     }
 
     private void codeScanner() {
