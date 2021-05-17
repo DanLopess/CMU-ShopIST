@@ -53,7 +53,7 @@ public class AddPantryProductsActivity extends AppCompatActivity {
     private void initialize() {
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
         pantryId = getIntent().getLongExtra("pantryId", -1);
-        mCreateProductDialog = new CreateProductDialogFragment(this, CreateProductDialogFragment.PANTRY);
+        mCreateProductDialog = new CreateProductDialogFragment(this, null, CreateProductDialogFragment.PANTRY);
 
         rvProducts = findViewById(R.id.rv_existing_products);
 

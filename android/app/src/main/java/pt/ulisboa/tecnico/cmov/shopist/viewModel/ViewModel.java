@@ -4,8 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
-import android.location.LocationManager;
-import android.location.Location;
 import android.media.ThumbnailUtils;
 
 import androidx.annotation.NonNull;
@@ -17,19 +15,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Singleton;
 
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.observers.DisposableObserver;
-import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.LocationEntity;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
@@ -41,6 +34,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.PantryRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.StoreRepository;
+import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 
 @Singleton
@@ -73,7 +67,7 @@ public class ViewModel extends AndroidViewModel {
             Bitmap thumbnail = ThumbnailUtils.extractThumbnail(image, 40, 60);
             thumbPath = saveToInternalStorage(thumbnail, name + description + "thumb");
         }
-        productRepository.addProduct(new Product(name, description, null, path, thumbPath));
+        productRepository.addProduct(new Product(name, description, null, path, thumbPath, null));
     }
     public Single<Bitmap> getProductImage(String path) {
         if (path != null)
@@ -89,7 +83,7 @@ public class ViewModel extends AndroidViewModel {
             Bitmap thumbnail = ThumbnailUtils.extractThumbnail(image, 40, 60);
             thumbPath = saveToInternalStorage(thumbnail, name + description + "thumb");
         }
-        productRepository.addProduct(new Product(name, description, null, path, thumbPath));
+        productRepository.addProduct(new Product(name, description, code, path, thumbPath, null));
     }
 
 
@@ -120,6 +114,14 @@ public class ViewModel extends AndroidViewModel {
 
     public void deleteProduct(Product product) {
         productRepository.deleteProduct(product);
+    }
+
+    public ProductRating getProductRatingByBarcode(String barcode) {
+        return productRepository.getProductRatingByBarcode(barcode);
+    }
+
+    public ProductRating postProductRating(String barcode, Integer rating, Integer prev) {
+        return productRepository.postProductRating(barcode, rating, prev);
     }
 
     //================================== Pantry ==================================

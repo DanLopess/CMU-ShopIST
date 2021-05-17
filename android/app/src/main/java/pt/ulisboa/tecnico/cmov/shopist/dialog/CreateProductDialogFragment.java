@@ -42,14 +42,10 @@ public class CreateProductDialogFragment extends DialogFragment {
     private final Context mContext;
     private ImageView imageView;
     private View mDialogView;
-    private String code = null;
+    private String code;
     private Bitmap imageSelected;
-    private final int flag; //used to not need to make 2 separate dialogs
+    private final int flag;
 
-    public CreateProductDialogFragment(Context context, int flag) {
-        this.mContext = context;
-        this.flag = flag;
-    }
     public CreateProductDialogFragment(Context context, String code, int flag) {
         this.mContext = context;
         this.code = code;
