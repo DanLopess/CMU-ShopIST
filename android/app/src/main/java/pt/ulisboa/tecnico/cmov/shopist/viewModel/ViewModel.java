@@ -39,7 +39,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.StoreRepository;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
-import pt.ulisboa.tecnico.cmov.shopist.dto
+import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -272,6 +272,7 @@ public class ViewModel extends AndroidViewModel {
                 }
             });
         }
+        // TODO ELSE , IF ALREADY HAS UUID UPDATES
     }
 
     private void createProductsFromSyncedPantry(PantryDto pDto, Long pantryId) {

@@ -21,8 +21,6 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.List;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.observers.DisposableObserver;
@@ -31,7 +29,6 @@ import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfPantriesAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfProductsAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.ListOfStoresAdapter;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreatePantryDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateStoreDialogFragment;
@@ -221,14 +218,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         Menu menu = toolbar.getMenu();
         MenuItem item1 = menu.findItem(R.id.action_addList);
-        MenuItem item2 = menu.findItem(R.id.action_addListCode);
         MenuItem item3 = menu.findItem(R.id.action_addListQR);
         MenuItem item4 = menu.findItem(R.id.refresh_data);
         if (itemId == R.id.action_pantry_lists) {
             item1.setTitle(R.string.create_new_list);
             item1.setVisible(true);
-            item2.setTitle(R.string.insert_a_code);
-            item2.setVisible(true);
             item3.setTitle(R.string.scan_qr_code);
             item3.setVisible(true);
             item4.setTitle(R.string.scan_qr_code);
@@ -245,13 +239,11 @@ public class MainActivity extends AppCompatActivity {
         } else if (itemId == R.id.action_store_lists) {
             item1.setTitle(R.string.create_new_list);
             item1.setVisible(true);
-            item2.setVisible(false);
             item3.setVisible(false);
             item4.setVisible(false);
         } else if (itemId == R.id.action_products_list) {
             item1.setTitle(R.string.create_new_product);
             item1.setVisible(true);
-            item2.setVisible(false);
             item3.setTitle(R.string.scan_a_barcode);
             item3.setVisible(true);
             item4.setVisible(false);
