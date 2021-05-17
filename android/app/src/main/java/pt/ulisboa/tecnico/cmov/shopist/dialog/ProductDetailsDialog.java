@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +24,14 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -32,6 +40,7 @@ import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.ScanCodeActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
+import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -45,7 +54,7 @@ public class ProductDetailsDialog extends DialogFragment {
     private final Product product;
     private Bitmap image;
     private ImageView imageView;
-
+    private Float currRating;
 
     public ProductDetailsDialog(Context context, Product product) {
         this.mContext = context;
@@ -77,10 +86,17 @@ public class ProductDetailsDialog extends DialogFragment {
     private void setProductChanges() {
         EditText prodName = mDialogView.findViewById(R.id.product_details_name);
         EditText prodDesc = mDialogView.findViewById(R.id.product_details_desc);
+        RatingBar rating = mDialogView.findViewById(R.id.product_details_rating);
 
         if (!prodName.getText().toString().isEmpty())
             product.setProductName(prodName.getText().toString());
         product.setProductDescription(prodDesc.getText().toString());
+
+        if (product.getCode() != null/* and is connected to internet???*/) {
+            product.setRating(rating.getRating());
+            ((MainActivity) mContext).getViewModel().postProductRating(product.getCode(), Math.round(product.getRating()), Math.round(currRating));
+            //update on server, if possible;
+        }
     }
 
     @Override
@@ -98,6 +114,8 @@ public class ProductDetailsDialog extends DialogFragment {
     }
 
     private void setupDialog() {
+        mDialogView.findViewById(R.id.product_details_others_rating_layout).setVisibility(View.GONE); //default to Gone
+        mDialogView.findViewById(R.id.product_details_others_barchart_layout).setVisibility(View.GONE);
         EditText name = mDialogView.findViewById(R.id.product_details_name);
         EditText desc = mDialogView.findViewById(R.id.product_details_desc);
         TextView code = mDialogView.findViewById(R.id.product_details_code);
@@ -106,6 +124,21 @@ public class ProductDetailsDialog extends DialogFragment {
         name.setText(product.getProductName());
         desc.setText(product.getProductDescription());
         code.setText(product.getCode());
+
+        if (!code.getText().toString().trim().isEmpty()) {
+            mDialogView.findViewById(R.id.product_details_rating_layout).setVisibility(View.VISIBLE);
+            RatingBar rating = mDialogView.findViewById(R.id.product_details_rating);
+
+            currRating = product.getRating();
+            if (currRating == 0f)
+                currRating = null;
+            rating.setRating(currRating != null ? currRating : 0.0f);
+
+            ProductRating productRating;
+            productRating = ((MainActivity) mContext).getViewModel().getProductRatingByBarcode(product.getCode());
+            //TODO get othersRating from server, if possible;
+            updateRatings(productRating);
+        }
 
         if(product.getImagePath() != null) {
             ((MainActivity) mContext).getViewModel().getProductImage(product.getImagePath()).
@@ -192,5 +225,55 @@ public class ProductDetailsDialog extends DialogFragment {
             }
         });
         builder.show();
+    }
+
+    private void updateRatings(ProductRating productRating) {
+        if (productRating != null) {
+            mDialogView.findViewById(R.id.product_details_others_rating_layout).setVisibility(View.VISIBLE);
+            mDialogView.findViewById(R.id.product_details_others_barchart_layout).setVisibility(View.VISIBLE);
+            RatingBar othersRating = mDialogView.findViewById(R.id.product_details_others_rating);
+            HorizontalBarChart barChart = mDialogView.findViewById(R.id.product_details_others_barchart);
+
+            float average = productRating.getAverage();
+            othersRating.setRating(average);
+
+            //Populate barChart
+            int star5r = productRating.getRatings().get(5);
+            int star4r = productRating.getRatings().get(4);
+            int star3r = productRating.getRatings().get(3);
+            int star2r = productRating.getRatings().get(2);
+            int star1r = productRating.getRatings().get(1);
+
+            //populate chart
+            ArrayList<BarEntry> entries = new ArrayList<>();
+            entries.add(new BarEntry(star5r, 4));
+            entries.add(new BarEntry(star4r, 3));
+            entries.add(new BarEntry(star3r, 2));
+            entries.add(new BarEntry(star2r, 1));
+            entries.add(new BarEntry(star1r, 0));
+
+            BarDataSet bardataset = new BarDataSet(entries, "Cells");
+
+            ArrayList<String> labels = new ArrayList<>();
+            labels.add("1");
+            labels.add("2");
+            labels.add("3");
+            labels.add("4");
+            labels.add("5");
+
+            BarData data = new BarData(labels, bardataset);
+            data.setDrawValues(false);
+            barChart.setData(data); // set the data and list of labels into chart
+            barChart.setDescription("");
+            barChart.getLegend().setEnabled(false);
+            barChart.getAxisLeft().setEnabled(false);
+            barChart.getAxisLeft().setDrawLabels(false);
+            barChart.setDoubleTapToZoomEnabled(false);
+            bardataset.setColors(new int[]{Color.parseColor("#A0C25A"),
+                    Color.parseColor("#ADD137"),
+                    Color.parseColor("#FDD930"),
+                    Color.parseColor("#FCB232"),
+                    Color.parseColor("#F78B5D")});
+        }
     }
 }

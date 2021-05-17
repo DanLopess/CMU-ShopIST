@@ -19,6 +19,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
 import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
 import pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -135,5 +136,37 @@ public class BackendService {
 
     public Observable<Long> getQueueTime(Coordinates coordinates) {
         return backendAPI.getQueueTime(coordinates);
+    }
+
+    public ProductRating getProductRating(String barcode) {
+        final ProductRating[] productRating = {null};
+        backendAPI.getProductRating(barcode).enqueue(new Callback<ProductRating>() {
+            @Override
+            public void onResponse(@NonNull Call<ProductRating> call, @NonNull Response<ProductRating> response) {
+                productRating[0] = response.body();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ProductRating> call, @NonNull Throwable t) {
+                Log.e("BackendService", "Failed to get product rating from server");
+            }
+        });
+        return productRating[0];
+    }
+
+    public ProductRating postProductRating(String barcode, Integer rating, Integer prev) {
+        final ProductRating[] productRating = {null};
+        backendAPI.addProductRating(barcode, rating, prev).enqueue(new Callback<ProductRating>() {
+            @Override
+            public void onResponse(@NonNull Call<ProductRating> call, @NonNull Response<ProductRating> response) {
+                productRating[0] = response.body();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ProductRating> call, @NonNull Throwable t) {
+                Log.e("BackendService", "Failed to add product rating to server");
+            }
+        });
+        return productRating[0];
     }
 }
