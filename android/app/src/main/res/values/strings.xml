@@ -47,7 +47,6 @@
     <string name="cart">Cart</string>
     <string name="in_cart">In Cart</string>
     <string name="save">Save</string>
-    <string name="product_at">Product at</string>
     <string name="delete_product">Delete product</string>
     <string name="delete_product_confirmation">Are you sure you want to delete this product?</string>
     <string name="name">Name</string>
@@ -71,7 +70,7 @@
     <string name="scan_a_barcode">Scan a barcode</string>
     <string name="product_already_exists">That product already exists</string>
     <string name="go_to_cart">Go to cart</string>
-    <string name="places_api_key">AIzaSyBptQh-aUyc6aa_ywzCFRtSAZY7lxQWpAQ</string>
+    <string name="places_api_key" translatable="false">AIzaSyBptQh-aUyc6aa_ywzCFRtSAZY7lxQWpAQ</string>
     <string name="confirm_location">Confirm Location</string>
     <string name="location_permission_denied">Location permissions were denied</string>
     <string name="permission_required_toast">Permission is required</string>
@@ -108,7 +107,7 @@
     <string name="refreshing">Refreshing…</string>
     <string name="sharing">Sharing…</string>
     <string name="something_went_wrong">Something went wrong.</string>
-    <string name="unable_to_get_current_location">\"Unable to get current location \"</string>
+    <string name="unable_to_get_current_location">Unable to get current location</string>
     <string name="product_not_available_in_pantry">You don\'t have this product available in this pantry</string>
     <string name="you_have_not_picked_an_image">You haven\'t an picked Image</string>
     <string name="select_picture">Select Picture</string>
@@ -116,9 +115,9 @@
     <string name="choose_from_gallery">Choose from Gallery</string>
     <string name="remove_photo">Remove Photo</string>
     <string name="choose_your_image">Choose your image</string>
-    <string name="peers_changed_and_beacon_recognized">Peers Changed and beacon recognized</string>
-    <string name="peers_changed_and_beacon_no_longer_in_sight">Peers Changed and beacon no longer in sight</string>
-    <string name="peers_changed_but_nothing_happened">Peers Changed but nothing happened</string>
-    <string name="unable_to_get_last_location">\"Unable to get last location \"</string>
+    <string name="peers_changed_and_beacon_recognized" translatable="false">Peers Changed and beacon recognized</string>
+    <string name="peers_changed_and_beacon_no_longer_in_sight" translatable="false">Peers Changed and beacon no longer in sight</string>
+    <string name="peers_changed_but_nothing_happened" translatable="false">Peers Changed but nothing happened</string>
+    <string name="unable_to_get_last_location">Unable to get last location</string>
     <string name="you_need_the_camera_permission">You need the camera permission</string>
 </resources>
