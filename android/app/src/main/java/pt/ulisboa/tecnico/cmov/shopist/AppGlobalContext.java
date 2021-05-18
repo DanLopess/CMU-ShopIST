@@ -33,8 +33,8 @@ import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
-import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.BeaconTime;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 
 public class AppGlobalContext extends Application implements SimWifiP2pManager.PeerListListener {

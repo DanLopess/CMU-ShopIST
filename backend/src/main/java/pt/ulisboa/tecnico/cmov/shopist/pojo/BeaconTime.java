@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.shopist.pojo;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

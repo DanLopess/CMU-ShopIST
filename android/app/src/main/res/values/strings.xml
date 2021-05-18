@@ -81,7 +81,11 @@
     <string name="search_place">Search a place</string>
     <string name="selected_location">Selected Location</string>
     <string name="show_qr_code">Show QR Code</string>
-    <string name="sync_icon">Synchronization icon</string>
+    <string name="sync_icon">Syncronization icon</string>
+    <string name="qr_code">QR Code</string>
+    <string name="ok">Ok</string>
+    <string name="close">Close</string>
+    <string name="minutes">" minutes away"</string>
     <string name="edit_list">Edit List</string>
     <string name="pick_a_new_location">Pick a new location</string>
     <string name="pantry_details">Pantry details</string>
@@ -100,4 +104,5 @@
     <string name="other_users_rated">Other users rated</string>
     <string name="queue_time_estimation">Queue Estimation Time</string>
     <string name="seconds">Seconds</string>
+    <string name="refresh_data">Refresh</string>
 </resources>

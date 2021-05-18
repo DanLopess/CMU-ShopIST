@@ -11,6 +11,7 @@ import androidx.room.Update;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 
@@ -22,6 +23,9 @@ public interface PantryDao {
 
     @Query("SELECT * FROM pantries where pantryId == :id")
     Observable<Pantry> getPantry(Long id);
+
+    @Query("SELECT * FROM pantries where uuid == :uuid")
+    Single<Pantry> getPantryByUuid(String uuid);
 
     @Transaction
     @Query("SELECT * FROM pantries")

@@ -4,15 +4,15 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListExistsException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListNotFoundException;
-import pt.ulisboa.tecnico.cmov.shopist.exceptions.ProductExistsException;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.ListOfProducts;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.isEmpty;
 
@@ -33,13 +33,18 @@ public class ListService {
         this.pantries = new HashSet<>();
     }
 
-    public String createPantry(PantryDto pantryDto) throws InvalidDataException, ListExistsException {
+    public PantryDto createPantry(PantryDto pantryDto) throws InvalidDataException, ListExistsException {
         validatePantry(pantryDto);
         if (!pantries.add(pantryDto)) {
             throw new ListExistsException("Pantry already exists in server.");
         }
         pantryDto.setUuid(UUID.randomUUID().toString());
-        return pantryDto.getUuid();
+        for (PantryProductDto productDto : pantryDto.getProducts()) {
+            if (productDto.getUuid() == null) {
+                productDto.setUuid(UUID.randomUUID().toString());
+            }
+        }
+        return pantryDto;
     }
 
     public PantryDto updateList(PantryDto pantryDto) throws InvalidDataException, ListNotFoundException {
@@ -52,14 +57,6 @@ public class ListService {
             return pantryToUpdate.get();
         }
     }
-
-    /*public void addNewProductsToProductService(List<Product> products) {
-        products.forEach(p -> {
-            try {
-                productService.addProduct(p);
-            } catch (ProductExistsException ignored) { }
-        });
-    }*/
 
     public Optional<PantryDto> getListByUUID(String id) {
         if (id == null) return Optional.empty();

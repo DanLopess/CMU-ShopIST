@@ -39,4 +39,16 @@ public class PantryDto {
     public int hashCode() {
         return Objects.hash(uuid);
     }
+
+    @Override
+    public String toString() {
+        return "PantryDto{" +
+                "pantryId=" + pantryId +
+                ", uuid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", location=" + location +
+                ", products=" + products +
+                '}';
+    }
 }

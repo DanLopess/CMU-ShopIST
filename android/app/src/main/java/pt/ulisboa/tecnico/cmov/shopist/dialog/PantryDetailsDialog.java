@@ -1,9 +1,12 @@
 package pt.ulisboa.tecnico.cmov.shopist.dialog;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +21,21 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Objects;
 
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
+import pt.ulisboa.tecnico.cmov.shopist.MapsActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
+
+import static android.app.Activity.RESULT_OK;
+import static pt.ulisboa.tecnico.cmov.shopist.util.Constants.LOCATION_DATA;
+import static pt.ulisboa.tecnico.cmov.shopist.util.Constants.LOCATION_EXTRA;
 
 public class PantryDetailsDialog extends DialogFragment {
 
     private final Context mContext;
     private View mDialogView;
     private final Pantry pantry;
+    private Location pickedLocation;
 
     public PantryDetailsDialog(Context context, Pantry pantry) {
         this.mContext = context;
@@ -64,25 +74,41 @@ public class PantryDetailsDialog extends DialogFragment {
         super.onStart();
         AlertDialog dialog = (AlertDialog)getDialog();
 
-        assert dialog != null;
-        Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        negativeButton.setTextColor(ContextCompat.getColor(mContext, R.color.black));
-        positiveButton.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+        if (dialog != null) {
+            Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            negativeButton.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+            positiveButton.setTextColor(ContextCompat.getColor(mContext, R.color.black));
 
-        setupDialog();
+            setupDialog();
+        }
     }
 
     private void setupDialog() {
         EditText name = mDialogView.findViewById(R.id.pantry_store_details_name);
         EditText desc = mDialogView.findViewById(R.id.pantry_store_details_desc);
-        // TODO set map
         Button changeLoc = mDialogView.findViewById(R.id.pantry_store_details_change_loc_bt);
         name.setText(pantry.getName());
         desc.setText(pantry.getDescription());
 
         changeLoc.setOnClickListener(v -> {
-            // TODO pick new location
+            pickLocation();
         });
+    }
+
+    private void pickLocation() {
+        Activity act = getActivity();
+        if (act != null) {
+            Intent intent = new Intent(getActivity(), MapsActivity.class);
+            startActivityForResult(intent, LOCATION_DATA);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == LOCATION_DATA && resultCode == RESULT_OK) {
+            pickedLocation = Objects.requireNonNull(data.getExtras()).getParcelable(LOCATION_EXTRA);
+            pantry.setLocationWrapper(new LocationWrapper(pickedLocation));
+        }
     }
 }

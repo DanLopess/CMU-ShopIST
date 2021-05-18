@@ -2,22 +2,19 @@ package pt.ulisboa.tecnico.cmov.shopist.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.HtmlUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pt.ulisboa.tecnico.cmov.shopist.dto.InTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.OutTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.StoreExistsException;
-import pt.ulisboa.tecnico.cmov.shopist.exceptions.StoreNotFoundException;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.BeaconTime;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.Beacon;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.service.BeaconService;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController

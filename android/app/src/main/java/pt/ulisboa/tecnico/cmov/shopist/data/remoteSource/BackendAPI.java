@@ -4,18 +4,16 @@ import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductPrice;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Beacon;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
-import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.Beacon;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductRating;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeRequestDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
 import retrofit2.Call;
-import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.BeaconTime;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -24,11 +22,12 @@ import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface BackendAPI {
-//    String BASE_URL = "http://daniellopes.ddns.net/";
+    //String BASE_URL = "http://daniellopes.ddns.net/";
 
-    String BASE_URL = "http://192.168.1.10:8999/";
+    String BASE_URL = "http://MBP-de-Daniel.ubnt.lopes:80";
     String pantryUrl = "/api/pantry";
     String ratingUrl = "/api/product/ratings";
+    String priceUrl = "/api/product/prices";
 
     @POST("/api/beacon")
     @Headers("Cache-Control: no-cache")
@@ -43,9 +42,13 @@ public interface BackendAPI {
     @GET(pantryUrl)
     Call<PantryDto> getPantryByUUID(@Query("uuid") String uuid);
 
+    @GET(pantryUrl)
+    @Headers("Cache-Control: no-cache")
+    Call<PantryDto> getRefreshedPantryByUUID(@Query("uuid") String uuid);
+
     @POST(pantryUrl)
     @Headers("Cache-Control: no-cache")
-    Single<String> createPantry(@Body PantryDto pantryDto);
+    Call<PantryDto> createPantry(@Body PantryDto pantryDto);
 
     @PUT(pantryUrl)
     @Headers("Cache-Control: no-cache")
@@ -71,4 +74,12 @@ public interface BackendAPI {
     Call<ProductRating> addProductRating(@Query("barcode") String barcode,
                                 @Query("rating") Integer rating,
                                 @Query("prev") Integer prev);
+
+    @GET(priceUrl)
+    Observable<ProductPrice> getProductPrice(@Query("barcode") String barcode);
+
+    @POST(priceUrl)
+    @Headers("Cache-Control: no-cache")
+    Call<ProductPrice> addProductPrice(@Query("barcode") String barcode,
+                                         @Query("price") Double price);
 }

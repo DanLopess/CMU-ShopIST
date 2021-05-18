@@ -23,7 +23,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProductC
                 PantryProductCrossRef.class,
                 Store.class,
                 StoreProductCrossRef.class,
-        }, version = 14)
+        }, version = 26)
 @TypeConverters({LocationConverter.class})
 public abstract class ShopIstDatabase extends RoomDatabase {
 

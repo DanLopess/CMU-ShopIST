@@ -24,10 +24,8 @@ import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
-import pt.ulisboa.tecnico.cmov.shopist.dialog.PantryDetailsDialog;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.StoreDetailsDialog;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Beacon;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapter.ViewHolder>{

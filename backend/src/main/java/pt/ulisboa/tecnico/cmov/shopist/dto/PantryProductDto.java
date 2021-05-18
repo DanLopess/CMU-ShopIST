@@ -10,6 +10,7 @@ import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductRating;
 @NoArgsConstructor
 public class PantryProductDto {
     private Long productId;
+    private String uuid;
     private String productName;
     private String productDescription;
     private String barcode;

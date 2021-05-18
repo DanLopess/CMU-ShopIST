@@ -253,7 +253,11 @@ public class MapsActivity extends AppCompatActivity
     private void returnResult() {
         Intent intent = getIntent();
         intent.putExtra(LOCATION_EXTRA, resultLocation);
-        setResult(RESULT_OK, intent);
+        if (resultLocation != null) {
+            setResult(RESULT_OK, intent);
+        } else {
+            setResult(RESULT_CANCELED, intent);
+        }
         finish();
     }
 

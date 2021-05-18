@@ -1,6 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.dto;
-
-import android.util.Pair;
+package pt.ulisboa.tecnico.cmov.shopist.data.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +18,7 @@ public class PantryDto {
 
     public PantryDto(Pantry pantry, List<PantryProduct> productList) {
         this.pantryId = pantry.getPantryId();
+        this.uuid = pantry.getUuid();
         this.name = pantry.getName();
         this.description = pantry.getDescription();
         this.products = new ArrayList<>();

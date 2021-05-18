@@ -17,9 +17,12 @@ import android.widget.TextView;
 import java.util.Collections;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.adapter.StoreProductsAdapter;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductPrice;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.CreateProductDialogFragment;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
@@ -110,9 +113,37 @@ public class StoreActivity extends ProductListActivity {
 
         viewModel.getShownStoreProducts(myId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(list -> {
+            for (StoreProduct product : list) {
+                getStoreProductPrice(product);
+            }
             adapter = new StoreProductsAdapter(list);
             rvProducts.setAdapter(adapter);
             rvProducts.setLayoutManager(new LinearLayoutManager(this));
         });
+    }
+
+    private void getStoreProductPrice(StoreProduct storeProduct) {
+        if (storeProduct.getProduct().getCode() != null) {
+            viewModel
+                    .getProductPriceByBarcode(storeProduct.getProduct().getCode()).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableObserver<ProductPrice>() {
+                        @Override
+                        public void onNext(@io.reactivex.rxjava3.annotations.NonNull ProductPrice backendPrice) {
+                            storeProduct.setPrice(backendPrice.getLastPrice());
+                            dispose();
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                            dispose();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dispose();
+                        }
+                    });
+        }
     }
 }

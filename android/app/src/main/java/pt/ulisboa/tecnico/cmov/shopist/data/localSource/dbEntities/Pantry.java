@@ -2,16 +2,17 @@ package pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import lombok.Data;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.converters.LocationConverter;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 
 @Data
-@Entity(tableName = "pantries")
+@Entity(tableName = "pantries", indices = {@Index(value = {"uuid"}, unique = true)})
 public class Pantry {
     @PrimaryKey(autoGenerate = true)
     @NonNull

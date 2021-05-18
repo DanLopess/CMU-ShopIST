@@ -1,33 +1,28 @@
 package pt.ulisboa.tecnico.cmov.shopist.data.remoteSource;
 
 import android.content.Context;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
 import okhttp3.Cache;
-import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductPrice;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Beacon;
-import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.Beacon;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.BeaconTime;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeRequestDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductRating;
 import pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,24 +114,15 @@ public class BackendService {
         return Observable.just(null);
     }
 
-    public PantryDto getPantry(String uuid) {
-        final PantryDto[] pantryDto = {null};
-        backendAPI.getPantryByUUID(uuid).enqueue(new Callback<PantryDto>() {
-            @Override
-            public void onResponse(Call<PantryDto> call, Response<PantryDto> response) {
-                pantryDto[0] = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<PantryDto> call, Throwable t) {
-                Log.e("BackendService", "Failed to get pantry from server");
-
-            }
-        });
-        return pantryDto[0];
+    public Call<PantryDto> getPantry(String uuid) {
+        return backendAPI.getPantryByUUID(uuid);
     }
 
-    public Single<String> postPantryDto(PantryDto pantryDto) {
+    public Call<PantryDto> getRefreshedPantry(String uuid) {
+        return backendAPI.getPantryByUUID(uuid);
+    }
+
+    public Call<PantryDto> postPantryDto(PantryDto pantryDto) {
         return backendAPI.createPantry(pantryDto);
     }
 
@@ -153,10 +139,6 @@ public class BackendService {
             }
         });
     }
-
-    // post pantry
-    // put pantry
-    // get pantrybyuuid
 
     public Observable<UUID> postInTime(BeaconTime beaconTime) {
         return backendAPI.postInTime(beaconTime);
@@ -188,5 +170,21 @@ public class BackendService {
             }
         });
         return productRating[0];
+    }
+    public Observable<ProductPrice> getProductPrice(String barcode) {
+        return backendAPI.getProductPrice(barcode);
+    }
+
+    public void postProductPrice(String barcode, Double price) {
+        backendAPI.addProductPrice(barcode, price).enqueue(new Callback<ProductPrice>() {
+            @Override
+            public void onResponse(@NonNull Call<ProductPrice> call, @NonNull Response<ProductPrice> response) {
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ProductPrice> call, @NonNull Throwable t) {
+                Log.e("BackendService", "Failed to add product price to server");
+            }
+        });
     }
 }
