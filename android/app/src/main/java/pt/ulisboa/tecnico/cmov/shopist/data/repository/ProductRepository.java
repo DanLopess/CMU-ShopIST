@@ -21,6 +21,7 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductPrice;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.ShopIstDatabase;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.ProductDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
@@ -79,6 +80,14 @@ public class ProductRepository implements Cache {
 
     public ProductRating postProductRating(String barcode, Integer rating, Integer prev) {
         return backendService.postProductRating(barcode, rating, prev);
+    }
+
+    public Observable<ProductPrice> getProductPriceByBarcode(String barcode) {
+        return backendService.getProductPrice(barcode);
+    }
+
+    public void postProductPrice(String barcode, Double price) {
+        backendService.postProductPrice(barcode, price);
     }
 
     public Single<Long> addProduct(Product product) {

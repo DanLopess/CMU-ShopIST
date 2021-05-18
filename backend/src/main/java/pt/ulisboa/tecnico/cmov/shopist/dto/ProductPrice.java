@@ -7,24 +7,33 @@ import java.util.List;
 
 @Data
 public class ProductPrice {
-    private float average;
-    private List<Float> prices;
+    private Double average;
+    private Double lastPrice;
+    private List<Double> prices;
 
     public ProductPrice() {
-        this.average = 0.0f;
+        this.lastPrice =  (double) 0.0f;
         this.prices = new ArrayList<>();
+        calculateAverage();
     }
 
-    public void addPrice(Float price) {
+    public ProductPrice(Double price) {
+        this.average = price;
+        this.prices = new ArrayList<>();
+        calculateAverage();
+    }
+
+    public void addPrice(Double price) {
         this.prices.add(price);
+        this.lastPrice = price;
         calculateAverage();
     }
 
     private void calculateAverage() {
         var sum = 0.0f;
-        for (Float p : prices) {
+        for (Double p : prices) {
             sum += p;
         }
-        this.average = prices.isEmpty() ? 0.0f : sum/prices.size();
+        this.average = prices.isEmpty() ? (double) 0.0f : sum/prices.size();
     }
 }

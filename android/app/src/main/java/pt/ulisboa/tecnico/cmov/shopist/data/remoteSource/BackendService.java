@@ -14,6 +14,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductPrice;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.Beacon;
@@ -169,5 +170,21 @@ public class BackendService {
             }
         });
         return productRating[0];
+    }
+    public Observable<ProductPrice> getProductPrice(String barcode) {
+        return backendAPI.getProductPrice(barcode);
+    }
+
+    public void postProductPrice(String barcode, Double price) {
+        backendAPI.addProductPrice(barcode, price).enqueue(new Callback<ProductPrice>() {
+            @Override
+            public void onResponse(@NonNull Call<ProductPrice> call, @NonNull Response<ProductPrice> response) {
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ProductPrice> call, @NonNull Throwable t) {
+                Log.e("BackendService", "Failed to add product price to server");
+            }
+        });
     }
 }

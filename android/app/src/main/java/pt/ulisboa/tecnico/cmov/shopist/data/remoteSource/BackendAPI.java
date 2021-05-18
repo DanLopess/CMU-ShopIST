@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Observable;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductPrice;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.Beacon;
@@ -26,6 +27,7 @@ public interface BackendAPI {
     String BASE_URL = "http://MBP-de-Daniel.ubnt.lopes:80";
     String pantryUrl = "/api/pantry";
     String ratingUrl = "/api/product/ratings";
+    String priceUrl = "/api/product/prices";
 
     @POST("/api/beacon")
     @Headers("Cache-Control: no-cache")
@@ -72,4 +74,12 @@ public interface BackendAPI {
     Call<ProductRating> addProductRating(@Query("barcode") String barcode,
                                 @Query("rating") Integer rating,
                                 @Query("prev") Integer prev);
+
+    @GET(priceUrl)
+    Observable<ProductPrice> getProductPrice(@Query("barcode") String barcode);
+
+    @POST(priceUrl)
+    @Headers("Cache-Control: no-cache")
+    Call<ProductPrice> addProductPrice(@Query("barcode") String barcode,
+                                         @Query("price") Double price);
 }

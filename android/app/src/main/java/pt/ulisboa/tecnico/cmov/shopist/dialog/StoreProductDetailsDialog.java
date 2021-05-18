@@ -24,6 +24,7 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
@@ -65,7 +66,10 @@ public class StoreProductDetailsDialog extends DialogFragment {
 
         EditText price = mDialogView.findViewById(R.id.store_product_details_price);
         storeProduct.setPrice(Double.parseDouble(price.getText().toString()));
-        //TODO update on server?
+        if (storeProduct.getPrice() != 0.0f) {
+            ((StoreActivity) mContext).getViewModel()
+                    .postProductPrice(storeProduct.getProduct().getCode(),storeProduct.getPrice());
+        }
     }
 
     @Override
@@ -94,9 +98,9 @@ public class StoreProductDetailsDialog extends DialogFragment {
         cartPicker.setMaxValue(99);
         name.setText(storeProduct.getProduct().getProductName());
         desc.setText(storeProduct.getProduct().getProductDescription());
-        price.setText(storeProduct.getPrice().toString());
         needed.setText(storeProduct.getQttNeeded().toString());
         cartPicker.setValue(storeProduct.getQttCart());
+        price.setText(storeProduct.getPrice().toString());
         if(storeProduct.getProduct().getImagePath() != null) {
             ((StoreActivity) mContext).getViewModel().getProductImage(storeProduct.getProduct().getImagePath()).
                     subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {

@@ -33,11 +33,34 @@ public class ProductService {
             productRating.get().addRating(prevRating, rating);
             return productRating.get();
         } else {
-            ProductRating prodRating = new ProductRating(rating);
+            var prodRating = new ProductRating(rating);
             productsRatings.put(barcode, prodRating);
             return prodRating;
         }
     }
+
+    public Optional<ProductPrice> findProductPriceByBarcode(String barcode) {
+        if (barcode == null) return Optional.empty();
+        var productPrice = productsPrices.get(barcode);
+        if (productPrice == null) {
+            productPrice = new ProductPrice();
+            productsPrices.put(barcode, productPrice);
+        }
+        return Optional.of(productPrice);
+    }
+
+    public ProductPrice addProductPrice(Double price, String barcode) {
+        Optional<ProductPrice> productPrice = findProductPriceByBarcode(barcode);
+        if (productPrice.isPresent()) {
+            productPrice.get().addPrice(price);
+            return productPrice.get();
+        } else {
+            var newProdPrice = new ProductPrice(price);
+            productsPrices.put(barcode, newProdPrice);
+            return newProdPrice;
+        }
+    }
+
 
     /*public String addImageToProduct(ProductImage productImage) {
         Optional<Product> product = findProductById(productImage.getProductId());
