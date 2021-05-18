@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -102,6 +103,8 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
             PopupMenu listOptionsMenu = new PopupMenu(v.getContext(), v);
             MenuInflater inflater1 = listOptionsMenu.getMenuInflater();
             inflater1.inflate(R.menu.options_list_menu, listOptionsMenu.getMenu());
+            MenuItem syncItem = listOptionsMenu.getMenu().findItem(R.id.list_options_sync);
+            syncItem.setVisible(false);
             listOptionsMenu.setOnMenuItemClickListener(menuItemClickListener);
             listOptionsMenu.show();
         };
