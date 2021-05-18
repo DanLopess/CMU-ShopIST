@@ -126,31 +126,33 @@ public class CartActivity extends AppCompatActivity {
         Button finishShoppingBt = findViewById(R.id.cartFinishShopping_bt);
         finishShoppingBt.setOnClickListener(v -> finishShopping());
 
+        if(AppGlobalContext.getUUID() != null) {
+            viewModel.getStore(storeId).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(store1 -> {
+                        viewModel.getEstimationStats(store1, AppGlobalContext.getUUID()).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(responseDTO -> {
+                                    time = responseDTO.getEstimationTimeInQueue();
+                                    if (time != null && time >= 0) {
+                                        TextView text = findViewById(R.id.cart_queue_time_text);
+                                        text.setText(getString(R.string.queue_time_estimation));
+                                        new CountDownTimer(time * 1000, 1000) {
 
-        viewModel.getStore(storeId).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(store1 -> {
-                    viewModel.getEstimationStats(store1, AppGlobalContext.getUUID()).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(responseDTO -> {
-                                time = responseDTO.getEstimationTimeInQueue();
-                                if(time != null && time >= 0) {
-                                    TextView text = findViewById(R.id.cart_queue_time_text);
-                                    text.setText(getString(R.string.queue_time_estimation));
-                                    new CountDownTimer(time * 1000, 1000) {
+                                            public void onTick(long millisUntilFinished) {
+                                                queueTime.setText(millisUntilFinished / 1000 + " " + getString(R.string.seconds));
+                                            }
 
-                                        public void onTick(long millisUntilFinished) {
-                                            queueTime.setText(millisUntilFinished / 1000 + " " + getString(R.string.seconds));
-                                        }
+                                            public void onFinish() {
+                                                queueTime.setText(0 + " " + getString(R.string.seconds));
+                                            }
 
-                                        public void onFinish() {
-                                            queueTime.setText(0 + " " + getString(R.string.seconds));
-                                        }
+                                        }.start();
+                                    }
+                                }, Throwable::printStackTrace);
+                    }, Throwable::printStackTrace);
+        }
 
-                                    }.start();
-                                }
-                            }, throwable -> throwable.printStackTrace());
-                });
 
         viewModel.getStoreProductsInCart(storeId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
