@@ -91,8 +91,10 @@ public class CartActivity extends AppCompatActivity {
                                      viewModel.updatePantryProduct(pp);
                                      prod.setQttCart(0);
                                      viewModel.updateStoreProduct(prod);
+                                     break;
                                  }
                              }
+                             viewModel.addPantryProductFromCart(pantryId, prod.getProduct(), qtt.get());
                          }
                          onComplete();
                      }

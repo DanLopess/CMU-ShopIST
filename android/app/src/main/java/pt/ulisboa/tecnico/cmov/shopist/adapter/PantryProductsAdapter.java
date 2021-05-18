@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.cmov.shopist.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -30,7 +29,7 @@ import pt.ulisboa.tecnico.cmov.shopist.dialog.PantryProductDetailsDialog;
 
 public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAdapter.ViewHolder>{
 
-   private List<PantryProduct> mProducts;
+   private final List<PantryProduct> mProducts;
    private Context mContext;
 
    public PantryProductsAdapter(List<PantryProduct> products) {
@@ -60,9 +59,8 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
                                     .deletePantryProduct(product);
                             notifyDataSetChanged();
                         })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                            dialog.dismiss();
-                        });
+                        .setNegativeButton(R.string.cancel, (dialog, which) ->
+                                dialog.dismiss());
                 builder.create().show();
                 return true;
             }
@@ -85,7 +83,7 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
                 ((PantryActivity) mContext).getViewModel().updatePantryProduct(product);
                 notifyDataSetChanged();
             } else
-                Toast.makeText(mContext, "You don't have this product available in this pantry", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.product_not_available_in_pantry, Toast.LENGTH_SHORT).show();
         };
 
         // Set item views based on your views and data model
@@ -100,9 +98,8 @@ public class PantryProductsAdapter extends RecyclerView.Adapter<PantryProductsAd
         ImageView imageView = holder.image;
         if(product.getProduct().getThumbnailPath() != null) {
             ((PantryActivity) mContext).getViewModel().getProductImage(product.getProduct().getThumbnailPath()).
-                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
-                imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false));
-            });
+                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image ->
+                    imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false)));
         }
 
         holder.options.setOnClickListener(itemOptionsListener);

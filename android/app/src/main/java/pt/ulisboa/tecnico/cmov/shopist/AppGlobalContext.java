@@ -128,7 +128,7 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
 
                                 }
                             });
-                            Toast.makeText(getApplicationContext(), "Peers Changed and beacon recognized", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.peers_changed_and_beacon_recognized, Toast.LENGTH_SHORT).show();
                         });
 
                     }
@@ -162,11 +162,11 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
                     });
                     inQueue = false;
                     uuid = null;
-                    Toast.makeText(getApplicationContext(), "Peers Changed and beacon no longer in sight", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.peers_changed_and_beacon_no_longer_in_sight, Toast.LENGTH_SHORT).show();
                 });
             }
         } else {
-            Toast.makeText(getApplicationContext(), "Peers Changed but nothing happened", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.peers_changed_but_nothing_happened, Toast.LENGTH_SHORT).show();
         }
     }
 

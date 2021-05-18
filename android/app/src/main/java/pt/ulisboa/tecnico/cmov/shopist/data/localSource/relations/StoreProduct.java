@@ -21,7 +21,7 @@ public class StoreProduct {
 
     private Double price;
 
-    @Setter(AccessLevel.NONE) //Custom setter
+    @Setter(AccessLevel.NONE)
     private Integer qttNeeded;
 
     private Integer qttCart;

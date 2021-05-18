@@ -81,9 +81,9 @@
     <string name="search_place">Search a place</string>
     <string name="selected_location">Selected Location</string>
     <string name="show_qr_code">Show QR Code</string>
-    <string name="sync_icon">Syncronization icon</string>
+    <string name="sync_icon">Synchronization icon</string>
     <string name="qr_code">QR Code</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="close">Close</string>
     <string name="minutes">" minutes away"</string>
     <string name="edit_list">Edit List</string>
@@ -105,4 +105,20 @@
     <string name="queue_time_estimation">Queue Estimation Time</string>
     <string name="seconds">Seconds</string>
     <string name="refresh_data">Refresh</string>
+    <string name="refreshing">Refreshing…</string>
+    <string name="sharing">Sharing…</string>
+    <string name="something_went_wrong">Something went wrong.</string>
+    <string name="unable_to_get_current_location">\"Unable to get current location \"</string>
+    <string name="product_not_available_in_pantry">You don\'t have this product available in this pantry</string>
+    <string name="you_have_not_picked_an_image">You haven\'t an picked Image</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="remove_photo">Remove Photo</string>
+    <string name="choose_your_image">Choose your image</string>
+    <string name="peers_changed_and_beacon_recognized">Peers Changed and beacon recognized</string>
+    <string name="peers_changed_and_beacon_no_longer_in_sight">Peers Changed and beacon no longer in sight</string>
+    <string name="peers_changed_but_nothing_happened">Peers Changed but nothing happened</string>
+    <string name="unable_to_get_last_location">\"Unable to get last location \"</string>
+    <string name="you_need_the_camera_permission">You need the camera permission</string>
 </resources>

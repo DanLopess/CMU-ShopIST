@@ -205,7 +205,7 @@ public class MapsActivity extends AppCompatActivity
                         setMapMarkerOnResultLocation();
                         setLocationOnText();
                     } else {
-                        Toast.makeText(MapsActivity.this, "Unable to get last location ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MapsActivity.this, R.string.unable_to_get_last_location, Toast.LENGTH_SHORT).show();
                     }
                 });
             }

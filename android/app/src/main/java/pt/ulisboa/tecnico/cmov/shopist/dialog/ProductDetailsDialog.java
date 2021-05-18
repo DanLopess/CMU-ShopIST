@@ -197,7 +197,7 @@ public class ProductDetailsDialog extends DialogFragment {
             image = selectedImage;
             imageView.setImageBitmap(selectedImage);
         } else {
-            Toast.makeText(mContext, "You haven't picked Image",Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, R.string.you_have_not_picked_an_image,Toast.LENGTH_LONG).show();
         }
     }
 
@@ -211,7 +211,7 @@ public class ProductDetailsDialog extends DialogFragment {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, R.string.something_went_wrong, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -219,28 +219,28 @@ public class ProductDetailsDialog extends DialogFragment {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)), PICK_IMAGE);
     }
 
     private void selectImage(Context context) {
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery", "Remove Photo", "Cancel" };
+        final CharSequence[] options = { getString(R.string.take_photo), getString(R.string.choose_from_gallery), getString(R.string.remove_photo), getString(R.string.cancel) };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Choose your image");
+        builder.setTitle(getString(R.string.choose_your_image));
 
         builder.setItems(options, (dialog, item) -> {
-            if (options[item].equals("Take Photo")) {
+            if (options[item].equals(getString(R.string.take_photo))) {
                 Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(takePicture, 0);
 
-            } else if (options[item].equals("Choose from Gallery")) {
+            } else if (options[item].equals(getString(R.string.choose_from_gallery))) {
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(pickPhoto , 1);
 
-            } else if (options[item].equals("Remove Photo")) {
+            } else if (options[item].equals(getString(R.string.remove_photo))) {
                 imageView.setImageResource(R.drawable.ic_baseline_image_24);
                 image = null;
-            } else if (options[item].equals("Cancel")) {
+            } else if (options[item].equals(getString(R.string.cancel))) {
                 dialog.dismiss();
             }
         });
@@ -272,7 +272,7 @@ public class ProductDetailsDialog extends DialogFragment {
             entries.add(new BarEntry(star2r, 1));
             entries.add(new BarEntry(star1r, 0));
 
-            BarDataSet bardataset = new BarDataSet(entries, "Cells");
+            BarDataSet bardataset = new BarDataSet(entries, " ");
 
             ArrayList<String> labels = new ArrayList<>();
             labels.add("1");
