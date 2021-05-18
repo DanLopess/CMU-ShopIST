@@ -6,11 +6,11 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import lombok.Data;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryProductDto;
 
 @Data
 @Entity(tableName = "products",
-        indices = {@Index(value = {"code"}, unique = true)})
+        indices = {@Index(value = {"code", "productUuid"}, unique = true)})
 public class Product {
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -19,6 +19,7 @@ public class Product {
     public String productDescription;
     public String imagePath;
     public String thumbnailPath;
+    public String productUuid;
 //    public List<String> crowdSourceImage;
 
     public String code;
@@ -37,5 +38,13 @@ public class Product {
         this.productName = productDto.getProductName();
         this.productDescription = productDto.getProductDescription();
         this.code = productDto.getBarcode();
+        this.productUuid = productDto.getUuid();
+    }
+
+    public void updateProduct(PantryProductDto pantryProductDto) {
+        this.productName = pantryProductDto.getProductName();
+        this.productDescription = pantryProductDto.getProductDescription();
+        this.productName = pantryProductDto.getProductName();
+        this.productName = pantryProductDto.getProductName();
     }
 }

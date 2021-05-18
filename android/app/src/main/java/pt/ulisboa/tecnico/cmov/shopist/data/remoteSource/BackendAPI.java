@@ -4,18 +4,15 @@ import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Beacon;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
-import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.Beacon;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductRating;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeRequestDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
 import retrofit2.Call;
-import pt.ulisboa.tecnico.cmov.shopist.dto.BeaconTime;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.BeaconTime;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -42,6 +39,10 @@ public interface BackendAPI {
 
     @GET(pantryUrl)
     Call<PantryDto> getPantryByUUID(@Query("uuid") String uuid);
+
+    @GET(pantryUrl)
+    @Headers("Cache-Control: no-cache")
+    Call<PantryDto> getRefreshedPantryByUUID(@Query("uuid") String uuid);
 
     @POST(pantryUrl)
     @Headers("Cache-Control: no-cache")

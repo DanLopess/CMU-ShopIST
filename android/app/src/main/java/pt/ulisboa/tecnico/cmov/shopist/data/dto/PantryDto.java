@@ -1,6 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.dto;
-
-import android.util.Pair;
+package pt.ulisboa.tecnico.cmov.shopist.data.dto;
 
 import java.util.ArrayList;
 import java.util.List;

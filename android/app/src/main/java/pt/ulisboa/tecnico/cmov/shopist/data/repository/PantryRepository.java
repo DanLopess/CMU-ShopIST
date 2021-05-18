@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -15,16 +14,13 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.observers.DisposableObserver;
-import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.ShopIstDatabase;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.PantryDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -68,6 +64,10 @@ public class PantryRepository implements Cache {
         return backendService.getPantry(uuid);
     }
 
+    public Call<PantryDto> getRefreshedPantryFromBackendByUuid(String uuid) {
+        return backendService.getRefreshedPantry(uuid);
+    }
+
     public void addPantry(Pantry pantry) {
         insertPantryToDb(pantry).subscribe(new DisposableObserver<Boolean>() {
             @Override
@@ -86,7 +86,7 @@ public class PantryRepository implements Cache {
         });
     }
 
-    public Observable<Boolean> addPantryWithProducts(Pantry pantry, PantryDto pantryDto) {
+    public Observable<Boolean> addPantryObservable(Pantry pantry) {
         return insertPantryToDb(pantry);
     }
 
@@ -98,41 +98,27 @@ public class PantryRepository implements Cache {
      * Method used for getting a shared pantry from the backend server and adding it to the local database
      */
     public Call<PantryDto> saveSyncedPantryFromBackend(String uuid) {
-        return backendService.getPantry(uuid);
+        return getAPIPantryByUuid(uuid);
     }
 
-    public void savePantryToBackend(Pantry pantry, List<PantryProduct> products) {
+    public Call<PantryDto> savePantryToBackend(Pantry pantry, List<PantryProduct> products) {
         PantryDto pantryDto = new PantryDto(pantry, products);
-        Call<PantryDto> call = backendService.postPantryDto(pantryDto);
-        call.enqueue(new Callback<PantryDto>() {
-            @Override
-            public void onResponse(Call<PantryDto> call, Response<PantryDto> response) {
-                Log.i("PantryRepository", "Saved pantry on server");
-                PantryDto receivedDto = response.body();
-                if (receivedDto != null) {
-                    pantry.setUuid(receivedDto.getUuid());
-                    if (pantry.getUuid() != null) {
-                        pantry.setShared(true);
-                        addPantry(pantry); // update pantry
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<PantryDto> call, Throwable t) {
-                Log.e("PantryRepository", "Failed to create pantry on server");
-            }
-        });
+        return backendService.postPantryDto(pantryDto);
     }
 
     public void updatePantry(Pantry pantry, List<PantryProduct> products) {
+        updatePantryOnBackend(pantry, products);
+        addPantry(pantry); // update pantry
+    }
+
+    public void updatePantryOnBackend(Pantry pantry, List<PantryProduct> products) {
         if (pantry.isShared() && pantry.getUuid() != null) {
             PantryDto pantryDto = new PantryDto(pantry, products);
             backendService.putPantryDto(pantryDto);
         }
-        addPantry(pantry); // update pantry
     }
 
-    private Observable<List<Pantry>> getPantriesFromDb() {
+    public Observable<List<Pantry>> getPantriesFromDb() {
         return pantryDao.getPantries();
     }
 
@@ -155,7 +141,30 @@ public class PantryRepository implements Cache {
     }
 
     public void updatePantry(Pantry pantry) {
-        insertPantryToDb(pantry).subscribe(aBoolean -> {});
+        insertPantryToDb(pantry).subscribe(buildGenericDisposableObserver());
+    }
+
+    public Observable<Boolean> updatePantryObservable(Pantry pantry) {
+        return insertPantryToDb(pantry);
+    }
+
+    private DisposableObserver<Boolean> buildGenericDisposableObserver() {
+        return new DisposableObserver<Boolean>() {
+            @Override
+            public void onNext(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
+
+            }
+
+            @Override
+            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                dispose();
+            }
+
+            @Override
+            public void onComplete() {
+                dispose();
+            }
+        };
     }
 
     @Override

@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Singleton;
 
@@ -39,11 +38,11 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.PantryRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.StoreRepository;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
-import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.Coordinates;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryProductDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductRating;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -143,7 +142,7 @@ public class ViewModel extends AndroidViewModel {
     }
 
     public void refreshPantries() {
-        getPantries()
+        pantryRepository.getPantriesFromDb()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new DisposableObserver<List<Pantry>>() {
@@ -154,6 +153,7 @@ public class ViewModel extends AndroidViewModel {
                             addSyncedPantryFromBackend(p.getUuid());
                         }
                     }
+                    dispose();
                 }
                 @Override
                 public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
@@ -225,71 +225,201 @@ public class ViewModel extends AndroidViewModel {
                 });
     }
 
+    public void updatePantryOnBackend(Long pantryId) {
+        pantryRepository.getPantry(pantryId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableObserver<Pantry>() {
+            @Override
+            public void onNext(@io.reactivex.rxjava3.annotations.NonNull Pantry pantry) {
+                if (pantry.isShared()) {
+                    productRepository.getPantryProducts(pantryId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableObserver<List<PantryProduct>>() {
+                        @Override
+                        public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<PantryProduct> pantryProducts) {
+                            pantryRepository.updatePantryOnBackend(pantry, pantryProducts);
+                            dispose();
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                            dispose();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dispose();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                dispose();
+            }
+
+            @Override
+            public void onComplete() {
+                dispose();
+            }
+        });
+    }
+
     public void addSyncedPantryFromBackend(String uuid) {
         if (uuid != null) {
-            // TODO first look for pantry by uuid and checks if exists
-            pantryRepository.saveSyncedPantryFromBackend(uuid).enqueue(new Callback<PantryDto>() {
+            pantryRepository.getPantryByUuid(uuid).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new DisposableSingleObserver<Pantry>() {
                 @Override
-                public void onResponse(@NonNull Call<PantryDto> call, @NonNull Response<PantryDto> response) {
-                    PantryDto pDto = response.body();
-                    if (pDto != null) {
-                        Pantry pantryToAdd = new Pantry(pDto);
-                        pantryToAdd.setOwner(false);
-                        pantryRepository.addPantryWithProducts(pantryToAdd, pDto)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new DisposableObserver<Boolean>() {
-                                @Override
-                                public void onNext(@io.reactivex.rxjava3.annotations.NonNull Boolean added) {
-                                    if (added) {
-                                        pantryRepository.getPantryByUuid(pDto.getUuid())
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(new DisposableSingleObserver<Pantry>() {
-                                                    @Override
-                                                    public void onSuccess(@NonNull Pantry pantry) {
-                                                        createProductsFromSyncedPantry(pDto, pantry.getPantryId());
-                                                    }
+                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Pantry pantry) {
+                    pantryRepository.getAPIPantryByUuid(uuid).enqueue(new Callback<PantryDto>() {
+                        @Override
+                        public void onResponse(@NonNull Call<PantryDto> call, @NonNull Response<PantryDto> response) {
+                            updatePantryFromBackend(response);
+                        }
 
-                                                    @Override
-                                                    public void onError(@NonNull Throwable e) {
-                                                        dispose();
-                                                    }
-                                                });
-                                    }
+                        @Override
+                        public void onFailure(@NonNull Call<PantryDto> call, @NonNull Throwable t) {
+                            Log.e("Pantry Repository", "Failed to get pantry from server");
+                        }
+                    });
+                    dispose();
+                }
+
+                @Override
+                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                    pantryRepository.saveSyncedPantryFromBackend(uuid).enqueue(new Callback<PantryDto>() {
+                        @Override
+                        public void onResponse(@NonNull Call<PantryDto> call, @NonNull Response<PantryDto> response) {
+                            createPantryInBackend(response);
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<PantryDto> call, @NonNull Throwable t) {
+                            Log.e("Pantry Repository", "Failed to get pantry from server");
+                        }
+                    });
+                    dispose();
+                }
+            });
+        }
+    }
+
+    private void updatePantryFromBackend(@NonNull Response<PantryDto> response) {
+        PantryDto pDto = response.body();
+        if (pDto != null) {
+            Pantry pantryToAdd = new Pantry(pDto);
+            pantryRepository.updatePantry(pantryToAdd);
+            pantryRepository.getPantryByUuid(pantryToAdd.getUuid()).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableSingleObserver<Pantry>() {
+                        @Override
+                        public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Pantry pantry) {
+                            addProductsFromSyncedPantry(pDto, pantry.getPantryId());
+                            dispose();
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                            dispose();
+                        }
+                    });
+        }
+    }
+
+    private void createPantryInBackend(@NonNull Response<PantryDto> response) {
+        PantryDto pDto = response.body();
+        if (pDto != null) {
+            Pantry pantryToAdd = new Pantry(pDto);
+            pantryToAdd.setOwner(false);
+            pantryRepository.addPantryObservable(pantryToAdd)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableObserver<Boolean>() {
+                        @Override
+                        public void onNext(@io.reactivex.rxjava3.annotations.NonNull Boolean added) {
+                            if (added) {
+                                pantryRepository.getPantryByUuid(pDto.getUuid())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new DisposableSingleObserver<Pantry>() {
+                                            @Override
+                                            public void onSuccess(@NonNull Pantry pantry) {
+                                                addProductsFromSyncedPantry(pDto, pantry.getPantryId());
+                                            }
+
+                                            @Override
+                                            public void onError(@NonNull Throwable e) {
+                                                dispose();
+                                            }
+                                        });
+                            }
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            dispose();
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
+    }
+
+    private void updateProductsFromSyncedPantry(PantryDto pDto, Long pantryId) {
+        for (PantryProductDto p : pDto.getProducts()) {
+            productRepository.getProductByUuid(p.getUuid()).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableObserver<Product>() {
+                        @Override
+                        public void onNext(@io.reactivex.rxjava3.annotations.NonNull Product product) {
+                            product.updateProduct(p);
+                            productRepository.updateProduct(product);
+                            productRepository.getPantryProductByUuid(pantryId, product.getProductUuid())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new DisposableObserver<PantryProduct>() {
+                                @Override
+                                public void onNext(@io.reactivex.rxjava3.annotations.NonNull PantryProduct pantryProduct) {
+                                    productRepository.updatePantryProduct(new PantryProductCrossRef(pantryId, pantryProduct.getProduct().getProductId(), p.getQttAvailable(), p.getQttNeeded()));
                                 }
 
                                 @Override
-                                public void onError(@NonNull Throwable e) {
+                                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                    // if non existent, create new
                                     dispose();
                                 }
 
                                 @Override
                                 public void onComplete() {
-
+                                    dispose();
                                 }
                             });
-                    }
-                }
-                @Override
-                public void onFailure(@NonNull Call<PantryDto> call, @NonNull Throwable t) {
-                    Log.e("Pantry Repository", "Failed to get pantry from server");
-                }
-            });
+                            dispose();
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                            dispose();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            dispose();
+                        }
+                    });
         }
-        // TODO ELSE , IF ALREADY HAS UUID UPDATES and calls update pantry products :3
     }
 
-    private void createProductsFromSyncedPantry(PantryDto pDto, Long pantryId) {
+    private void addProductsFromSyncedPantry(PantryDto pDto, Long pantryId) {
         for (PantryProductDto p : pDto.getProducts()) {
             Product product = new Product(p);
-            productRepository.addProduct(product).subscribeOn(Schedulers.io())
+            productRepository.insertProductToDb(product).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisposableSingleObserver<Long>() {
                     @Override
                     public void onSuccess(@NonNull Long productId) {
                         product.setProductId(productId);
                         addPantryProducts(pantryId, Collections.singletonList(product));
+                        dispose();
                     }
 
                     @Override
@@ -300,15 +430,6 @@ public class ViewModel extends AndroidViewModel {
         }
     }
 
-    private void updateSyncedPantry(Pantry pantry) {
-        // Get pantry from dto
-        // On response update products
-    }
-
-    private void updateProductsFromSyncedPantry(String pantryId, String uuid) {
-
-    }
-
     public void savePantryToBackend(Pantry pantry) {
         getPantryProducts(pantry.getPantryId()).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -317,7 +438,37 @@ public class ViewModel extends AndroidViewModel {
                 @Override
                 public void onNext(@io.reactivex.rxjava3.annotations.NonNull List<PantryProduct> pantryProducts) {
                     products.addAll(pantryProducts);
-                    pantryRepository.savePantryToBackend(pantry, new ArrayList<>(products));
+                    pantryRepository.savePantryToBackend(pantry, new ArrayList<>(products)).enqueue(new Callback<PantryDto>() {
+                        @Override
+                        public void onResponse(Call<PantryDto> call, Response<PantryDto> response) {
+                            Log.i("PantryRepository", "Saved pantry on server");
+                            PantryDto receivedDto = response.body();
+                            if (receivedDto != null) {
+                                pantry.setUuid(receivedDto.getUuid());
+                                if (pantry.getUuid() != null) {
+                                    pantry.setShared(true);
+                                    pantryRepository.addPantry(pantry); // update pantry
+                                }
+                                for (PantryProduct p : pantryProducts) {
+                                    if (p.getProduct() != null && p.getProduct().getProductUuid() == null) {
+                                        for (PantryProductDto productDto : receivedDto.getProducts()) {
+                                            if (productDto.getProductId().equals(p.getProduct().getProductId())) {
+                                                Product product = p.getProduct();
+                                                product.setProductUuid(productDto.getUuid());
+                                                updateProduct(product, null);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            dispose();
+                        }
+                        @Override
+                        public void onFailure(Call<PantryDto> call, Throwable t) {
+                            Log.e("PantryRepository", "Failed to create pantry on server");
+                        }
+                    });
+                    dispose();
                 }
                 @Override
                 public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
@@ -327,6 +478,7 @@ public class ViewModel extends AndroidViewModel {
                 }
             });
     }
+
 
     //================================== Store ==================================
 

@@ -35,6 +35,10 @@ public interface ProductDao {
     @Query("SELECT * FROM products WHERE code == :code")
     Observable<Product> getProductByCode(String code); //Code is unique
 
+    @Query("SELECT * FROM products WHERE productUuid == :uuid")
+    Observable<Product> getProductByUuid(String uuid); //uuid is unique
+
+
     @Query("SELECT EXISTS(SELECT * FROM products WHERE code == :code)")
     Observable<Boolean> checkIfProdExistsByCode(String code);
 
@@ -51,6 +55,9 @@ public interface ProductDao {
 
     @Query("SELECT * FROM pantry_product pp JOIN products p where pantryId == :id and pp.productId == p.productId")
     Observable<List<PantryProduct>> getPantryProducts(Long id);
+
+    @Query("SELECT * FROM pantry_product pp JOIN products p ON pp.productId == p.productId WHERE pantryId == :pantryId AND p.productId == :uuid")
+    Observable<PantryProduct> getPantryProductByUuid(Long pantryId, String uuid);
 
     @Query("SELECT COUNT(*) FROM pantry_product WHERE pantryId == :id")
     Observable<Integer> getPantrySize(Long id);

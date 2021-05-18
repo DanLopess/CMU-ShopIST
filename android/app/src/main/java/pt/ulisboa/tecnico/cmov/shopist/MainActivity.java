@@ -227,15 +227,6 @@ public class MainActivity extends AppCompatActivity {
             item3.setVisible(true);
             item4.setTitle(R.string.refresh_data);
             item4.setVisible(true);
-            item4.setOnMenuItemClickListener(item -> {
-                if (mPantryAdapter != null) {
-                    viewModel.refreshPantries();
-                    mPantryAdapter.getAndRefreshLists(viewModel.getPantries());
-                    return true;
-                } else {
-                    return false;
-                }
-            });
         } else if (itemId == R.id.action_store_lists) {
             item1.setTitle(R.string.create_new_list);
             item1.setVisible(true);

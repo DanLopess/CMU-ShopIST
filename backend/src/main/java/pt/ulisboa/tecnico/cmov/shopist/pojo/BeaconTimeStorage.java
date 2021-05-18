@@ -3,10 +3,12 @@ package pt.ulisboa.tecnico.cmov.shopist.pojo;
 import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 
 public class BeaconTimeStorage {

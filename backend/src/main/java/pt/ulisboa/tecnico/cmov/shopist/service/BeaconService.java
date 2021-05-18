@@ -8,21 +8,12 @@ import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.StoreExistsException;
-import pt.ulisboa.tecnico.cmov.shopist.exceptions.StoreNotFoundException;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.BeaconTime;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.Beacon;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.BeaconTimes;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.Coordinates;
 
-import javax.swing.text.html.Option;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.isEmpty;
 
 @Slf4j
 @Service

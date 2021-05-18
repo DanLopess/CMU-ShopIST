@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,7 +54,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
 
     public ListOfPantriesAdapter(Context context, Observable<List<Pantry>> lists) {
         mContext = context;
-        getAndRefreshLists(lists);
+        getLists(lists);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
     }
 
@@ -83,6 +85,13 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
             context.startActivity(intent);
         };
 
+        Toolbar toolbar = ((MainActivity)mContext).findViewById(R.id.main_toolbar);
+        Menu menu = toolbar.getMenu();
+        menu.findItem(R.id.refresh_data).setOnMenuItemClickListener(v -> {
+            viewModel.refreshPantries();
+            Toast.makeText(mContext, "Refreshing...", Toast.LENGTH_SHORT).show();
+            return true;
+        });
         PopupMenu.OnMenuItemClickListener menuItemClickListener = getOnMenuItemClickListener(holder, position, list);
 
         View.OnClickListener itemOptionsListener = v -> {
@@ -204,7 +213,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
         }
     }
 
-    public void getAndRefreshLists(Observable<List<Pantry>> lists) {
+    public void getLists(Observable<List<Pantry>> lists) {
         lists.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisposableObserver<List<Pantry>>() {

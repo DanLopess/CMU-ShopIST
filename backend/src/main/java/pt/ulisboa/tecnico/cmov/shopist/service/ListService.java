@@ -8,12 +8,11 @@ import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListExistsException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.ListNotFoundException;
-import pt.ulisboa.tecnico.cmov.shopist.exceptions.ProductExistsException;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.ListOfProducts;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.isEmpty;
 
@@ -41,7 +40,9 @@ public class ListService {
         }
         pantryDto.setUuid(UUID.randomUUID().toString());
         for (PantryProductDto productDto : pantryDto.getProducts()) {
-            productDto.setUuid(UUID.randomUUID().toString());
+            if (productDto.getUuid() == null) {
+                productDto.setUuid(UUID.randomUUID().toString());
+            }
         }
         return pantryDto;
     }
@@ -56,14 +57,6 @@ public class ListService {
             return pantryToUpdate.get();
         }
     }
-
-    /*public void addNewProductsToProductService(List<Product> products) {
-        products.forEach(p -> {
-            try {
-                productService.addProduct(p);
-            } catch (ProductExistsException ignored) { }
-        });
-    }*/
 
     public Optional<PantryDto> getListByUUID(String id) {
         if (id == null) return Optional.empty();

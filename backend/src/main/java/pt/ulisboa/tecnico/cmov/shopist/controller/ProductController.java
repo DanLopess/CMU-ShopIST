@@ -2,13 +2,8 @@ package pt.ulisboa.tecnico.cmov.shopist.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pt.ulisboa.tecnico.cmov.shopist.exceptions.ProductNotFoundException;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Product;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductImage;
-import pt.ulisboa.tecnico.cmov.shopist.service.ProductService;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductRating;
-
-import java.util.List;
+import pt.ulisboa.tecnico.cmov.shopist.service.ProductService;
 
 @RestController
 @RequestMapping(path = "/product")

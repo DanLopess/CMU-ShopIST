@@ -8,7 +8,7 @@ import androidx.room.TypeConverters;
 
 import lombok.Data;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.converters.LocationConverter;
-import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
 import pt.ulisboa.tecnico.cmov.shopist.pojo.LocationWrapper;
 
 @Data

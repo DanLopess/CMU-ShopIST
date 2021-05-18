@@ -29,7 +29,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProductC
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
-import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductRating;
 
 @Singleton
 public class ProductRepository implements Cache {
@@ -89,7 +89,7 @@ public class ProductRepository implements Cache {
         return obs;
     }
 
-    private Single<Long> insertProductToDb(@NonNull Product product) {
+    public Single<Long> insertProductToDb(@NonNull Product product) {
         return Single.fromCallable(() -> productDao.insert(product))
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
@@ -100,6 +100,10 @@ public class ProductRepository implements Cache {
 
     public Observable<Product> getProductByCode(String code) {
         return productDao.getProductByCode(code);
+    }
+
+    public Observable<Product> getProductByUuid(String uuid) {
+        return productDao.getProductByUuid(uuid);
     }
 
     public Observable<Boolean> checkIfProdExistsByCode(String code) {
@@ -125,6 +129,10 @@ public class ProductRepository implements Cache {
 
     public Observable<List<PantryProduct>> getPantryProducts(Long pantryId) {
         return productDao.getPantryProducts(pantryId);
+    }
+
+    public Observable<PantryProduct> getPantryProductByUuid(Long pantryId, String uuid) {
+        return productDao.getPantryProductByUuid(pantryId, uuid);
     }
 
     public Observable<Integer> getPantrySize(Long pantryId) {

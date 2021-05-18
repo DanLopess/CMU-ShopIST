@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.shopist.dto;
+package pt.ulisboa.tecnico.cmov.shopist.data.dto;
 
 import java.util.HashMap;
 import java.util.Map;

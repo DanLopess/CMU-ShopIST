@@ -1,7 +1,5 @@
-package pt.ulisboa.tecnico.cmov.shopist.dto;
+package pt.ulisboa.tecnico.cmov.shopist.data.dto;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;

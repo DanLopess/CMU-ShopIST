@@ -37,8 +37,10 @@ public class AddPantryProductsActivity extends AppCompatActivity {
 
     public void returnResult(View v) {
         List<Product> selectedProducts = adapter.getSelectedItems();
-        if (!selectedProducts.isEmpty())
+        if (!selectedProducts.isEmpty()) {
             viewModel.addPantryProducts(pantryId, selectedProducts);
+            viewModel.updatePantryOnBackend(pantryId);
+        }
         finish();
     }
 

@@ -2,6 +2,8 @@ package pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations;
 
 import androidx.room.Embedded;
 
+import java.util.Objects;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
@@ -40,5 +42,19 @@ public class PantryProduct {
         qttNeeded -= qtt;
         if (qttNeeded < 0)
             qttNeeded = 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PantryProduct that = (PantryProduct) o;
+        return Objects.equals(pantry.getPantryId(), that.pantry.getPantryId()) &&
+                Objects.equals(product.getProductId(), that.product.getProductId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pantry.getPantryId(), product.getProductId());
     }
 }
