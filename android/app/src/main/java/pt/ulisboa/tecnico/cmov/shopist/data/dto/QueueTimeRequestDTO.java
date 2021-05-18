@@ -1,9 +1,9 @@
 package pt.ulisboa.tecnico.cmov.shopist.data.dto;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor

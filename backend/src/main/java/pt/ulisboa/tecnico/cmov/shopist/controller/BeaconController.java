@@ -12,7 +12,7 @@ import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.StoreExistsException;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Beacon;
+import pt.ulisboa.tecnico.cmov.shopist.dto.Beacon;
 import pt.ulisboa.tecnico.cmov.shopist.service.BeaconService;
 
 import java.util.UUID;

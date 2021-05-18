@@ -1,6 +1,5 @@
-package pt.ulisboa.tecnico.cmov.shopist.pojo;
+package pt.ulisboa.tecnico.cmov.shopist.dto;
 
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 
 import java.time.LocalDateTime;

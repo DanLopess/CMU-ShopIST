@@ -15,14 +15,14 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.ShopIstDatabase;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.StoreDao;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
-import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.Beacon;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.Coordinates;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.ShopIstDatabase;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.StoreDao;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
+import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 
 @Singleton
 public class StoreRepository implements Cache {

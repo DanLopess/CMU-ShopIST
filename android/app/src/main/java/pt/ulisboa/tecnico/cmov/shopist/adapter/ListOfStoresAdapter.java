@@ -31,9 +31,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.StoreDetailsDialog;
-import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.getDrivingTimeBetweenTwoLocations;
