@@ -6,13 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pt.ulisboa.tecnico.cmov.shopist.dto.InTimeRequestDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.OutTimeRequestDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
+import pt.ulisboa.tecnico.cmov.shopist.dto.*;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.StoreExistsException;
-import pt.ulisboa.tecnico.cmov.shopist.dto.Beacon;
 import pt.ulisboa.tecnico.cmov.shopist.service.BeaconService;
 
 import java.util.UUID;
