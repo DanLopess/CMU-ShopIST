@@ -52,7 +52,7 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
            this.notifyDataSetChanged();
            viewModel = ((MainActivity) mContext).getViewModel();
         });
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         mContext = context;
     }
 
