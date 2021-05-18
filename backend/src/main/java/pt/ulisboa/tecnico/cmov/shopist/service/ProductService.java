@@ -3,7 +3,7 @@ package pt.ulisboa.tecnico.cmov.shopist.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pt.ulisboa.tecnico.cmov.shopist.dto.ProductPrice;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.ProductRating;
+import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,34 +60,4 @@ public class ProductService {
             return newProdPrice;
         }
     }
-
-
-    /*public String addImageToProduct(ProductImage productImage) {
-        Optional<Product> product = findProductById(productImage.getProductId());
-        if (product.isPresent() && productImage.getImageBytes() != null) {
-            product.get().addImage(productImage);
-            // TODO save to file?
-            return "Image added successfully";
-        } else {
-            return "Product id not found";
-        }
-    }
-
-    public List<ProductImage> getProductImagesByName(String productName) {
-        Optional<Product> product = findProductByName(productName);
-        if (product.isPresent() && product.get().getImages() != null) {
-            return new ArrayList<>(product.get().getImages());
-        } else {
-            return new ArrayList<>();
-        }
-    }
-
-    public List<ProductImage> getProductImagesById(String productId) {
-        Optional<Product> product = findProductById(productId);
-        if (product.isPresent() && product.get().getImages() != null) {
-            return new ArrayList<>(product.get().getImages());
-        } else {
-            return new ArrayList<>();
-        }
-    }*/
 }

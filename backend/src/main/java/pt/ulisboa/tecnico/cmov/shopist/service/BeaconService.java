@@ -2,14 +2,9 @@ package pt.ulisboa.tecnico.cmov.shopist.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pt.ulisboa.tecnico.cmov.shopist.dto.InTimeRequestDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.OutTimeRequestDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeRequestDTO;
-import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
+import pt.ulisboa.tecnico.cmov.shopist.dto.*;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.StoreExistsException;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Beacon;
-import pt.ulisboa.tecnico.cmov.shopist.pojo.Coordinates;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -112,6 +107,4 @@ public class BeaconService {
         beacon = this.getBeaconWithLeastDistance(requestDTO.getCoordinates());
         return beacon.map(beacon1 -> beacon1.getBeaconTimeStorage().getStats(requestDTO.getUuid())).orElse(new QueueTimeResponseDTO(null, null));
     }
-
-    // TODO GET ALL STORES BY COORDINATE PROXIMITY
 }

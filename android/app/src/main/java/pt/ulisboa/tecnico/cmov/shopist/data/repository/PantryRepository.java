@@ -14,12 +14,12 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.ShopIstDatabase;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.PantryDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
-import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
 import retrofit2.Call;
 
 @Singleton

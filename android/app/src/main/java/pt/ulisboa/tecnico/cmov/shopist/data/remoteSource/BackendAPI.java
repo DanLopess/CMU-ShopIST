@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.core.Observable;
-import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductPrice;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.Beacon;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.BeaconTime;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
+import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductPrice;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.ProductRating;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeRequestDTO;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import retrofit2.Call;
-import pt.ulisboa.tecnico.cmov.shopist.data.dto.BeaconTime;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -22,9 +22,8 @@ import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface BackendAPI {
-    //String BASE_URL = "http://daniellopes.ddns.net/";
+    String BASE_URL = "http://daniellopes.ddns.net/";
 
-    String BASE_URL = "http://MBP-de-Daniel.ubnt.lopes:80";
     String pantryUrl = "/api/pantry";
     String ratingUrl = "/api/product/ratings";
     String priceUrl = "/api/product/prices";

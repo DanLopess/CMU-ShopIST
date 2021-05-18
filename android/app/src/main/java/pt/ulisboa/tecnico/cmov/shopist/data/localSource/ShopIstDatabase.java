@@ -8,11 +8,11 @@ import androidx.room.TypeConverters;
 
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.converters.LocationConverter;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.PantryDao;
+import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.ProductDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.StoreDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Pantry;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.PantryProductCrossRef;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
-import pt.ulisboa.tecnico.cmov.shopist.data.localSource.daos.ProductDao;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.StoreProductCrossRef;
 
