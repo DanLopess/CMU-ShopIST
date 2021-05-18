@@ -21,7 +21,7 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 
 public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapter.ViewHolder>{
 
-    private List<StoreProduct> mProducts;
+    private final List<StoreProduct> mProducts;
     private Context mContext;
 
     public CartProductsAdapter(List<StoreProduct> products) {
@@ -66,9 +66,8 @@ public class CartProductsAdapter extends RecyclerView.Adapter<CartProductsAdapte
         ImageView imageView = holder.image;
         if(product.getProduct().getThumbnailPath() != null) {
             ((StoreActivity) mContext).getViewModel().getProductImage(product.getProduct().getThumbnailPath()).
-                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
-                imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false));
-            });
+                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image ->
+                    imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false)));
         }
     }
 

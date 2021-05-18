@@ -24,7 +24,6 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
@@ -34,7 +33,7 @@ public class StoreProductDetailsDialog extends DialogFragment {
 
     private final Context mContext;
     private View mDialogView;
-    private StoreProduct storeProduct;
+    private final StoreProduct storeProduct;
 
     public StoreProductDetailsDialog(Context context, StoreProduct storeProduct) {
         this.mContext = context;
@@ -103,9 +102,8 @@ public class StoreProductDetailsDialog extends DialogFragment {
         price.setText(storeProduct.getPrice().toString());
         if(storeProduct.getProduct().getImagePath() != null) {
             ((StoreActivity) mContext).getViewModel().getProductImage(storeProduct.getProduct().getImagePath()).
-                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
-                image.setImageBitmap(Bitmap.createScaledBitmap(res, res.getWidth(), res.getHeight(), false));
-            });
+                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res ->
+                    image.setImageBitmap(Bitmap.createScaledBitmap(res, res.getWidth(), res.getHeight(), false)));
         }
     }
 

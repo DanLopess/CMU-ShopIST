@@ -37,7 +37,7 @@ public class ProductRepository implements Cache {
 
     private List<Product> mCache = new ArrayList<>();
 
-    private BackendService backendService = BackendService.getInstance();
+    private final BackendService backendService = BackendService.getInstance();
 
     ProductDao productDao;
 
@@ -92,9 +92,7 @@ public class ProductRepository implements Cache {
 
     public Single<Long> addProduct(Product product) {
         Single<Long> obs = insertProductToDb(product);
-        obs.subscribe(aBoolean -> {
-            mCache.add(product);
-        }, throwable -> Log.d("DB ERROR", throwable.toString()));
+        obs.subscribe(aBoolean -> mCache.add(product), throwable -> Log.d("DB ERROR", throwable.toString()));
         return obs;
     }
 
@@ -153,6 +151,13 @@ public class ProductRepository implements Cache {
             PantryProductCrossRef pantryProduct = new PantryProductCrossRef(pantryId, prod.productId);
             insertPantryProductToDb(pantryProduct).subscribe(buildGenericDisposableObserver());
         }
+    }
+
+    public void addPantryProductFromCart(Long pantryId, Product product, Integer qtt) {
+        PantryProductCrossRef pantryProduct = new PantryProductCrossRef(pantryId, product.productId);
+        pantryProduct.setQttAvailable(qtt);
+        pantryProduct.setQttNeeded(0);
+        insertPantryProductToDb(pantryProduct).subscribe(buildGenericDisposableObserver());
     }
 
     public void deletePantryProduct(PantryProductCrossRef pantryProd) {

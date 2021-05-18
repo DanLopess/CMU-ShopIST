@@ -20,16 +20,14 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.AddPantryProductsActivity;
 import pt.ulisboa.tecnico.cmov.shopist.AddStoreProductsActivity;
-import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
-import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAdapter.ViewHolder>{
 
-    private List<Product> mProducts;
-    private List<Product> mSelectedProducts = new ArrayList<>();
+    private final List<Product> mProducts;
+    private final List<Product> mSelectedProducts = new ArrayList<>();
     private final Context mContext;
 
     public SelectProductsAdapter(Context context, List<Product> products) {
@@ -63,7 +61,7 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
 
         ImageView imageView = holder.image;
         if(product.getThumbnailPath() != null) {
-            ViewModel viewModel = null;
+            ViewModel viewModel;
             try {
                 viewModel = ((AddPantryProductsActivity) mContext).getViewModel();
             } catch (Exception e) {
@@ -71,9 +69,8 @@ public class SelectProductsAdapter extends RecyclerView.Adapter<SelectProductsAd
             }
             if(viewModel != null) {
                 viewModel.getProductImage(product.getThumbnailPath()).
-                        subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
-                    imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false));
-                });
+                        subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image ->
+                        imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false)));
             }
         }
 

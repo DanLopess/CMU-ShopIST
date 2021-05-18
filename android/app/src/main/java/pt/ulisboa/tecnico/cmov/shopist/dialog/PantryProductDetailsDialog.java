@@ -31,7 +31,7 @@ public class PantryProductDetailsDialog extends DialogFragment {
 
     private final Context mContext;
     private View mDialogView;
-    private PantryProduct pantryProduct;
+    private final PantryProduct pantryProduct;
 
     public PantryProductDetailsDialog(Context context, PantryProduct pantryProduct) {
         this.mContext = context;
@@ -95,9 +95,8 @@ public class PantryProductDetailsDialog extends DialogFragment {
         neededPicker.setValue(pantryProduct.getQttNeeded());
         if(pantryProduct.getProduct().getImagePath() != null) {
             ((PantryActivity) mContext).getViewModel().getProductImage(pantryProduct.getProduct().getImagePath()).
-                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res -> {
-                image.setImageBitmap(Bitmap.createScaledBitmap(res, res.getWidth(), res.getHeight(), false));
-            });
+                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(res ->
+                    image.setImageBitmap(Bitmap.createScaledBitmap(res, res.getWidth(), res.getHeight(), false)));
         }
     }
 
