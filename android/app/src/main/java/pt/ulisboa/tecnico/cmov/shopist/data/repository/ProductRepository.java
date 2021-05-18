@@ -73,7 +73,7 @@ public class ProductRepository implements Cache {
         return backendService.getProducts();
     }
 
-    public ProductRating getProductRatingByBarcode(String barcode) {
+    public Observable<ProductRating> getProductRatingByBarcode(String barcode) {
         return backendService.getProductRating(barcode);
     }
 

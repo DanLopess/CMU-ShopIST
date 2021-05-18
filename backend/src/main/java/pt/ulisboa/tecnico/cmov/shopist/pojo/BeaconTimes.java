@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 public class BeaconTimes {
-    private Timestamp in;
-    private Timestamp out;
+    private LocalDateTime in;
+    private LocalDateTime out;
 }

@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Singleton;
 
@@ -37,6 +39,8 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.PantryRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.ProductRepository;
 import pt.ulisboa.tecnico.cmov.shopist.data.repository.StoreRepository;
+import pt.ulisboa.tecnico.cmov.shopist.dto.Coordinates;
+import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryDto;
 import pt.ulisboa.tecnico.cmov.shopist.dto.PantryProductDto;
 import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
@@ -124,7 +128,7 @@ public class ViewModel extends AndroidViewModel {
         productRepository.deleteProduct(product);
     }
 
-    public ProductRating getProductRatingByBarcode(String barcode) {
+    public Observable<ProductRating> getProductRatingByBarcode(String barcode) {
         return productRepository.getProductRatingByBarcode(barcode);
     }
 
@@ -223,6 +227,7 @@ public class ViewModel extends AndroidViewModel {
 
     public void addSyncedPantryFromBackend(String uuid) {
         if (uuid != null) {
+            // TODO first look for pantry by uuid and checks if exists
             pantryRepository.saveSyncedPantryFromBackend(uuid).enqueue(new Callback<PantryDto>() {
                 @Override
                 public void onResponse(@NonNull Call<PantryDto> call, @NonNull Response<PantryDto> response) {
@@ -272,7 +277,7 @@ public class ViewModel extends AndroidViewModel {
                 }
             });
         }
-        // TODO ELSE , IF ALREADY HAS UUID UPDATES
+        // TODO ELSE , IF ALREADY HAS UUID UPDATES and calls update pantry products :3
     }
 
     private void createProductsFromSyncedPantry(PantryDto pDto, Long pantryId) {
@@ -293,6 +298,15 @@ public class ViewModel extends AndroidViewModel {
                     }
                 });
         }
+    }
+
+    private void updateSyncedPantry(Pantry pantry) {
+        // Get pantry from dto
+        // On response update products
+    }
+
+    private void updateProductsFromSyncedPantry(String pantryId, String uuid) {
+
     }
 
     public void savePantryToBackend(Pantry pantry) {
@@ -367,6 +381,14 @@ public class ViewModel extends AndroidViewModel {
 
     public Observable<List<StoreProduct>> getStoreProductsInCart(Long storeId) {
         return productRepository.getStoreProductsInCart(storeId);
+    }
+
+    public Observable<QueueTimeResponseDTO> getStoreStats(Store store) {
+        return storeRepository.getStats(new Coordinates(store.getLocationWrapper().getLatitude(), store.getLocationWrapper().getLongitude()), null);
+    }
+
+    public Observable<QueueTimeResponseDTO> getEstimationStats(Store store, UUID uuid) {
+        return storeRepository.getStats(new Coordinates(store.getLocationWrapper().getLatitude(), store.getLocationWrapper().getLongitude()), uuid);
     }
 
     //================================== Auxiliary ==================================

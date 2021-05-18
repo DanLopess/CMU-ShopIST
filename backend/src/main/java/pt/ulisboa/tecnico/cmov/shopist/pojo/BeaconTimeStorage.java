@@ -4,13 +4,15 @@ import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.exceptions.InvalidDataException;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 
 public class BeaconTimeStorage {
     private final Map<UUID, BeaconTimes> storage = new HashMap<>();
 
-    public void saveInTime(UUID uuid, Timestamp timestamp) throws InvalidDataException {
+    public void saveInTime(UUID uuid, LocalDateTime timestamp) throws InvalidDataException {
         if(isValidIn(timestamp)) {
             storage.put(uuid, new BeaconTimes(timestamp, null));
             return;
@@ -18,7 +20,7 @@ public class BeaconTimeStorage {
         throw new InvalidDataException("there was an error in in time");
     }
 
-    public void saveOutTime(UUID uuid, Timestamp timestamp) throws InvalidDataException {
+    public void saveOutTime(UUID uuid, LocalDateTime timestamp) throws InvalidDataException {
         if(storage.containsKey(uuid) && storage.get(uuid) != null) {
             BeaconTimes times = storage.get(uuid);
             if(isValidOut(times, timestamp)) {
@@ -29,29 +31,29 @@ public class BeaconTimeStorage {
         throw new InvalidDataException("there was an error in out time");
     }
 
-    private boolean isValidIn(Timestamp timestamp) {
-        Timestamp now = new Timestamp(new Date().getTime());
-        if(now.before(timestamp)) {
+    private boolean isValidIn(LocalDateTime timestamp) {
+        LocalDateTime now = LocalDateTime.now();
+        if(now.isBefore(timestamp)) {
             return false;
         }
         return true;
     }
 
-    private boolean isValidOut(BeaconTimes times, Timestamp timestamp) {
-        Timestamp now = new Timestamp(new Date().getTime());
-        if(now.before(timestamp) || timestamp.before(times.getIn())) {
+    private boolean isValidOut(BeaconTimes times, LocalDateTime timestamp) {
+        LocalDateTime now = LocalDateTime.now();
+        if(now.isBefore(timestamp) || timestamp.isBefore(times.getIn())) {
             return false;
         }
         return true;
     }
 
-    private int getMeanDurationLast1Hour() {
-        Timestamp now = new Timestamp(new Date().getTime());
+    private Integer getMeanDurationLast1Hour() {
+        LocalDateTime now = LocalDateTime.now();
         int count = 0;
         int sum = 0;
         Set<UUID> keySet = storage.keySet();
         for(UUID uuid : keySet) {
-            Timestamp out = storage.get(uuid).getOut();
+            LocalDateTime out = storage.get(uuid).getOut();
             if(out != null && differenceInSeconds(now, out) <= 3600) {
                 sum += durationInSeconds(uuid);
                 count += 1;
@@ -61,24 +63,24 @@ public class BeaconTimeStorage {
 
     }
 
-    public QueueTimeResponseDTO getStats() {
-        int mean = getMeanDurationLast1Hour();
-        int inQueue = getInQueue(mean);
-        return new QueueTimeResponseDTO(mean, inQueue);
+    public QueueTimeResponseDTO getStats(UUID uuid) {
+        Integer mean = getMeanDurationLast1Hour();
+        Integer estimationTime = null;
+        if(uuid != null) {
+            estimationTime = getEstimation(mean, uuid);
+        }
+        return new QueueTimeResponseDTO(mean, estimationTime);
     }
 
-    /* get people got it in (3 * mean) minutes ago and didn't leave yet*/
-    private int getInQueue(int mean) {
-        Timestamp now = new Timestamp(new Date().getTime());
-        int count = 0;
-        Set<UUID> keySet = storage.keySet();
-        for(UUID uuid : keySet) {
-            BeaconTimes times = storage.get(uuid);
-            if(times.getOut() == null && differenceInSeconds(now, times.getIn()) <= 3L * mean) {
-                count++;
-            }
+    private Integer getEstimation(int mean, UUID uuid) {
+        LocalDateTime now = LocalDateTime.now();
+        BeaconTimes times = storage.get(uuid);
+        if(times == null || times.getOut() != null) {
+            return null;
         }
-        return count;
+        LocalDateTime in = times.getIn();
+        int res = Math.toIntExact(mean - differenceInSeconds(now, in));
+        return Math.max(res, 0);
     }
 
     private long getMeanDuration() {
@@ -95,7 +97,7 @@ public class BeaconTimeStorage {
         return storage.containsKey(uuid);
     }
 
-    private long differenceInSeconds(Timestamp t2, Timestamp t1) {
-        return (t2.getTime() - t1.getTime()) / 1000;
+    private long differenceInSeconds(LocalDateTime t2, LocalDateTime t1) {
+        return ChronoUnit.SECONDS.between(t1, t2);
     }
 }

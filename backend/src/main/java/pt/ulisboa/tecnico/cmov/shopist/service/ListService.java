@@ -41,9 +41,7 @@ public class ListService {
         }
         pantryDto.setUuid(UUID.randomUUID().toString());
         for (PantryProductDto productDto : pantryDto.getProducts()) {
-            if (productDto.getBarcode() == null) {
-                productDto.setBarcode(UUID.randomUUID().toString());
-            }
+            productDto.setUuid(UUID.randomUUID().toString());
         }
         return pantryDto;
     }

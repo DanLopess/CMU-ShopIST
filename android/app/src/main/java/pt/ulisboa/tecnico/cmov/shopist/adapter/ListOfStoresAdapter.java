@@ -18,6 +18,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
@@ -25,6 +26,8 @@ import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Store;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.PantryDetailsDialog;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.StoreDetailsDialog;
+import pt.ulisboa.tecnico.cmov.shopist.dto.Beacon;
+import pt.ulisboa.tecnico.cmov.shopist.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
 public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapter.ViewHolder>{
@@ -101,8 +104,8 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
         //distTextView.setText(distText);
 
         TextView waitTimeTextView = holder.waitTime;
-        // TODO String queueText = list.getQueueWaitTime() + " " + mContext.getString(R.string.minutes_in_queue);
-        //waitTimeTextView.setText(queueText);
+        this.setQueueTime(list, waitTimeTextView);
+
 
         TextView itemNrTextView = holder.itemNr;
         viewModel.getStoreSize(list.storeId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(size -> {
@@ -120,6 +123,33 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
     @Override
     public int getItemCount() {
         return mLists.size();
+    }
+
+    public void setQueueTime(Store store, TextView textView) {
+        if(store.getLocationWrapper() != null && store.getLocationWrapper().getLatitude() != null && store.getLocationWrapper().getLongitude() != null) {
+            textView.setText("");
+            viewModel.getStoreStats(store).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<QueueTimeResponseDTO>() {
+                @Override
+                public void onNext(@io.reactivex.rxjava3.annotations.NonNull QueueTimeResponseDTO responseDTO) {
+                    if(responseDTO.getMeanTimeInQueueInLastHour() != null) {
+                        int minutes = Math.round(responseDTO.getMeanTimeInQueueInLastHour() / 60f);
+                        String queueText = minutes + " " + mContext.getString(R.string.minutes_in_queue);
+                        textView.setText(queueText);
+                    }
+                }
+
+                @Override
+                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

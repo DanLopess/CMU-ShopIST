@@ -35,12 +35,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import pt.ulisboa.tecnico.cmov.shopist.MainActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.ScanCodeActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities.Product;
 import pt.ulisboa.tecnico.cmov.shopist.dto.ProductRating;
+import pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -92,10 +94,12 @@ public class ProductDetailsDialog extends DialogFragment {
             product.setProductName(prodName.getText().toString());
         product.setProductDescription(prodDesc.getText().toString());
 
-        if (product.getCode() != null/* and is connected to internet???*/) {
+        if (product.getCode() != null && ShopISTUtils.hasNetwork(mContext)) {
             product.setRating(rating.getRating());
-            ((MainActivity) mContext).getViewModel().postProductRating(product.getCode(), Math.round(product.getRating()), Math.round(currRating));
-            //update on server, if possible;
+            ((MainActivity) mContext).getViewModel().postProductRating(
+                    product.getCode(),
+                    Math.round(product.getRating()),
+                    currRating == null ? null : Math.round(currRating));
         }
     }
 
@@ -114,7 +118,7 @@ public class ProductDetailsDialog extends DialogFragment {
     }
 
     private void setupDialog() {
-        mDialogView.findViewById(R.id.product_details_others_rating_layout).setVisibility(View.GONE); //default to Gone
+        mDialogView.findViewById(R.id.product_details_others_rating_layout).setVisibility(View.GONE);
         mDialogView.findViewById(R.id.product_details_others_barchart_layout).setVisibility(View.GONE);
         EditText name = mDialogView.findViewById(R.id.product_details_name);
         EditText desc = mDialogView.findViewById(R.id.product_details_desc);
@@ -130,14 +134,30 @@ public class ProductDetailsDialog extends DialogFragment {
             RatingBar rating = mDialogView.findViewById(R.id.product_details_rating);
 
             currRating = product.getRating();
-            if (currRating == 0f)
-                currRating = null;
+
             rating.setRating(currRating != null ? currRating : 0.0f);
 
-            ProductRating productRating;
-            productRating = ((MainActivity) mContext).getViewModel().getProductRatingByBarcode(product.getCode());
-            //TODO get othersRating from server, if possible;
-            updateRatings(productRating);
+            if (ShopISTUtils.hasNetwork(mContext)) {
+                ((MainActivity) mContext).getViewModel().getProductRatingByBarcode(product.getCode()).
+                        subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new DisposableObserver<ProductRating>() {
+                            @Override
+                            public void onNext(@io.reactivex.rxjava3.annotations.NonNull ProductRating productRating) {
+                                updateRatings(productRating);
+                                onComplete();
+                            }
+
+                            @Override
+                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                dispose();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                dispose();
+                            }
+                        });
+            }
         }
 
         if(product.getImagePath() != null) {

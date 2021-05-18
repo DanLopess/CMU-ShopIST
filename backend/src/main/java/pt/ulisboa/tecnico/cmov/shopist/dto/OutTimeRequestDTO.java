@@ -1,12 +1,13 @@
 package pt.ulisboa.tecnico.cmov.shopist.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 public class OutTimeRequestDTO {
-    private Timestamp timestamp;
+    private String timestamp;
     private UUID uuid;
 }

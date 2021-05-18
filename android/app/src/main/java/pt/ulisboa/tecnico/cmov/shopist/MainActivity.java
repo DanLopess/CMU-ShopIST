@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
             item1.setVisible(true);
             item3.setTitle(R.string.scan_qr_code);
             item3.setVisible(true);
-            item4.setTitle(R.string.scan_qr_code);
+            item4.setTitle(R.string.refresh_data);
             item4.setVisible(true);
             item4.setOnMenuItemClickListener(item -> {
                 if (mPantryAdapter != null) {

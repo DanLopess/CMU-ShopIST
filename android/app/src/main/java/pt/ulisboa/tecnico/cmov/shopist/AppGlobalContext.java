@@ -16,9 +16,12 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.Task;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -38,7 +41,7 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
 
     public static final String TERMITE_TAG = "ShopIST";
 
-    private UUID uuid = null;
+    private static UUID uuid = null;
 
     private SimWifiP2pManager mManager = null;
     private SimWifiP2pManager.Channel mChannel = null;
@@ -46,7 +49,9 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
     private SimWifiP2pBroadcastReceiver mReceiver;
     private Boolean inQueue = false;
     private BackendService mBackendService;
+    private FusedLocationProviderClient fusedLocationClient;
     private LocationManager mLocationManager;
+    private DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
@@ -67,6 +72,10 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
         }
     };
 
+    public static UUID getUUID() {
+        return uuid;
+    }
+
     public void startService() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -79,6 +88,7 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mBackendService = BackendService.getInstance(getApplicationContext());
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     public void peersChanged() {
@@ -93,17 +103,51 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
         for (SimWifiP2pDevice device : peers.getDeviceList()) {
             if (device.deviceName.endsWith(TERMITE_TAG)) {
                 if (!inQueue) {
-                    Timestamp now = new Timestamp(new Date().getTime());
-                    Location location = getLastKnownLocation();
-                    if (location == null) {
-                        continue;
+                    LocalDateTime now = LocalDateTime.now();
+                    Task<Location> task = getLastKnownLocation();
+                    if(task != null) {
+                        getLastKnownLocation().addOnSuccessListener(location -> {
+                            if (location == null) {
+                                return;
+                            }
+                            BeaconTime beaconTime = new BeaconTime(now.format(formatter), getCoordinates(location), null);
+                            mBackendService.postInTime(beaconTime).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<UUID>() {
+                                @Override
+                                public void onNext(@NonNull UUID res) {
+                                    inQueue = true;
+                                    uuid = res;
+                                }
+
+                                @Override
+                                public void onError(@NonNull Throwable e) {
+                                    e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                            Toast.makeText(getApplicationContext(), "Peers Changed and beacon recognized", Toast.LENGTH_SHORT).show();
+                        });
+
                     }
-                    BeaconTime beaconTime = new BeaconTime(now, getCoordinates(location), null);
-                    mBackendService.postInTime(beaconTime).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<UUID>() {
+                }
+                return;
+            }
+        }
+        if (inQueue) {
+            LocalDateTime now = LocalDateTime.now();
+            Task<Location> task = getLastKnownLocation();
+            if(task != null) {
+                task.addOnSuccessListener(location -> {
+                    if (location == null) {
+                        return;
+                    }
+                    BeaconTime beaconTime = new BeaconTime(now.format(formatter), getCoordinates(location), uuid);
+                    mBackendService.postOutTime(beaconTime).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new DisposableObserver<UUID>() {
                         @Override
                         public void onNext(@NonNull UUID res) {
-                            inQueue = true;
-                            uuid = res;
                         }
 
                         @Override
@@ -116,49 +160,22 @@ public class AppGlobalContext extends Application implements SimWifiP2pManager.P
 
                         }
                     });
-                    Toast.makeText(getApplicationContext(), "Peers Changed and beacon recognized", Toast.LENGTH_SHORT).show();
-                }
-                return;
+                    inQueue = false;
+                    uuid = null;
+                    Toast.makeText(getApplicationContext(), "Peers Changed and beacon no longer in sight", Toast.LENGTH_SHORT).show();
+                });
             }
-        }
-        if (inQueue) {
-            Timestamp now = new Timestamp(new Date().getTime());
-            Location location = getLastKnownLocation();
-            if (location == null) {
-                return;
-            }
-            BeaconTime beaconTime = new BeaconTime(now, getCoordinates(location), null);
-            mBackendService.postOutTime(beaconTime);
-            Toast.makeText(getApplicationContext(), "Peers Changed and beacon no longer in sight", Toast.LENGTH_SHORT).show();
-            inQueue = false;
         } else {
             Toast.makeText(getApplicationContext(), "Peers Changed but nothing happened", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private Location getDeviceLocation(String provider) {
+    private Task<Location> getLastKnownLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            return mLocationManager.getLastKnownLocation(provider);
+            return fusedLocationClient.getLastLocation();
         }
         return null;
-    }
-
-    private Location getLastKnownLocation() {
-        mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-            Location l = getDeviceLocation(provider);
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
-                bestLocation = l;
-            }
-        }
-        return bestLocation;
     }
 
     private Coordinates getCoordinates(Location location) {
