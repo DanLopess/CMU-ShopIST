@@ -47,7 +47,7 @@ import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.getDrivingTimeBe
 public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAdapter.ViewHolder>{
 
     private List<Pantry> mLists;
-    private Context mContext;
+    private final Context mContext;
     private ViewModel viewModel;
     private final FusedLocationProviderClient mFusedLocationProviderClient;
     private Location currentLocation = null;
@@ -89,7 +89,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
         Menu menu = toolbar.getMenu();
         menu.findItem(R.id.refresh_data).setOnMenuItemClickListener(v -> {
             viewModel.refreshPantries();
-            Toast.makeText(mContext, "Refreshing...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.refreshing, Toast.LENGTH_SHORT).show();
             return true;
         });
         PopupMenu.OnMenuItemClickListener menuItemClickListener = getOnMenuItemClickListener(holder, position, list);
@@ -140,14 +140,13 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
                             ((MainActivity) mContext).getViewModel().deletePantry(mLists.get(position));
                             notifyDataSetChanged();
                         })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                            dialog.dismiss();
-                        });
+                        .setNegativeButton(R.string.cancel, (dialog, which) ->
+                                dialog.dismiss());
                 builder.create().show();
                 return true;
             } else if (item.getItemId() == R.id.list_options_sync) {
                 viewModel.savePantryToBackend(list);
-                Toast.makeText(mContext, "Sharing...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.sharing, Toast.LENGTH_SHORT).show();
                 return true;
             } else if (item.getItemId() == R.id.list_options_edit) {
                 PantryDetailsDialog pantryDetailsDialog = new PantryDetailsDialog(mContext, list);
@@ -167,7 +166,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
             QRCodeDialog qrCodeDialog = new QRCodeDialog(mContext, list.getUuid());
             qrCodeDialog.show(((MainActivity) mContext).getSupportFragmentManager(), "product_details");
         } else {
-            Toast.makeText(mContext, "Something went wrong.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -206,7 +205,7 @@ public class ListOfPantriesAdapter extends RecyclerView.Adapter<ListOfPantriesAd
                     if (task.isSuccessful()) {
                         currentLocation = task.getResult();
                     } else {
-                        Toast.makeText(mContext, "Unable to get current location ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.unable_to_get_current_location, Toast.LENGTH_SHORT).show();
                     }
                 });
             }

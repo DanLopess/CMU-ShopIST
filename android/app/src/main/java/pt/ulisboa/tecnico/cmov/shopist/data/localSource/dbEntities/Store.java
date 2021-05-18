@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.shopist.data.localSource.dbEntities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 

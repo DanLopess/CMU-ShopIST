@@ -21,7 +21,7 @@ public class PantryProductCrossRef {
     private Integer qttNeeded;
 
     @Ignore
-    public PantryProductCrossRef(Long pantryId, Long productId) {
+    public PantryProductCrossRef(@NonNull Long pantryId, @NonNull Long productId) {
         this.pantryId = pantryId;
         this.productId = productId;
         this.qttAvailable = 0;

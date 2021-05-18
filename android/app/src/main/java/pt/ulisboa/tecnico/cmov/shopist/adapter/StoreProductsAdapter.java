@@ -21,17 +21,14 @@ import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import pt.ulisboa.tecnico.cmov.shopist.PantryActivity;
 import pt.ulisboa.tecnico.cmov.shopist.R;
 import pt.ulisboa.tecnico.cmov.shopist.StoreActivity;
 import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.StoreProduct;
-import pt.ulisboa.tecnico.cmov.shopist.dialog.PantryProductDetailsDialog;
-import pt.ulisboa.tecnico.cmov.shopist.dialog.ProductDetailsDialog;
 import pt.ulisboa.tecnico.cmov.shopist.dialog.StoreProductDetailsDialog;
 
 public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdapter.ViewHolder>{
 
-    private List<StoreProduct> mProducts;
+    private final List<StoreProduct> mProducts;
     private Context mContext;
 
     public StoreProductsAdapter(List<StoreProduct> products) {
@@ -61,9 +58,8 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
                                     .deleteStoreProduct(product);
                             notifyDataSetChanged();
                         })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                            dialog.dismiss();
-                        });
+                        .setNegativeButton(R.string.cancel, (dialog, which) ->
+                                dialog.dismiss());
                 builder.create().show();
                 return true;
             } else
@@ -108,9 +104,8 @@ public class StoreProductsAdapter extends RecyclerView.Adapter<StoreProductsAdap
         ImageView imageView = holder.image;
         if(product.getProduct().getThumbnailPath() != null) {
             ((StoreActivity) mContext).getViewModel().getProductImage(product.getProduct().getThumbnailPath()).
-                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image -> {
-                imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false));
-            });
+                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(image ->
+                    imageView.setImageBitmap(Bitmap.createScaledBitmap(image, imageView.getWidth(), imageView.getHeight(), false)));
         }
 
         holder.productClickableArea.setOnClickListener(v -> {

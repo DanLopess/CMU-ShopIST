@@ -53,9 +53,7 @@ public class StoreRepository implements Cache {
     }
 
     public void addStore(Store store) {
-        insertStoreToDb(store).subscribe(aBoolean -> {
-            mCache.add(store);
-        }, throwable -> Log.d("DB ERROR", throwable.toString()));
+        insertStoreToDb(store).subscribe(aBoolean -> mCache.add(store), throwable -> Log.d("DB ERROR", throwable.toString()));
     }
 
     public void deleteStore(Store store) {

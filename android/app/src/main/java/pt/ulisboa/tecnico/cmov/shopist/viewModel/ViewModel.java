@@ -197,6 +197,10 @@ public class ViewModel extends AndroidViewModel {
         productRepository.addPantryProducts(pantryId, products);
     }
 
+    public void addPantryProductFromCart(Long pantryId, Product product, Integer qtt) {
+        productRepository.addPantryProductFromCart(pantryId, product, qtt);
+    }
+
     public Observable<List<PantryProduct>> getPantryProducts(Long pantryId) {
         return productRepository.getPantryProducts(pantryId);
     }

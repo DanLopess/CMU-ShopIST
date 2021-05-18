@@ -36,10 +36,10 @@ public class BackendService {
     private final BackendAPI backendAPI;
     private static BackendService backendServiceInstance;
 
-    private long cacheSize = 10 * 1024 * 1024; // 10 MB
+    private final long cacheSize = 10 * 1024 * 1024; // 10 MB
 
-    private Cache cache;
-    private Context mContext;
+    private final Cache cache;
+    private final Context mContext;
 
     private BackendService(Context context) {
         cache = new Cache(context.getCacheDir(), cacheSize);
@@ -130,7 +130,7 @@ public class BackendService {
         backendAPI.updatePantry(pantryDto).enqueue(new Callback<PantryDto>() {
             @Override
             public void onResponse(@NonNull Call<PantryDto> call, @NonNull Response<PantryDto> response) {
-                // Doesnt need the response yet
+                // Doesn't need the response yet
             }
 
             @Override

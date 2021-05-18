@@ -1,8 +1,11 @@
 package pt.ulisboa.tecnico.cmov.shopist.adapter;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -10,9 +13,14 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
 
@@ -28,11 +36,15 @@ import pt.ulisboa.tecnico.cmov.shopist.dialog.StoreDetailsDialog;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.QueueTimeResponseDTO;
 import pt.ulisboa.tecnico.cmov.shopist.viewModel.ViewModel;
 
+import static pt.ulisboa.tecnico.cmov.shopist.util.ShopISTUtils.getDrivingTimeBetweenTwoLocations;
+
 public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapter.ViewHolder>{
 
     private List<Store> mLists;
     private Context mContext;
     private ViewModel viewModel;
+    private final FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location currentLocation = null;
 
     public ListOfStoresAdapter(Context context, Observable<List<Store>> lists) {
         lists.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(items -> {
@@ -40,6 +52,7 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
            this.notifyDataSetChanged();
            viewModel = ((MainActivity) mContext).getViewModel();
         });
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mContext);
         mContext = context;
     }
 
@@ -48,6 +61,7 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
     public ListOfStoresAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View listView = inflater.inflate(R.layout.list_item_list_of_stores, parent, false);
+        getDeviceLocation();
         return new ViewHolder(listView);
     }
 
@@ -72,9 +86,8 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
                             ((MainActivity) mContext).getViewModel().deleteStore(list);
                             notifyDataSetChanged();
                         })
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                            dialog.dismiss();
-                        });
+                        .setNegativeButton(R.string.cancel, (dialog, which) ->
+                                dialog.dismiss());
                 builder.create().show();
                 return true;
             } else if (item.getItemId() == R.id.list_options_edit) {
@@ -98,8 +111,13 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
         textView.setText(list.getName());
 
         TextView distTextView = holder.distTime;
-        // TODO String distText = list.getDriveTime() + " " + mContext.getString(R.string.drive_time);
-        //distTextView.setText(distText);
+        if (list.getLocationWrapper().toLocation() != null) {
+            String timeToPantryLocation = getDrivingTimeBetweenTwoLocations(currentLocation, list.getLocationWrapper().toLocation());
+            if (timeToPantryLocation != null) {
+                String time = timeToPantryLocation + mContext.getResources().getString(R.string.minutes);
+                distTextView.setText(time);
+            }
+        }
 
         TextView waitTimeTextView = holder.waitTime;
         this.setQueueTime(list, waitTimeTextView);
@@ -147,6 +165,22 @@ public class ListOfStoresAdapter extends RecyclerView.Adapter<ListOfStoresAdapte
                 }
             });
 
+        }
+    }
+
+    private void getDeviceLocation() {
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            if (mFusedLocationProviderClient != null) {
+                mFusedLocationProviderClient.getLastLocation().addOnCompleteListener(task ->
+                {
+                    if (task.isSuccessful()) {
+                        currentLocation = task.getResult();
+                    } else {
+                        Toast.makeText(mContext, R.string.unable_to_get_current_location, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
     }
 

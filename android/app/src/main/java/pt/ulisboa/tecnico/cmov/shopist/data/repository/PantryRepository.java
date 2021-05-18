@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.cmov.shopist.data.repository;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -22,8 +21,6 @@ import pt.ulisboa.tecnico.cmov.shopist.data.localSource.relations.PantryProduct;
 import pt.ulisboa.tecnico.cmov.shopist.data.remoteSource.BackendService;
 import pt.ulisboa.tecnico.cmov.shopist.data.dto.PantryDto;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 @Singleton
 public class PantryRepository implements Cache {

@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.shopist;
 
-
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +8,10 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -53,8 +50,6 @@ public abstract class ProductListActivity extends AppCompatActivity implements O
             );
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
 
-            //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-            // TODO why does it need clicks to load the full map?
         } else {
             mapView.setVisibility(View.GONE);
         }
